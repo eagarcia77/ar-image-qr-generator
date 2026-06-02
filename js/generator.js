@@ -1,108 +1,92 @@
-const form = document.getElementById('generatorForm');
-const imageUrl = document.getElementById('imageUrl');
-const title = document.getElementById('title');
-const instructions = document.getElementById('instructions');
-const viewerBase = document.getElementById('viewerBase');
+const imageUrlInput = document.getElementById('imageUrl');
+const titleInput = document.getElementById('title');
+const baseUrlInput = document.getElementById('baseUrl');
+const testBtn = document.getElementById('testBtn');
+const generateBtn = document.getElementById('generateBtn');
+const copyBtn = document.getElementById('copyBtn');
+const resultUrl = document.getElementById('resultUrl');
+const openBtn = document.getElementById('openBtn');
 const statusBox = document.getElementById('status');
-const previewImage = document.getElementById('previewImage');
-const shareLink = document.getElementById('shareLink');
-const qrBox = document.getElementById('qrBox');
-const copyLink = document.getElementById('copyLink');
-const openViewer = document.getElementById('openViewer');
-const testImage = document.getElementById('testImage');
+const preview = document.getElementById('preview');
+const qrBox = document.getElementById('qrcode');
 
-viewerBase.value = new URL('viewer.html', window.location.href).href;
+let qr;
 
-function setStatus(message, type = '') {
-  statusBox.className = `status ${type}`.trim();
-  statusBox.innerHTML = message;
+function setStatus(msg, ok = true) {
+  statusBox.textContent = msg;
+  statusBox.className = `status ${ok ? 'ok' : 'error'}`;
 }
 
-function normalizeUrl(value) {
-  return value.trim().replace(/&amp;/g, '&');
+function getBaseUrl() {
+  const current = window.location.href;
+  const base = current.substring(0, current.lastIndexOf('/') + 1);
+  return base;
 }
 
-function encodePayload(payload) {
-  const json = JSON.stringify(payload);
-  const utf8 = encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('0x' + p1));
-  return btoa(utf8).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+baseUrlInput.value = getBaseUrl();
+
+function buildArUrl() {
+  const img = imageUrlInput.value.trim();
+  const title = titleInput.value.trim();
+  const base = (baseUrlInput.value.trim() || getBaseUrl()).replace(/index\.html$/i, '');
+  if (!img) return '';
+  return `${base}marker-ar.html?data=${encodeURIComponent(img)}&title=${encodeURIComponent(title)}`;
 }
 
-function buildShareUrl() {
-  const img = normalizeUrl(imageUrl.value);
-  const payload = {
-    img,
-    title: title.value.trim() || 'Imagen en Realidad Aumentada',
-    instructions: instructions.value.trim() || 'Permite el uso de cámara y observa la imagen.'
-  };
-  const encoded = encodePayload(payload);
-  const base = viewerBase.value.trim() || new URL('viewer.html', window.location.href).href;
-  const url = new URL(base);
-  url.search = '';
-  url.searchParams.set('data', encoded);
-  return url.href;
+function resetQR() {
+  qrBox.innerHTML = '';
+  qr = null;
 }
 
-function createQr(url) {
-  const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=12&data=' + encodeURIComponent(url);
-  qrBox.innerHTML = `<img src="${qrUrl}" alt="QR Code de la experiencia AR"><p class="hint">Escanea este QR con el celular.</p>`;
-}
-
-function testImageLoad(url) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error('La imagen no pudo cargar.'));
-    img.referrerPolicy = 'no-referrer-when-downgrade';
-    img.src = url;
-  });
-}
-
-async function validateImage() {
-  const imgUrl = normalizeUrl(imageUrl.value);
-  if (!imgUrl) {
-    setStatus('Pega primero el URL de la imagen.', 'bad');
-    return false;
-  }
-  try {
-    new URL(imgUrl);
-  } catch {
-    setStatus('El texto pegado no parece ser un URL válido.', 'bad');
-    return false;
-  }
-
-  setStatus('Probando si la imagen carga correctamente...', '');
-  try {
-    await testImageLoad(imgUrl);
-    previewImage.src = imgUrl;
-    previewImage.hidden = false;
-    setStatus('La imagen cargó correctamente. Ya puedes generar el QR Code.', 'ok');
-    return true;
-  } catch {
-    previewImage.hidden = true;
-    setStatus('No se pudo cargar la imagen. Revisa que sea un enlace directo a imagen y que el estudiante tenga permiso para verla en Blackboard.', 'bad');
-    return false;
-  }
-}
-
-testImage.addEventListener('click', validateImage);
-
-form.addEventListener('submit', async event => {
-  event.preventDefault();
-  const ok = await validateImage();
-  if (!ok) return;
-  const url = buildShareUrl();
-  shareLink.value = url;
-  openViewer.href = url;
-  createQr(url);
-  setStatus('QR Code generado. Copia el enlace o comparte el QR en Blackboard Ultra.', 'ok');
-});
-
-copyLink.addEventListener('click', async () => {
-  if (!shareLink.value) {
-    setStatus('Primero genera el enlace AR.', 'bad');
+function testImage() {
+  const img = imageUrlInput.value.trim();
+  if (!img) {
+    setStatus('Pega primero el URL de la imagen.', false);
     return;
   }
-  await navigator.clipboard.writeText(shareLink.value);
-  setStatus('Enlace copiado al portapapeles.', 'ok');
-});
+  preview.classList.add('hidden');
+  setStatus('Probando imagen...');
+  const tester = new Image();
+  tester.onload = () => {
+    preview.src = img;
+    preview.classList.remove('hidden');
+    setStatus('La imagen se cargó correctamente. Ya puedes generar el QR.');
+  };
+  tester.onerror = () => {
+    setStatus('La imagen no se pudo cargar. Verifica si el enlace requiere login o no es un archivo directo.', false);
+  };
+  tester.src = img;
+}
+
+function generateQR() {
+  const arUrl = buildArUrl();
+  if (!arUrl) {
+    setStatus('Falta el URL de la imagen.', false);
+    return;
+  }
+  resetQR();
+  resultUrl.value = arUrl;
+  openBtn.href = arUrl;
+  openBtn.classList.remove('disabled');
+  qr = new QRCode(qrBox, {
+    text: arUrl,
+    width: 260,
+    height: 260,
+    correctLevel: QRCode.CorrectLevel.H
+  });
+  setStatus('QR generado. Al escanearlo se abrirá la cámara automáticamente en la página AR.');
+}
+
+function copyLink() {
+  if (!resultUrl.value) {
+    setStatus('Primero genera el QR.', false);
+    return;
+  }
+  navigator.clipboard.writeText(resultUrl.value)
+    .then(() => setStatus('Enlace copiado al portapapeles.'))
+    .catch(() => setStatus('No se pudo copiar automáticamente. Copia el enlace manualmente.', false));
+}
+
+testBtn.addEventListener('click', testImage);
+generateBtn.addEventListener('click', generateQR);
+copyBtn.addEventListener('click', copyLink);

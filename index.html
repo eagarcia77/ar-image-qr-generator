@@ -3,68 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generador de Imagen AR para Blackboard</title>
-  <meta name="description" content="Generador de enlaces y QR para visualizar imágenes del Content Collection de Blackboard en realidad aumentada sencilla." />
+  <title>Generador AR + QR con HIRO</title>
   <link rel="stylesheet" href="css/app.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
   <main class="container">
-    <section class="hero">
-      <div>
-        <p class="eyebrow">UCAN · Blackboard Ultra · WebAR</p>
-        <h1>Generador de Imágenes para Realidad Aumentada</h1>
-        <p>El profesor pega el URL directo de una imagen alojada en Blackboard Content Collection. El sistema valida el enlace, crea una experiencia AR y genera un QR Code seguro.</p>
-      </div>
+    <section class="hero card">
+      <h1>Generador de Realidad Aumentada para Blackboard</h1>
+      <p>Pega el URL directo de una imagen, genera un QR y haz que al escanearlo se abra automáticamente la cámara con el marcador <strong>HIRO</strong>.</p>
     </section>
 
     <section class="grid">
-      <form id="generatorForm" class="card">
-        <h2>1. Datos de la experiencia</h2>
-        <label for="imageUrl">URL directo de la imagen</label>
-        <textarea id="imageUrl" placeholder="https://.../imagen.png" required></textarea>
-        <p class="hint">Debe ser un enlace directo a una imagen JPG, PNG, WEBP, GIF o SVG. Si Blackboard pide login, el estudiante deberá estar autenticado.</p>
+      <div class="card">
+        <h2>1. Configura el recurso</h2>
+        <label for="imageUrl">URL directa de la imagen</label>
+        <input id="imageUrl" type="url" placeholder="https://.../LogoUCAN.png" />
 
         <label for="title">Título</label>
-        <input id="title" type="text" value="Imagen en Realidad Aumentada" />
+        <input id="title" type="text" placeholder="Logo UCAN" />
 
-        <label for="instructions">Instrucciones para el estudiante</label>
-        <textarea id="instructions">Escanea el QR, permite el uso de cámara y observa la imagen como una capa de realidad aumentada.</textarea>
+        <label for="baseUrl">URL base del generador</label>
+        <input id="baseUrl" type="url" placeholder="https://tusitio.com/ar/" />
+        <small>Déjalo como está si esta página ya está publicada.</small>
 
-        <label for="viewerBase">URL base del visor AR</label>
-        <input id="viewerBase" type="url" />
-        <p class="hint">Normalmente se completa automáticamente. Debe terminar en <strong>viewer.html</strong>.</p>
-
-        <div class="buttons">
-          <button type="button" id="testImage">Probar imagen</button>
-          <button type="submit">Generar QR Code</button>
+        <div class="actions">
+          <button id="testBtn" type="button">Probar imagen</button>
+          <button id="generateBtn" type="button" class="primary">Generar QR</button>
         </div>
-      </form>
 
-      <section class="card result">
-        <h2>2. Resultado</h2>
-        <div id="status" class="status">Pega el URL de una imagen y presiona “Generar QR Code”.</div>
+        <div id="status" class="status"></div>
         <div class="preview-wrap">
-          <img id="previewImage" alt="Vista previa de la imagen" hidden />
+          <img id="preview" alt="Vista previa de la imagen" class="preview hidden" />
         </div>
-        <label for="shareLink">Enlace AR generado</label>
-        <textarea id="shareLink" readonly></textarea>
-        <div id="qrBox" class="qr-box">
-          <p>El QR aparecerá aquí.</p>
+      </div>
+
+      <div class="card">
+        <h2>2. Resultado</h2>
+        <div id="qrcode" class="qrcode"></div>
+
+        <label for="resultUrl">Enlace AR generado</label>
+        <textarea id="resultUrl" rows="4" readonly></textarea>
+
+        <div class="actions">
+          <button id="copyBtn" type="button">Copiar enlace</button>
+          <a id="openBtn" href="#" target="_blank" rel="noopener" class="button-link disabled" aria-disabled="true">Abrir experiencia AR</a>
         </div>
-        <div class="buttons">
-          <button type="button" id="copyLink">Copiar enlace</button>
-          <a id="openViewer" href="#" target="_blank" rel="noopener">Abrir experiencia</a>
+
+        <hr />
+        <h3>Marcador HIRO</h3>
+        <p>Imprime o muestra el marcador en otra pantalla para que la imagen AR aparezca sobre él.</p>
+        <div class="actions">
+          <a href="marker-hiro.html" target="_blank" rel="noopener" class="button-link">Ver / imprimir HIRO</a>
         </div>
-      </section>
+      </div>
     </section>
 
-    <section class="card notes">
-      <h2>Por qué se corrigió</h2>
-      <p>Los enlaces de Blackboard Content Collection muchas veces contienen signos como <code>?</code>, <code>&</code>, <code>=</code> y tokens largos. Si el URL se pega directamente dentro de otro URL, el QR puede romperse y el visor recibe el mensaje “no hay contenido”. Esta versión codifica toda la información en un parámetro seguro llamado <code>data</code>.</p>
-      <p>También se añadió validación visual. Si la imagen no carga en la vista previa, el QR tampoco funcionará para el estudiante. En ese caso, debes revisar permisos, autenticación o si el enlace realmente apunta a una imagen.</p>
+    <section class="card">
+      <h2>Cómo funciona</h2>
+      <ol>
+        <li>El profesor pega el URL directo de la imagen.</li>
+        <li>La página genera un QR que apunta a <code>marker-ar.html</code>.</li>
+        <li>Cuando el estudiante escanea el QR, se abre la experiencia AR y el navegador solicita acceso a la cámara automáticamente.</li>
+        <li>El estudiante apunta la cámara al marcador HIRO y la imagen aparece en AR.</li>
+      </ol>
     </section>
   </main>
-
   <script src="js/generator.js"></script>
 </body>
 </html>

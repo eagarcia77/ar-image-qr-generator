@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marcador HIRO</title>
+  <link rel="stylesheet" href="css/app.css" />
+  <style>
+    .marker-wrap { text-align:center; }
+    .marker-wrap img { width:min(90vw, 420px); border:12px solid #fff; box-shadow:0 10px 30px rgba(0,0,0,.08); }
+    .print-note { font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card marker-wrap">
+      <h1>Marcador HIRO</h1>
+      <p class="print-note">Imprime este marcador o ábrelo en otra pantalla. Luego apunta la cámara de la experiencia AR hacia este símbolo.</p>
+      <img src="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" alt="Marcador HIRO oficial para AR.js" />
+      <div class="actions" style="justify-content:center; margin-top:20px;">
+        <button onclick="window.print()">Imprimir marcador</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
