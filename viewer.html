@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Visor de Imagen AR</title>
+  <meta name="description" content="Visor WebAR sencillo para mostrar una imagen como capa aumentada sobre la cámara." />
+  <link rel="stylesheet" href="css/app.css" />
+  <style>
+    body { margin: 0; overflow: hidden; background: #07120f; }
+    #cameraView, #fallback { position: fixed; inset: 0; width: 100vw; height: 100vh; object-fit: cover; background: #07120f; }
+    #fallback { display: grid; place-items: center; color: white; text-align: center; padding: 24px; z-index: 1; }
+    .hud { position: fixed; z-index: 5; left: 14px; right: 14px; top: 14px; background: rgba(255,255,255,.92); color: #14211d; border-radius: 18px; padding: 12px 14px; box-shadow: 0 14px 40px rgba(0,0,0,.22); }
+    .hud h1 { margin: 0; font-size: 1rem; color: #007B5F; }
+    .hud p { margin: 4px 0 0; font-size: .86rem; line-height: 1.35; color: #51635d; }
+    #arImage { position: fixed; z-index: 3; left: 50%; top: 55%; max-width: 86vw; max-height: 58vh; transform: translate(-50%, -50%) rotateX(10deg) scale(1); border: 6px solid rgba(255,255,255,.88); border-radius: 20px; box-shadow: 0 24px 80px rgba(0,0,0,.48); background: white; touch-action: none; }
+    .toolbar { position: fixed; left: 12px; right: 12px; bottom: 14px; z-index: 6; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .toolbar button, .toolbar a { border: 0; border-radius: 999px; padding: 11px 14px; font-weight: 800; cursor: pointer; text-decoration: none; box-shadow: 0 10px 22px rgba(0,0,0,.22); }
+    .toolbar button { background: #FED141; color: #14211d; }
+    .toolbar a { background: #007B5F; color: white; }
+    .hidden { display: none !important; }
+    .error-card { max-width: 520px; background: rgba(255,255,255,.94); color: #14211d; padding: 22px; border-radius: 18px; }
+    .error-card h1 { color: #007B5F; }
+    .error-card p { color: #51635d; line-height: 1.45; }
+  </style>
+</head>
+<body>
+  <video id="cameraView" autoplay muted playsinline></video>
+  <div id="fallback"><div><h1>Cargando experiencia AR...</h1><p>Permite el uso de cámara cuando el navegador lo solicite.</p></div></div>
+
+  <section class="hud">
+    <h1 id="title">Imagen en Realidad Aumentada</h1>
+    <p id="instructions">Permite el uso de cámara y observa la imagen como una capa aumentada.</p>
+  </section>
+
+  <img id="arImage" alt="Imagen en realidad aumentada" hidden />
+
+  <nav class="toolbar">
+    <button id="startCamera" type="button">Activar cámara</button>
+    <button id="zoomIn" type="button">Agrandar</button>
+    <button id="zoomOut" type="button">Reducir</button>
+    <button id="reset" type="button">Centrar</button>
+    <a id="openOriginal" href="#" target="_blank" rel="noopener">Abrir imagen</a>
+  </nav>
+
+  <script src="js/viewer.js"></script>
+</body>
+</html>

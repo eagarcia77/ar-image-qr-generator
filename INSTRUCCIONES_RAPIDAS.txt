@@ -1,0 +1,14 @@
+INSTRUCCIONES RÁPIDAS
+
+1. Sube todos los archivos al servidor.
+2. Abre index.html.
+3. Pega el URL directo de la imagen del Content Collection de Blackboard.
+4. Presiona Probar imagen.
+5. Si la imagen aparece en vista previa, presiona Generar QR Code.
+6. Comparte el QR en Blackboard Ultra.
+
+Si al escanear dice “No hay contenido”, el QR viejo fue creado con la versión anterior.
+Genera un QR nuevo usando esta versión corregida.
+
+Si dice “La imagen no se pudo cargar”, el enlace de Blackboard probablemente requiere login,
+está vencido o no es un enlace directo a imagen.
