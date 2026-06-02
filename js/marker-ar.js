@@ -13,6 +13,8 @@ const arImage = document.getElementById('arImage');
 const arVideo = document.getElementById('arVideo');
 const mediaPlane = document.getElementById('mediaPlane');
 const marker = document.getElementById('interMarker');
+const markerStatus = document.getElementById('markerStatus');
+let markerWasFound = false;
 
 titleText.textContent = title;
 
@@ -102,6 +104,20 @@ function loadYoutube(url) {
   showAction('YouTube no se reproduce como textura AR directa. Se muestra la miniatura y puedes abrir el video con este botón.');
   loadImage(thumb);
 }
+
+marker.addEventListener('markerFound', () => {
+  markerWasFound = true;
+  if (markerStatus) markerStatus.style.display = 'block';
+});
+marker.addEventListener('markerLost', () => {
+  if (markerStatus) markerStatus.style.display = 'none';
+});
+setTimeout(() => {
+  if (!markerWasFound) {
+    showAction('No se ha detectado el marcador. Verifica que sea el nuevo marcador INTER SG completo, con buen brillo y sin recortar.');
+  }
+}, 9000);
+
 if (!mediaUrl) {
   showError('No hay contenido AR. Regenera el QR Code desde el generador.');
 } else if (type === 'video') {

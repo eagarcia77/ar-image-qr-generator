@@ -1,0 +1,23 @@
+VERIFICACIÓN REALIZADA
+
+Problema encontrado:
+El marcador anterior tenía un diseño con una proporción incorrecta entre el borde negro y el área interna. AR.js trabaja mejor con una proporción de patrón cercana a 0.5. Por eso la cámara podía abrir, pero el marcador no se detectaba de forma confiable.
+
+Correcciones aplicadas:
+1. Se creó un marcador nuevo que dice solamente INTER SG.
+2. Se ajustó la proporción del marcador a patternRatio 0.5.
+3. Se actualizó marker-ar.html para usar patternRatio: 0.5.
+4. Se añadió una página test-marker.html para verificar si el marcador se detecta antes de probar imagen o video.
+5. Se añadió un mensaje visual cuando el marcador es detectado.
+6. Se añadió aviso si no se detecta el marcador en 9 segundos.
+
+Prueba recomendada:
+1. Abra marker-inter-sg.html y descargue o imprima el marcador nuevo.
+2. Abra test-marker.html desde un celular.
+3. Permita el acceso a la cámara.
+4. Apunte al marcador INTER SG completo.
+5. Si aparece un cubo verde y el mensaje de detección, el marcador está funcionando.
+
+Notas:
+No use el marcador anterior. Debe usar assets/inter-sg-marker.png de esta versión.
+No recorte el marcador. Debe verse el borde negro completo.
