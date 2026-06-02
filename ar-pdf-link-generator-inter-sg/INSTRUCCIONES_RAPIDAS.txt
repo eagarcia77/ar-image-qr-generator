@@ -1,0 +1,28 @@
+GUÍA RÁPIDA – GENERADOR AR PDF/LINK INTER SG
+
+PROPÓSITO
+Este programa crea experiencias AR para documentos PDF o enlaces. Está pensado para Blackboard Content Collection.
+
+ARCHIVOS PRINCIPALES
+- index.html: generador principal.
+- viewer-ar.html: experiencia AR que muestra el documento o enlace.
+- marker-inter-sg.html: marcador INTER SG.
+- test-marker.html: prueba del marcador.
+- diagnostico-pdf-link.html: prueba de enlaces PDF/Link.
+
+CÓMO USARLO
+1. Suba el PDF al Content Collection de Blackboard.
+2. Verifique permisos: Student o Course Users con Read.
+3. Copie el URL directo del PDF.
+4. Abra index.html.
+5. Pegue el URL en URL directa del documento o enlace.
+6. Seleccione PDF document o Web link.
+7. Escriba un título.
+8. Escriba una descripción breve.
+9. Presione Probar enlace.
+10. Presione Generar QR Code y tarjeta.
+11. Descargue la tarjeta híbrida.
+12. Publique la tarjeta en Blackboard.
+
+IMPORTANTE
+Si Blackboard bloquea el PDF dentro del visor, el usuario puede usar Abrir documento. Esto es normal en algunos entornos protegidos.
