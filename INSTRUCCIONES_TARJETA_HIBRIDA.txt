@@ -1,0 +1,15 @@
+Tarjeta híbrida QR Code + Marcador INTER SG
+
+Esta versión crea una sola imagen con las dos funciones:
+1. QR Code para abrir la experiencia AR.
+2. Marcador INTER SG para activar el contenido aumentado.
+
+No se recomienda meter el marcador literalmente dentro del patrón del QR, porque puede dañar la lectura del QR y el reconocimiento del marcador. La forma correcta y estable es usar una tarjeta híbrida con ambos elementos visibles.
+
+Pasos:
+1. Abra index.html.
+2. Pegue el URL del contenido.
+3. Presione Generar QR Code y tarjeta.
+4. Descargue la tarjeta híbrida.
+5. Publique la tarjeta en Blackboard.
+6. El estudiante escanea el QR y luego apunta al marcador INTER SG de la misma tarjeta.
