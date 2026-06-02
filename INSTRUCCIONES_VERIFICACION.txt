@@ -1,0 +1,18 @@
+VERIFICACION DEL MARCADOR INTER SG
+
+Problema corregido:
+El marcador anterior no estaba proporcionalmente alineado con patternRatio 0.5. Esta versión usa un marcador de 1000x1000 px, un cuadro negro de 880x880 px y un patrón interno de 440x440 px. Eso produce un patternRatio exacto de 0.50.
+
+Cómo probar:
+1. Suba toda la carpeta a un hosting HTTPS. No pruebe desde file://.
+2. Abra marker-inter-sg.html en una computadora o imprima el marcador.
+3. Abra test-marker.html en el celular.
+4. Permita la cámara.
+5. Apunte la cámara al marcador completo.
+6. Debe aparecer un cubo verde.
+
+Notas:
+- No recorte el marcador.
+- No cambie el tamaño solo del centro; use la imagen completa.
+- Evite sombras y reflejos.
+- Mantenga la cámara a 1 o 2 pies de distancia.

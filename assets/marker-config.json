@@ -1,0 +1,7 @@
+{
+  "marker_name": "INTER SG",
+  "patternRatio": 0.5,
+  "black_marker_square_px": 880,
+  "inner_pattern_square_px": 440,
+  "important": "Do not crop the marker. Use the full PNG including white margin and black border."
+}

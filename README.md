@@ -1,13 +1,9 @@
-# Generador AR INTER SG corregido
+# Generador AR INTER SG verificado v2
 
-Esta versión corrige el problema donde el generador no creaba el QR Code si la prueba de contenido fallaba. Ahora el QR se puede generar siempre que el URL esté escrito.
+Esta versión corrige el marcador INTER SG. El patrón interno y `patternRatio` ahora coinciden exactamente en 0.50.
 
-## Incluye
-- Imágenes
-- Videos directos MP4/WebM
-- YouTube como miniatura + botón de apertura
-- Marcador INTER SG
-- Instrucciones para Blackboard
+## Prueba obligatoria
+Publique el paquete en HTTPS y abra `test-marker.html` desde el celular. Use `marker-inter-sg.html` para ver o imprimir el marcador.
 
-## Archivo principal
-Abra `index.html`.
+## No probar desde archivo local
+En celular, la cámara requiere HTTPS.
