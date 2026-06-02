@@ -1,1 +1,45 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/><title>Prueba marcador INTER SG</title><link rel="stylesheet" href="css/app.css"/><script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script><script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script><style>body{margin:0;overflow:hidden}.top{position:fixed;top:12px;left:12px;right:12px;z-index:99;background:#000b;color:#fff;padding:12px;border-radius:12px;font-family:Arial}.found{background:#007b5fee!important}</style></head><body><div id="status" class="top">Buscando marcador INTER SG... Permite la cámara y apunta al marcador completo.</div><a-scene vr-mode-ui="enabled:false" embedded renderer="logarithmicDepthBuffer:true;colorManagement:true" arjs="trackingMethod:best;sourceType:webcam;debugUIEnabled:false;patternRatio:0.5"><a-marker id="marker" type="pattern" url="assets/inter-sg-marker.patt" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2"><a-box position="0 0.5 0" material="color:#007B5F"></a-box><a-text value="INTER SG" position="0 1.25 0" rotation="-90 0 0" color="#FED141" align="center" width="4"></a-text></a-marker><a-entity camera></a-entity></a-scene><script>const s=document.getElementById('status'),m=document.getElementById('marker');m.addEventListener('markerFound',()=>{s.textContent='Marcador INTER SG detectado';s.classList.add('found')});m.addEventListener('markerLost',()=>{s.textContent='Buscando marcador INTER SG...';s.classList.remove('found')});</script></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Prueba de marcador INTER SG</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <style>
+    body{margin:0;overflow:hidden;font-family:Arial}
+    #status{position:fixed;top:12px;left:12px;right:12px;z-index:10;background:rgba(0,0,0,.74);color:#fff;padding:14px 16px;border-radius:14px}
+    #fallback{position:fixed;bottom:12px;left:12px;right:12px;z-index:10;background:rgba(0,123,95,.94);color:#fff;padding:14px 16px;border-radius:14px}
+  </style>
+</head>
+<body>
+  <div id="status">Buscando marcador INTER SG...</div>
+  <div id="fallback">Prueba con buena iluminación, marcador completo y distancia aproximada de 1 a 2 pies.</div>
+
+  <a-scene
+    vr-mode-ui="enabled:false"
+    embedded
+    renderer="logarithmicDepthBuffer:true;colorManagement:true;"
+    arjs="trackingMethod:best;sourceType:webcam;debugUIEnabled:false;patternRatio:0.5;"
+  >
+    <a-marker id="interMarker" type="pattern" url="assets/inter-sg-marker.patt">
+      <a-box position="0 0.5 0" material="color:#007B5F" scale="0.7 0.7 0.7"></a-box>
+      <a-text value="INTER SG" position="-1.15 1.3 0" rotation="-90 0 0" color="#FED141" width="4"></a-text>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    const statusBox = document.getElementById('status');
+    const marker = document.getElementById('interMarker');
+    marker.addEventListener('markerFound', () => {
+      statusBox.textContent = 'Marcador INTER SG detectado correctamente.';
+      statusBox.style.background = 'rgba(0,123,95,.94)';
+    });
+    marker.addEventListener('markerLost', () => {
+      statusBox.textContent = 'Marcador perdido. Vuelve a apuntar al marcador INTER SG.';
+      statusBox.style.background = 'rgba(0,0,0,.74)';
+    });
+  </script>
+</body>
+</html>

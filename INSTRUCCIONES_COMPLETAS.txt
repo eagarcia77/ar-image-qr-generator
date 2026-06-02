@@ -1,0 +1,64 @@
+GUÍA DE USO – GENERADOR AR INTER SG PARA BLACKBOARD
+
+PROPÓSITO
+Esta herramienta permite crear experiencias de Realidad Aumentada para Blackboard usando enlaces del Content Collection. Trabaja con imágenes, videos directos MP4/WebM y enlaces de YouTube.
+
+CAMBIO PRINCIPAL DE ESTA VERSIÓN
+El contenido se muestra como una capa HTML sobre la cámara. Esto ayuda a trabajar mejor con enlaces de Blackboard Content Collection, porque no obliga a usar la imagen o el video como textura WebGL. De esa manera se reducen problemas de CORS.
+
+MARCADOR INTER SG
+El marcador fue rediseñado. El texto INTER está en verde #007B5F y SG está en amarillo #FED141. El marcador debe publicarse completo. No se debe recortar el borde blanco, el cuadro negro ni el área central.
+
+PASOS PARA EL PROFESOR
+1. Suba la imagen o video al Content Collection de Blackboard.
+2. Verifique permisos del archivo.
+3. En Permissions, añada Student o Course Users con Read.
+4. Copie el URL directo del archivo.
+5. Abra index.html.
+6. Pegue el URL.
+7. Seleccione el tipo de contenido: imagen, video directo o YouTube.
+8. Escriba el título.
+9. Presione Probar contenido.
+10. Presione Generar QR Code y tarjeta.
+11. Descargue la tarjeta híbrida o descargue QR y marcador por separado.
+12. Publique los recursos en Blackboard.
+
+PERMISOS EN BLACKBOARD
+Para que funcione con estudiantes, el archivo debe tener permiso de Read para Student o Course Users. No es necesario dar Write, Remove ni Manage.
+
+URL DIRECTO
+El URL debe abrir directamente la imagen o el video. Ejemplo:
+https://interbb.blackboard.com/bbcswebdav/courses/SG_UCAN_002/RA/Image/LogoUCAN.png
+
+Si abre una página de Blackboard en vez del archivo, el enlace no es directo.
+
+IMÁGENES
+Se aceptan PNG, JPG, WEBP y GIF. Para fondo transparente, use PNG transparente.
+
+VIDEOS
+Se recomiendan videos MP4 o WebM. El video debe estar disponible para el estudiante. Algunos celulares requieren tocar Activar video para comenzar la reproducción.
+
+YOUTUBE
+YouTube se muestra como iframe o acceso complementario. Si el navegador bloquea reproducción automática, el estudiante puede abrir el video con el botón.
+
+PRUEBA DEL MARCADOR
+Use test-marker.html para probar únicamente el marcador. Si detecta el marcador, aparecerá un cubo verde y un mensaje de detección.
+
+RESPALDO SI EL MARCADOR NO DETECTA
+La experiencia incluye el botón Mostrar contenido sin marcador. Esto permite que el estudiante vea el contenido aunque su cámara, iluminación o dispositivo no detecte el marcador.
+
+INSTRUCCIONES PARA EL ESTUDIANTE
+1. Abre la actividad en Blackboard.
+2. Escanea el QR Code o abre el enlace.
+3. Permite el acceso a la cámara.
+4. Apunta la cámara al marcador INTER SG.
+5. Si el marcador no se detecta, usa Mostrar contenido sin marcador.
+6. Usa los botones + y - para agrandar o reducir el contenido.
+
+RECOMENDACIONES
+- Use buena iluminación.
+- No recorte el marcador.
+- Mantenga el marcador plano.
+- Use distancia aproximada de 1 a 2 pies.
+- Use enlaces directos del Content Collection.
+- Verifique permisos de Read para estudiantes.

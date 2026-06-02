@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagnóstico de enlaces Blackboard</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Diagnóstico de enlaces del Content Collection</h1>
+      <p>Use esta página para verificar si el archivo abre en el navegador del estudiante.</p>
+      <label for="url">URL del archivo</label>
+      <input id="url" type="url" placeholder="https://interbb.blackboard.com/bbcswebdav/courses/.../archivo.png" />
+      <label for="type">Tipo</label>
+      <select id="type">
+        <option value="image">Imagen</option>
+        <option value="video">Video</option>
+      </select>
+      <div class="actions">
+        <button id="test">Probar</button>
+        <a id="open" href="#" target="_blank" class="button-link">Abrir en pestaña nueva</a>
+      </div>
+      <div id="result" class="status"></div>
+      <div id="preview" class="preview-wrap"></div>
+    </section>
+  </main>
+  <script>
+    const url = document.getElementById('url');
+    const type = document.getElementById('type');
+    const test = document.getElementById('test');
+    const open = document.getElementById('open');
+    const result = document.getElementById('result');
+    const preview = document.getElementById('preview');
+    test.addEventListener('click', () => {
+      const value = url.value.trim();
+      preview.innerHTML = '';
+      open.href = value || '#';
+      if (!value) {
+        result.textContent = 'Escribe un URL.';
+        result.className = 'status error';
+        return;
+      }
+      if (type.value === 'video') {
+        const video = document.createElement('video');
+        video.src = value;
+        video.controls = true;
+        video.muted = true;
+        video.playsInline = true;
+        video.className = 'preview';
+        video.onloadedmetadata = () => {
+          result.textContent = 'El video cargó correctamente en el navegador.';
+          result.className = 'status ok';
+        };
+        video.onerror = () => {
+          result.textContent = 'El video no cargó. Revisa permisos de Blackboard o formato.';
+          result.className = 'status warn';
+        };
+        preview.appendChild(video);
+      } else {
+        const image = document.createElement('img');
+        image.src = value;
+        image.className = 'preview';
+        image.onload = () => {
+          result.textContent = 'La imagen cargó correctamente en el navegador.';
+          result.className = 'status ok';
+        };
+        image.onerror = () => {
+          result.textContent = 'La imagen no cargó. Revisa permisos de Blackboard o enlace directo.';
+          result.className = 'status warn';
+        };
+        preview.appendChild(image);
+      }
+    });
+  </script>
+</body>
+</html>
