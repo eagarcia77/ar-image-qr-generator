@@ -1,0 +1,13 @@
+Cambios de esta versión:
+
+1. Fondo transparente
+- Si la imagen original es un PNG transparente, se respetará la transparencia en AR.
+- Si el archivo es JPG o PNG sin transparencia, el fondo no puede hacerse transparente automáticamente.
+
+2. Agrandar o reducir
+- En la experiencia AR aparecen botones +, − y ↺ para cambiar el tamaño del contenido.
+- En móviles también se puede pellizcar con dos dedos para hacer zoom.
+
+3. Blackboard
+- Publica el QR Code y el marcador INTER SG.
+- El estudiante escanea el QR, permite la cámara y luego apunta al marcador.
