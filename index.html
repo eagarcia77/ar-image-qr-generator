@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generador AR Inter SG | Imágenes y Videos</title>
+  <title>Generador AR Inter SG | Imágenes, Videos y YouTube</title>
   <link rel="stylesheet" href="css/app.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
   <main class="container">
@@ -13,8 +12,13 @@
       <img src="assets/inter-sg-icon.svg" alt="Inter SG AR" class="logo" />
       <div>
         <h1>Generador de Realidad Aumentada Inter SG</h1>
-        <p>Permite crear códigos QR para experiencias de Realidad Aumentada usando <strong>imágenes o videos</strong>. Luego el profesor descarga el QR Code y el marcador Inter SG para publicarlos en Blackboard.</p>
+        <p>Crea experiencias de Realidad Aumentada con <strong>imágenes, videos MP4/WebM o enlaces de YouTube</strong>. El sistema genera un QR Code y utiliza el marcador <strong>Inter SG</strong>.</p>
       </div>
+    </section>
+
+    <section class="alert card">
+      <h2>Corrección importante</h2>
+      <p>Esta versión no depende del botón de “Probar contenido” para crear el QR. Aunque la prueba falle por permisos de Blackboard, puedes generar el QR si el enlace está escrito correctamente.</p>
     </section>
 
     <section class="grid">
@@ -25,15 +29,16 @@
         <select id="mediaType">
           <option value="auto">Detectar automáticamente</option>
           <option value="image">Imagen</option>
-          <option value="video">Video</option>
+          <option value="video">Video directo MP4/WebM</option>
+          <option value="youtube">YouTube</option>
         </select>
 
-        <label for="mediaUrl">URL directa del contenido</label>
-        <input id="mediaUrl" type="url" placeholder="https://.../LogoUCAN.png o https://.../video.mp4" />
-        <small>Debe ser un enlace directo a una imagen o video. Para videos se recomienda MP4.</small>
+        <label for="mediaUrl">URL del contenido</label>
+        <input id="mediaUrl" type="url" placeholder="Imagen, video MP4/WebM o enlace de YouTube" />
+        <small>Para video AR real se recomienda un archivo directo .mp4 o .webm. Para YouTube, la experiencia AR mostrará la miniatura y un botón para abrir el video.</small>
 
         <label for="title">Título de la experiencia</label>
-        <input id="title" type="text" placeholder="Logo UCAN o Video de bienvenida" />
+        <input id="title" type="text" placeholder="Logo UCAN, Video de bienvenida, etc." />
 
         <label for="baseUrl">URL base del generador</label>
         <input id="baseUrl" type="url" />
@@ -48,26 +53,32 @@
 
         <div id="previewWrap" class="preview-wrap hidden">
           <h3>Vista previa</h3>
-          <img id="imagePreview" alt="Vista previa de imagen" class="preview hidden" />
+          <img id="imagePreview" alt="Vista previa" class="preview hidden" />
           <video id="videoPreview" class="preview hidden" controls muted playsinline></video>
+          <div id="youtubePreview" class="youtube-preview hidden">
+            <img id="youtubeThumb" alt="Miniatura de YouTube" class="preview" />
+            <a id="youtubeLink" href="#" target="_blank" rel="noopener" class="button-link">Abrir video en YouTube</a>
+          </div>
         </div>
       </div>
 
       <div class="card">
         <h2>2. Descargar recursos</h2>
-        <p>Después de generar el QR, descarga estas dos imágenes y publícalas en Blackboard:</p>
+        <p>Luego de generar el QR, descarga y publica en Blackboard estas dos imágenes:</p>
         <ol>
           <li><strong>QR Code</strong></li>
           <li><strong>Marcador Inter SG</strong></li>
         </ol>
 
-        <div id="qrcode" class="qrcode"></div>
+        <div id="qrcode" class="qrcode">
+          <span>El QR aparecerá aquí.</span>
+        </div>
 
         <label for="resultUrl">Enlace AR generado</label>
         <textarea id="resultUrl" rows="4" readonly></textarea>
 
         <div class="actions">
-          <button id="downloadQrBtn" type="button" disabled>Descargar QR Code</button>
+          <a id="downloadQrBtn" href="#" download="QR_Inter_SG_AR.png" class="button-link disabled" aria-disabled="true">Descargar QR Code</a>
           <a id="openBtn" href="#" target="_blank" rel="noopener" class="button-link disabled" aria-disabled="true">Abrir experiencia AR</a>
           <a href="assets/inter-sg-marker.png" download="Marcador_Inter_SG.png" class="button-link gold">Descargar marcador Inter SG</a>
           <a href="marker-inter-sg.html" target="_blank" rel="noopener" class="button-link">Ver / imprimir marcador</a>
@@ -76,20 +87,21 @@
     </section>
 
     <section class="card instructions">
-      <h2>Instrucciones rápidas para el profesor</h2>
+      <h2>Instrucciones para publicar en Blackboard</h2>
       <ol>
-        <li>Suba la imagen o el video al Content Collection de Blackboard o a un hosting accesible.</li>
-        <li>Copie el URL directo del archivo.</li>
-        <li>Pegue el URL en este generador.</li>
-        <li>Presione <strong>Probar contenido</strong>.</li>
-        <li>Presione <strong>Generar QR Code</strong>.</li>
-        <li>Descargue el <strong>QR Code</strong>.</li>
-        <li>Descargue el <strong>marcador Inter SG</strong>.</li>
-        <li>Publique ambas imágenes en Blackboard junto con las instrucciones para el estudiante.</li>
+        <li>Pega el URL del contenido.</li>
+        <li>Selecciona si es imagen, video directo o YouTube.</li>
+        <li>Presiona <strong>Probar contenido</strong> si deseas validar el recurso.</li>
+        <li>Presiona <strong>Generar QR Code</strong>.</li>
+        <li>Descarga el <strong>QR Code</strong>.</li>
+        <li>Descarga el <strong>marcador Inter SG</strong>.</li>
+        <li>Sube ambas imágenes a Blackboard.</li>
+        <li>Indica al estudiante que escanee el QR y apunte la cámara al marcador Inter SG.</li>
       </ol>
-      <p class="important">Importante: el estudiante necesita el QR Code para abrir la experiencia y el marcador Inter SG para activar la Realidad Aumentada.</p>
+      <p class="important">No publiques solamente el QR. El estudiante también necesita el marcador Inter SG para activar la Realidad Aumentada.</p>
     </section>
   </main>
+
   <script src="js/generator.js"></script>
 </body>
 </html>

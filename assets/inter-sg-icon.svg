@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 <rect width="512" height="512" rx="92" fill="#007B5F"/>
-<circle cx="256" cy="214" r="116" fill="#FED141"/>
-<path d="M256 94l32 82 88 6-68 55 22 86-74-47-74 47 22-86-68-55 88-6z" fill="#007B5F"/>
-<text x="256" y="402" font-family="Arial, sans-serif" font-size="70" font-weight="800" text-anchor="middle" fill="#fff">INTER SG</text>
+<circle cx="256" cy="210" r="118" fill="#FED141"/>
+<path d="M256 96l34 82 88 7-68 56 22 88-76-48-76 48 22-88-68-56 88-7z" fill="#007B5F"/>
+<text x="256" y="402" font-family="Arial, sans-serif" font-size="68" font-weight="800" text-anchor="middle" fill="#fff">INTER SG</text>
 </svg>

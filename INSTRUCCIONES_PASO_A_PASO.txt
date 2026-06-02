@@ -1,85 +1,30 @@
-# Guía paso a paso: Generador de Realidad Aumentada Inter SG
+# Instrucciones paso a paso
 
-## Propósito
-Esta herramienta permite crear experiencias de Realidad Aumentada para Blackboard usando imágenes o videos. El profesor pega el enlace directo del recurso, genera un QR Code y descarga dos imágenes necesarias: el QR Code y el marcador Inter SG.
+## Qué corrige esta versión
+Esta versión permite generar el QR Code aunque la prueba de contenido falle. La prueba de contenido puede fallar por permisos de Blackboard, CORS o enlaces protegidos, pero eso no debe bloquear la creación del QR.
 
-## Lo más importante
-Para que la actividad funcione, el profesor debe publicar en Blackboard dos imágenes:
+## Tipos de contenido
+1. Imagen
+2. Video directo MP4/WebM
+3. YouTube
 
-1. QR Code
-2. Marcador Inter SG
+## Importante sobre YouTube
+YouTube no se coloca como video directo dentro del plano AR. La experiencia muestra la miniatura del video y un botón para abrirlo en YouTube.
 
-El QR Code abre la experiencia de Realidad Aumentada. El marcador Inter SG activa el contenido cuando la cámara lo detecta.
+## Pasos
+1. Abra index.html.
+2. Seleccione el tipo de contenido.
+3. Pegue el URL.
+4. Escriba el título.
+5. Presione Probar contenido si desea validar el recurso.
+6. Presione Generar QR Code.
+7. Descargue el QR Code.
+8. Descargue el marcador Inter SG.
+9. Publique ambas imágenes en Blackboard.
+10. Indique al estudiante que escanee el QR y apunte al marcador Inter SG.
 
-## Paso 1: Subir el contenido
-Primero, suba la imagen o el video que desea usar. Puede subirlo al Content Collection de Blackboard o a un servidor institucional. El archivo debe tener permisos de lectura para los estudiantes.
-
-Formatos recomendados:
-- Imágenes: PNG, JPG, JPEG, WEBP
-- Videos: MP4 o WEBM
-
-## Paso 2: Copiar el URL directo
-Copie el URL directo del archivo. El enlace debe abrir directamente la imagen o el video, no una página intermedia.
-
-Ejemplo de imagen:
-https://interbb.blackboard.com/bbcswebdav/courses/SG_UCAN_002/RA/Image/LogoUCAN.png
-
-Ejemplo de video:
-https://tusitio.com/videos/bienvenida.mp4
-
-## Paso 3: Abrir el generador
-Abra el archivo index.html o la dirección web donde publicó el generador.
-
-## Paso 4: Seleccionar el tipo de contenido
-En el campo “Tipo de contenido”, puede escoger:
-- Detectar automáticamente
-- Imagen
-- Video
-
-Si va a usar un video, se recomienda seleccionar “Video”.
-
-## Paso 5: Pegar el URL
-Pegue el URL directo del contenido en el campo correspondiente.
-
-## Paso 6: Escribir el título
-Escriba un título sencillo para la experiencia. Por ejemplo:
-- Logo UCAN
-- Video de bienvenida
-- Mapa del módulo
-- Instrucciones del laboratorio
-
-## Paso 7: Probar contenido
-Presione el botón “Probar contenido”. Si aparece la vista previa, el archivo se puede usar. Si no aparece, revise los permisos o el enlace.
-
-## Paso 8: Generar QR Code
-Presione el botón “Generar QR Code”. El sistema creará el QR que abrirá la experiencia AR.
-
-## Paso 9: Descargar el QR Code
-Presione “Descargar QR Code”. Guarde la imagen en su computadora con un nombre fácil de identificar.
-
-Ejemplo:
-QR_Video_Bienvenida.png
-
-## Paso 10: Descargar el marcador Inter SG
-Presione “Descargar marcador Inter SG”. Guarde la imagen en su computadora.
-
-Ejemplo:
-Marcador_Inter_SG.png
-
-## Paso 11: Publicar en Blackboard
-En Blackboard, cree una actividad, ítem o página de contenido. Publique ambas imágenes:
-1. QR Code
-2. Marcador Inter SG
-
-También debe incluir instrucciones para el estudiante.
-
-## Paso 12: Instrucciones para estudiantes
-Puede copiar este texto en Blackboard:
-
-Escanea el QR Code para abrir la experiencia de Realidad Aumentada. Permite el acceso a la cámara cuando el navegador lo solicite. Luego apunta la cámara al marcador Inter SG para ver la imagen o el video en Realidad Aumentada. Recuerda que necesitas tener visible el QR Code y el marcador Inter SG para completar la actividad.
-
-## Recomendaciones
-- Para videos, use archivos MP4.
-- El video debe tener permisos de lectura para los estudiantes.
-- Si el video no inicia automáticamente, el estudiante puede tocar la pantalla o presionar “Activar video”.
-- Publique el QR Code y el marcador Inter SG en la misma sección del curso para evitar confusiones.
+## Blackboard
+Publique siempre:
+- QR Code
+- Marcador Inter SG
+- Instrucciones para el estudiante

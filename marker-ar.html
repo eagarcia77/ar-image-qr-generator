@@ -10,32 +10,33 @@
     body { margin:0; overflow:hidden; font-family: Arial, Helvetica, sans-serif; }
     .overlay {
       position: fixed; top: 12px; left: 12px; right: 12px; z-index: 10;
-      background: rgba(0,0,0,.72); color:#fff; padding: 14px 16px; border-radius: 14px;
+      background: rgba(0,0,0,.74); color:#fff; padding: 14px 16px; border-radius: 14px;
     }
-    .overlay h1 { margin: 0 0 6px; font-size: 1rem; }
-    .overlay p { margin: 0; font-size: .9rem; line-height: 1.35; }
-    .error, .video-hint {
+    .overlay h1 { margin:0 0 6px; font-size:1rem; }
+    .overlay p { margin:0; font-size:.9rem; line-height:1.35; }
+    .bottom-box {
       position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 11;
-      color:#fff; padding: 12px 14px; border-radius: 14px;
+      padding: 12px 14px; border-radius: 14px; color:#fff;
     }
     .error { background: rgba(166, 24, 34, .94); display:none; }
-    .video-hint { background: rgba(0, 123, 95, .94); display:none; }
-    .video-hint button {
-      border:0; border-radius:999px; padding: 9px 12px; margin-top:8px; font-weight:800;
-      background:#FED141; color:#14211d;
+    .hint { background: rgba(0, 123, 95, .94); display:none; }
+    .hint a, .hint button {
+      border:0; border-radius:999px; padding:9px 12px; margin-top:8px; font-weight:800;
+      background:#FED141; color:#14211d; text-decoration:none; display:inline-block;
     }
   </style>
 </head>
 <body>
   <div class="overlay">
     <h1 id="titleText">Realidad Aumentada Inter SG</h1>
-    <p>La cámara se activará automáticamente. Apunta al marcador <strong>Inter SG</strong> para ver el contenido en Realidad Aumentada.</p>
+    <p>Permite acceso a la cámara. Luego apunta al marcador <strong>Inter SG</strong> para ver el contenido en Realidad Aumentada.</p>
   </div>
 
-  <div id="errorBox" class="error"></div>
-  <div id="videoHint" class="video-hint">
-    Si el video no comienza automáticamente, toca el botón.
-    <br><button id="playVideoBtn" type="button">Activar video</button>
+  <div id="errorBox" class="bottom-box error"></div>
+  <div id="actionBox" class="bottom-box hint">
+    <span id="actionText"></span><br>
+    <button id="playVideoBtn" type="button" style="display:none;">Activar video</button>
+    <a id="youtubeBtn" href="#" target="_blank" rel="noopener" style="display:none;">Abrir video en YouTube</a>
   </div>
 
   <a-scene
