@@ -3,70 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generador AR + QR con HIRO</title>
+  <title>Generador AR Inter SG | Imágenes y Videos</title>
   <link rel="stylesheet" href="css/app.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
   <main class="container">
     <section class="hero card">
-      <h1>Generador de Realidad Aumentada para Blackboard</h1>
-      <p>Pega el URL directo de una imagen, genera un QR y haz que al escanearlo se abra automáticamente la cámara con el marcador <strong>HIRO</strong>.</p>
+      <img src="assets/inter-sg-icon.svg" alt="Inter SG AR" class="logo" />
+      <div>
+        <h1>Generador de Realidad Aumentada Inter SG</h1>
+        <p>Permite crear códigos QR para experiencias de Realidad Aumentada usando <strong>imágenes o videos</strong>. Luego el profesor descarga el QR Code y el marcador Inter SG para publicarlos en Blackboard.</p>
+      </div>
     </section>
 
     <section class="grid">
       <div class="card">
-        <h2>1. Configura el recurso</h2>
-        <label for="imageUrl">URL directa de la imagen</label>
-        <input id="imageUrl" type="url" placeholder="https://.../LogoUCAN.png" />
+        <h2>1. Crear experiencia AR</h2>
 
-        <label for="title">Título</label>
-        <input id="title" type="text" placeholder="Logo UCAN" />
+        <label for="mediaType">Tipo de contenido</label>
+        <select id="mediaType">
+          <option value="auto">Detectar automáticamente</option>
+          <option value="image">Imagen</option>
+          <option value="video">Video</option>
+        </select>
+
+        <label for="mediaUrl">URL directa del contenido</label>
+        <input id="mediaUrl" type="url" placeholder="https://.../LogoUCAN.png o https://.../video.mp4" />
+        <small>Debe ser un enlace directo a una imagen o video. Para videos se recomienda MP4.</small>
+
+        <label for="title">Título de la experiencia</label>
+        <input id="title" type="text" placeholder="Logo UCAN o Video de bienvenida" />
 
         <label for="baseUrl">URL base del generador</label>
-        <input id="baseUrl" type="url" placeholder="https://tusitio.com/ar/" />
-        <small>Déjalo como está si esta página ya está publicada.</small>
+        <input id="baseUrl" type="url" />
+        <small>Si esta página ya está publicada, déjalo como aparece.</small>
 
         <div class="actions">
-          <button id="testBtn" type="button">Probar imagen</button>
-          <button id="generateBtn" type="button" class="primary">Generar QR</button>
+          <button id="testBtn" type="button">Probar contenido</button>
+          <button id="generateBtn" type="button" class="primary">Generar QR Code</button>
         </div>
 
         <div id="status" class="status"></div>
-        <div class="preview-wrap">
-          <img id="preview" alt="Vista previa de la imagen" class="preview hidden" />
+
+        <div id="previewWrap" class="preview-wrap hidden">
+          <h3>Vista previa</h3>
+          <img id="imagePreview" alt="Vista previa de imagen" class="preview hidden" />
+          <video id="videoPreview" class="preview hidden" controls muted playsinline></video>
         </div>
       </div>
 
       <div class="card">
-        <h2>2. Resultado</h2>
+        <h2>2. Descargar recursos</h2>
+        <p>Después de generar el QR, descarga estas dos imágenes y publícalas en Blackboard:</p>
+        <ol>
+          <li><strong>QR Code</strong></li>
+          <li><strong>Marcador Inter SG</strong></li>
+        </ol>
+
         <div id="qrcode" class="qrcode"></div>
 
         <label for="resultUrl">Enlace AR generado</label>
         <textarea id="resultUrl" rows="4" readonly></textarea>
 
         <div class="actions">
-          <button id="copyBtn" type="button">Copiar enlace</button>
+          <button id="downloadQrBtn" type="button" disabled>Descargar QR Code</button>
           <a id="openBtn" href="#" target="_blank" rel="noopener" class="button-link disabled" aria-disabled="true">Abrir experiencia AR</a>
-        </div>
-
-        <hr />
-        <h3>Marcador HIRO</h3>
-        <p>Imprime o muestra el marcador en otra pantalla para que la imagen AR aparezca sobre él.</p>
-        <div class="actions">
-          <a href="marker-hiro.html" target="_blank" rel="noopener" class="button-link">Ver / imprimir HIRO</a>
+          <a href="assets/inter-sg-marker.png" download="Marcador_Inter_SG.png" class="button-link gold">Descargar marcador Inter SG</a>
+          <a href="marker-inter-sg.html" target="_blank" rel="noopener" class="button-link">Ver / imprimir marcador</a>
         </div>
       </div>
     </section>
 
-    <section class="card">
-      <h2>Cómo funciona</h2>
+    <section class="card instructions">
+      <h2>Instrucciones rápidas para el profesor</h2>
       <ol>
-        <li>El profesor pega el URL directo de la imagen.</li>
-        <li>La página genera un QR que apunta a <code>marker-ar.html</code>.</li>
-        <li>Cuando el estudiante escanea el QR, se abre la experiencia AR y el navegador solicita acceso a la cámara automáticamente.</li>
-        <li>El estudiante apunta la cámara al marcador HIRO y la imagen aparece en AR.</li>
+        <li>Suba la imagen o el video al Content Collection de Blackboard o a un hosting accesible.</li>
+        <li>Copie el URL directo del archivo.</li>
+        <li>Pegue el URL en este generador.</li>
+        <li>Presione <strong>Probar contenido</strong>.</li>
+        <li>Presione <strong>Generar QR Code</strong>.</li>
+        <li>Descargue el <strong>QR Code</strong>.</li>
+        <li>Descargue el <strong>marcador Inter SG</strong>.</li>
+        <li>Publique ambas imágenes en Blackboard junto con las instrucciones para el estudiante.</li>
       </ol>
+      <p class="important">Importante: el estudiante necesita el QR Code para abrir la experiencia y el marcador Inter SG para activar la Realidad Aumentada.</p>
     </section>
   </main>
   <script src="js/generator.js"></script>

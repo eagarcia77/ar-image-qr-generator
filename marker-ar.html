@@ -3,36 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>AR con marcador HIRO</title>
+  <title>Realidad Aumentada Inter SG</title>
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   <style>
     body { margin:0; overflow:hidden; font-family: Arial, Helvetica, sans-serif; }
     .overlay {
       position: fixed; top: 12px; left: 12px; right: 12px; z-index: 10;
-      background: rgba(0,0,0,.70); color:#fff; padding: 14px 16px; border-radius: 14px;
+      background: rgba(0,0,0,.72); color:#fff; padding: 14px 16px; border-radius: 14px;
     }
     .overlay h1 { margin: 0 0 6px; font-size: 1rem; }
     .overlay p { margin: 0; font-size: .9rem; line-height: 1.35; }
-    .error {
-      position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 11;
-      background: rgba(166, 24, 34, .92); color:#fff; padding: 12px 14px; border-radius: 14px; display:none;
+    .error, .video-hint {
+      position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 11;
+      color:#fff; padding: 12px 14px; border-radius: 14px;
     }
-    .hint {
-      position: fixed; bottom: 12px; left: 12px; right: 12px; z-index: 10;
-      background: rgba(255,255,255,.92); color:#1b2f29; padding: 12px 14px; border-radius: 14px;
-      font-size: .9rem;
+    .error { background: rgba(166, 24, 34, .94); display:none; }
+    .video-hint { background: rgba(0, 123, 95, .94); display:none; }
+    .video-hint button {
+      border:0; border-radius:999px; padding: 9px 12px; margin-top:8px; font-weight:800;
+      background:#FED141; color:#14211d;
     }
-    a { color: #FED141; }
   </style>
 </head>
 <body>
   <div class="overlay">
-    <h1 id="titleText">Realidad Aumentada</h1>
-    <p>La cámara se activa automáticamente. Apunta al marcador <strong>HIRO</strong> para ver la imagen en AR.</p>
+    <h1 id="titleText">Realidad Aumentada Inter SG</h1>
+    <p>La cámara se activará automáticamente. Apunta al marcador <strong>Inter SG</strong> para ver el contenido en Realidad Aumentada.</p>
   </div>
+
   <div id="errorBox" class="error"></div>
-  <div class="hint">Si no tienes el marcador, abre <a href="marker-hiro.html" target="_blank" rel="noopener">marker-hiro.html</a> en otra pantalla o imprímelo.</div>
+  <div id="videoHint" class="video-hint">
+    Si el video no comienza automáticamente, toca el botón.
+    <br><button id="playVideoBtn" type="button">Activar video</button>
+  </div>
 
   <a-scene
     vr-mode-ui="enabled: false"
@@ -41,53 +45,17 @@
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
   >
     <a-assets>
-      <img id="arImage" alt="Imagen AR" crossorigin="anonymous" />
+      <img id="arImage" crossorigin="anonymous" />
+      <video id="arVideo" crossorigin="anonymous" muted loop playsinline webkit-playsinline preload="auto"></video>
     </a-assets>
 
-    <a-marker preset="hiro">
-      <a-plane id="imagePlane" src="#arImage" position="0 0.5 0" rotation="-90 0 0" width="1.4" height="1"></a-plane>
+    <a-marker id="interMarker" type="pattern" url="assets/inter-sg-marker.patt">
+      <a-plane id="mediaPlane" position="0 0.5 0" rotation="-90 0 0" width="1.4" height="1"></a-plane>
     </a-marker>
 
     <a-entity camera></a-entity>
   </a-scene>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const imgUrl = params.get('data') || params.get('img');
-    const title = params.get('title') || 'Realidad Aumentada';
-    const titleText = document.getElementById('titleText');
-    const errorBox = document.getElementById('errorBox');
-    const arImage = document.getElementById('arImage');
-    const imagePlane = document.getElementById('imagePlane');
-
-    titleText.textContent = title;
-
-    function showError(msg) {
-      errorBox.textContent = msg;
-      errorBox.style.display = 'block';
-    }
-
-    if (!imgUrl) {
-      showError('No hay contenido AR. Regenera el QR desde el generador.');
-    } else {
-      const tester = new Image();
-      tester.onload = () => {
-        arImage.setAttribute('src', imgUrl);
-        const ratio = tester.width / tester.height || 1;
-        let width = 1.4;
-        let height = width / ratio;
-        if (height > 1.6) {
-          height = 1.6;
-          width = height * ratio;
-        }
-        imagePlane.setAttribute('width', width.toFixed(3));
-        imagePlane.setAttribute('height', height.toFixed(3));
-      };
-      tester.onerror = () => {
-        showError('La imagen no se pudo cargar. Verifica que el enlace sea directo y que no requiera acceso restringido.');
-      };
-      tester.src = imgUrl;
-    }
-  </script>
+  <script src="js/marker-ar.js"></script>
 </body>
 </html>
