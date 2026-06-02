@@ -1,0 +1,1 @@
+Se reemplazo el marcador anterior por un marcador nuevo mas simple y de alto contraste que solo dice INTER SG. Use exactamente la imagen descargada desde assets/inter-sg-marker.png o marker-inter-sg.html.

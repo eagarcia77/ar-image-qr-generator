@@ -1,7 +1,7 @@
 const params = new URLSearchParams(window.location.search);
 const mediaUrl = params.get('data') || params.get('img') || '';
 const type = params.get('type') || 'image';
-const title = params.get('title') || 'Realidad Aumentada Inter SG';
+const title = params.get('title') || 'Realidad Aumentada INTER SG';
 
 const titleText = document.getElementById('titleText');
 const errorBox = document.getElementById('errorBox');

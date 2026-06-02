@@ -19,12 +19,12 @@ YouTube no se coloca como video directo dentro del plano AR. La experiencia mues
 5. Presione Probar contenido si desea validar el recurso.
 6. Presione Generar QR Code.
 7. Descargue el QR Code.
-8. Descargue el marcador Inter SG.
+8. Descargue el marcador INTER SG.
 9. Publique ambas imágenes en Blackboard.
-10. Indique al estudiante que escanee el QR y apunte al marcador Inter SG.
+10. Indique al estudiante que escanee el QR y apunte al marcador INTER SG.
 
 ## Blackboard
 Publique siempre:
 - QR Code
-- Marcador Inter SG
+- Marcador INTER SG
 - Instrucciones para el estudiante

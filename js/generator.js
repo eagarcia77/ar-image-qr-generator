@@ -150,7 +150,7 @@ function generateQR() {
   const safeTitle = (titleInput.value.trim() || 'Experiencia_AR').replace(/[^\w\-]+/g, '_');
   downloadQrBtn.download = `QR_${safeTitle}.png`;
 
-  setStatus('QR Code generado. Descarga el QR Code y el marcador Inter SG para publicarlos en Blackboard.', 'ok');
+  setStatus('QR Code generado. Descarga el QR Code y el marcador INTER SG para publicarlos en Blackboard.', 'ok');
 }
 
 baseUrlInput.value = getBaseUrl();
