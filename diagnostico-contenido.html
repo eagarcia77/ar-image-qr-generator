@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diagnóstico de contenido Blackboard</title>
+  <link rel="stylesheet" href="css/app.css"/>
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Diagnóstico de contenido Blackboard</h1>
+      <p>Use esta página para probar Image, Video, YouTube, PDF document o Web link antes de generar el QR.</p>
+      <label for="contentType">Tipo</label>
+      <select id="contentType">
+        <option value="image">Imagen</option>
+        <option value="video">Video directo MP4/WebM</option>
+        <option value="youtube">YouTube</option>
+        <option value="pdf">PDF document</option>
+        <option value="link">Web link</option>
+      </select>
+      <label for="url">URL</label>
+      <input id="url" type="url" placeholder="https://interbb.blackboard.com/bbcswebdav/courses/.../archivo.pdf"/>
+      <div class="actions">
+        <button id="test">Probar</button>
+        <a id="open" href="#" target="_blank" rel="noopener" class="button-link">Abrir en pestaña nueva</a>
+      </div>
+      <div id="result" class="status"></div>
+      <div id="preview" class="preview-wrap"></div>
+    </section>
+  </main>
+  <script>
+    const type=document.getElementById('contentType'), url=document.getElementById('url'), test=document.getElementById('test'), openBtn=document.getElementById('open'), result=document.getElementById('result'), preview=document.getElementById('preview');
+    function ytId(u){for(const p of [/youtu\\.be\\/([A-Za-z0-9_-]{6,})/,/youtube\\.com\\/watch\\?v=([A-Za-z0-9_-]{6,})/,/youtube\\.com\\/embed\\/([A-Za-z0-9_-]{6,})/,/youtube\\.com\\/shorts\\/([A-Za-z0-9_-]{6,})/]){const m=u.match(p);if(m)return m[1]}try{return new URL(u).searchParams.get('v')||''}catch{return''}}
+    test.addEventListener('click',()=>{const u=url.value.trim();preview.innerHTML='';openBtn.href=u||'#';if(!u){result.textContent='Escriba un URL.';result.className='status error';return;}const t=type.value;if(t==='image'){const img=document.createElement('img');img.src=u;img.className='preview';img.onload=()=>{result.textContent='Imagen cargó correctamente.';result.className='status ok'};img.onerror=()=>{result.textContent='La imagen no cargó. Revise permisos.';result.className='status warn'};preview.appendChild(img);return;}if(t==='video'){const v=document.createElement('video');v.src=u;v.controls=true;v.muted=true;v.playsInline=true;v.className='preview';v.onloadedmetadata=()=>{result.textContent='Video cargó correctamente.';result.className='status ok'};v.onerror=()=>{result.textContent='El video no cargó. Revise permisos/formato.';result.className='status warn'};preview.appendChild(v);return;}if(t==='youtube'){const id=ytId(u);const img=document.createElement('img');img.src=`https://img.youtube.com/vi/${id}/hqdefault.jpg`;img.className='preview';preview.appendChild(img);result.textContent=id?'YouTube detectado.':'No se detectó YouTube.';result.className=id?'status ok':'status error';return;}const iframe=document.createElement('iframe');iframe.src=u;iframe.className='preview-frame';preview.appendChild(iframe);result.textContent='Vista previa cargada. Si no se ve, use Abrir en pestaña nueva.';result.className='status warn';});
+  </script>
+</body>
+</html>

@@ -1,109 +1,106 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generador AR INTER SG para Blackboard</title>
-  <link rel="stylesheet" href="css/app.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generador Universal AR INTER SG</title>
+  <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body>
   <main class="container">
     <section class="hero card">
-      <img src="assets/inter-sg-marker.png" class="logo-marker" alt="Marcador INTER SG" />
+      <img src="assets/inter-sg-marker.png" class="logo-marker" alt="Marcador INTER SG"/>
       <div>
-        <h1>Generador de Realidad Aumentada INTER SG</h1>
-        <p>Herramienta verificada para trabajar con imágenes, videos MP4/WebM y YouTube. Está optimizada para enlaces del <strong>Content Collection de Blackboard</strong> porque muestra el contenido como capa HTML sobre la cámara, evitando problemas comunes de CORS en WebGL.</p>
+        <h1>Generador Universal AR INTER SG</h1>
+        <p>Programa integrado para trabajar con <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Genera una sola imagen descargable con el <strong>QR Code</strong> y el <strong>Marker INTER SG</strong> en el centro. En celular o tableta, el contenido aparece como una <strong>tarjeta flotante</strong> y permite <strong>zoom con los dedos</strong>.</p>
       </div>
     </section>
 
     <section class="alert card">
-      <h2>Importante sobre Blackboard Content Collection</h2>
-      <p>El enlace debe ser directo al archivo y los estudiantes deben tener permiso de <strong>Read</strong>. Si Blackboard exige login, el estudiante debe estar autenticado para que el recurso cargue. Esta herramienta no rompe ni evita permisos de Blackboard.</p>
-      <p><a target="_blank" href="https://eagarcia77.github.io/ar-image-qr-generator/Manual_Tutorial_Generador_AR_INTER_SG_Blackboard.pdf">Manual Tutorial del Generador de Realidad Aumentada INTER SG para Blackboard</a></p>
+      <h2>Funciones añadidas del otro programa</h2>
+      <p>Esta versión integra las funciones del generador de imágenes/videos: <strong>fondo transparente para PNG</strong>, <strong>Zoom In/Zoom Out</strong>, <strong>Activar video</strong>, <strong>Abrir video en YouTube</strong>, <strong>Mostrar contenido sin marcador</strong> y diagnóstico para Blackboard.</p>
     </section>
 
     <section class="grid">
       <div class="card">
         <h2>1. Crear experiencia AR</h2>
 
-        <label for="mediaType">Tipo de contenido</label>
-        <select id="mediaType">
+        <label for="contentType">Tipo de contenido</label>
+        <select id="contentType">
           <option value="auto">Detectar automáticamente</option>
           <option value="image">Imagen PNG/JPG/WEBP/GIF</option>
           <option value="video">Video directo MP4/WebM</option>
           <option value="youtube">YouTube</option>
+          <option value="pdf">PDF document</option>
+          <option value="link">Web link</option>
         </select>
 
-        <label for="mediaUrl">URL directa del contenido</label>
-        <input id="mediaUrl" type="url" placeholder="https://interbb.blackboard.com/bbcswebdav/courses/.../archivo.png" />
-        <small>Para imágenes y videos de Blackboard, use enlaces directos del Content Collection, por ejemplo <code>/bbcswebdav/courses/.../archivo.png</code> o <code>.mp4</code>.</small>
+        <label for="contentUrl">URL directa del contenido</label>
+        <input id="contentUrl" type="url" placeholder="https://interbb.blackboard.com/bbcswebdav/courses/.../archivo.pdf"/>
+        <small>Use enlaces directos del <strong>Blackboard Content Collection</strong>. Los estudiantes deben tener permiso de <strong>Read</strong>.</small>
 
         <label for="title">Título de la experiencia</label>
-        <input id="title" type="text" placeholder="Logo UCAN, Video de bienvenida, etc." />
+        <input id="title" type="text" placeholder="Logo, video, manual PDF, rúbrica, enlace de apoyo..."/>
+
+        <label for="description">Descripción breve</label>
+        <textarea id="description" rows="3" placeholder="Escriba una instrucción corta para el estudiante."></textarea>
 
         <label for="baseUrl">URL base del generador</label>
-        <input id="baseUrl" type="url" />
-        <small>Si esta página ya está publicada, déjalo como aparece.</small>
+        <input id="baseUrl" type="url"/>
+        <small>Si esta página ya está publicada, déjela como aparece.</small>
 
         <div class="actions">
           <button id="testBtn" type="button">Probar contenido</button>
-          <button id="generateBtn" type="button" class="primary">Generar QR Code y tarjeta</button>
+          <button id="generateBtn" type="button" class="primary">Generar imagen única</button>
         </div>
 
         <div id="status" class="status"></div>
 
         <div id="previewWrap" class="preview-wrap hidden">
           <h3>Vista previa</h3>
-          <img id="imagePreview" class="preview hidden" alt="Vista previa" />
+          <img id="imagePreview" class="preview hidden" alt="Vista previa"/>
           <video id="videoPreview" class="preview hidden" controls muted playsinline></video>
           <div id="youtubePreview" class="hidden">
-            <img id="youtubeThumb" class="preview" alt="Miniatura de YouTube" />
+            <img id="youtubeThumb" class="preview" alt="Miniatura de YouTube"/>
             <a id="youtubeLink" href="#" target="_blank" rel="noopener" class="button-link">Abrir video en YouTube</a>
+          </div>
+          <iframe id="documentPreview" class="preview-frame hidden" title="Vista previa documento"></iframe>
+          <div class="actions">
+            <a id="previewOpenBtn" href="#" target="_blank" rel="noopener" class="button-link">Abrir en pestaña nueva</a>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <h2>2. Descargar recursos</h2>
-        <p>Recomendado: descarga la tarjeta híbrida y publícala en Blackboard. También puedes descargar el QR y el marcador por separado.</p>
+        <h2>2. Descargar una sola imagen</h2>
+        <p>El sistema genera una imagen PNG con el <strong>QR Code</strong> y el <strong>Marker INTER SG</strong> en el centro. La experiencia AR muestra el contenido flotando en pantalla y permite hacer <strong>pinch-to-zoom</strong> con dos dedos.</p>
 
-        <div class="subgrid">
-          <div>
-            <h3>QR Code</h3>
-            <div id="qrcode" class="qrcode"><span>El QR aparecerá aquí.</span></div>
-          </div>
-          <div>
-            <h3>Marcador INTER SG</h3>
-            <div class="marker-preview"><img src="assets/inter-sg-marker.png" alt="Marcador INTER SG" /></div>
-          </div>
+        <div id="oneImagePreview" class="one-preview">
+          <span>La imagen aparecerá aquí.</span>
         </div>
 
         <label for="resultUrl">Enlace AR generado</label>
         <textarea id="resultUrl" rows="4" readonly></textarea>
 
-        <h3>Tarjeta híbrida</h3>
-        <div id="hybridCardPreview" class="hybrid-preview"><span>La tarjeta aparecerá aquí.</span></div>
-
         <div class="actions">
-          <a id="downloadHybridBtn" href="#" download="Tarjeta_AR_INTER_SG.png" class="button-link gold disabled" aria-disabled="true">Descargar tarjeta híbrida</a>
-          <a id="downloadQrBtn" href="#" download="QR_INTER_SG_AR.png" class="button-link disabled" aria-disabled="true">Descargar QR Code</a>
-          <a href="assets/inter-sg-marker.png" download="Marcador_INTER_SG.png" class="button-link">Descargar marcador INTER SG</a>
-          <a id="openBtn" href="#" target="_blank" rel="noopener" class="button-link disabled" aria-disabled="true">Abrir experiencia AR</a>
+          <a id="downloadSingleBtn" href="#" download="QR_Marker_INTER_SG.png" class="button-link gold disabled">Descargar imagen única</a>
+          <a id="openBtn" href="#" target="_blank" rel="noopener" class="button-link disabled">Abrir experiencia AR</a>
           <a href="test-marker.html" target="_blank" rel="noopener" class="button-link">Probar marcador</a>
+          <a href="diagnostico-contenido.html" target="_blank" rel="noopener" class="button-link">Diagnóstico</a>
         </div>
       </div>
     </section>
 
     <section class="card">
-      <h2>Checklist antes de publicar en Blackboard</h2>
+      <h2>Cómo se usa en Blackboard</h2>
       <ol>
-        <li>El archivo del Content Collection tiene permisos de <strong>Read</strong> para Student o Course Users.</li>
-        <li>El enlace abre directamente el archivo, no una página intermedia.</li>
-        <li>El QR abre la experiencia en HTTPS.</li>
-        <li>El marcador INTER SG se publica completo, sin recortar bordes.</li>
-        <li>El estudiante escanea el QR, permite la cámara y apunta al marcador INTER SG.</li>
+        <li>Genere la imagen única.</li>
+        <li>Descargue el archivo PNG.</li>
+        <li>Publíquelo en Blackboard o imprímalo.</li>
+        <li>El estudiante escanea el QR Code y luego apunta al Marker INTER SG del centro.</li>
+        <li>Si el marcador no detecta, usa <strong>Mostrar contenido sin marcador</strong>.</li>
       </ol>
-      <p class="important">Si el marcador no se detecta en algunos celulares, la experiencia incluye un botón de respaldo para mostrar el contenido sin marcador.</p>
+      <p class="important">Para archivos de Blackboard, revise que el Content Collection tenga permisos Student/Course Users → Read.</p>
     </section>
   </main>
 

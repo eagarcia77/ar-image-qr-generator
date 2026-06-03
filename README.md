@@ -1,21 +1,21 @@
-# Generador AR INTER SG para Blackboard
+# Generador Universal AR INTER SG
 
-Versión verificada para trabajar con:
-- Imágenes del Content Collection de Blackboard
-- Videos MP4/WebM del Content Collection
+Versión integrada que añade las funciones del programa de imagen/video al programa PDF/Link.
+
+## Compatible con
+- Image
+- Video MP4/WebM
 - YouTube
-- Marcador INTER SG con colores institucionales: verde #007B5F y amarillo #FED141
+- PDF document
+- Web link
+- Blackboard Content Collection
 
-## Archivos principales
-- `index.html`: generador de QR y tarjeta híbrida
-- `marker-ar.html`: experiencia AR
-- `marker-inter-sg.html`: marcador INTER SG para imprimir o descargar
-- `test-marker.html`: prueba del marcador
-- `diagnostico-blackboard.html`: prueba de enlaces del Content Collection
-- `INSTRUCCIONES_COMPLETAS.txt`: guía paso a paso
+## Archivo principal
+Abra `index.html`.
 
-## Nota técnica
-Para máxima compatibilidad con Blackboard, el contenido se muestra como capa HTML sobre la cámara. Esto evita problemas comunes de CORS al usar archivos del Content Collection como texturas WebGL.
+## Salida
+Genera una sola imagen PNG con el QR Code y el Marker INTER SG al centro.
 
-## Permisos Blackboard
-El archivo debe tener permiso Read para Student o Course Users.
+## Verificación añadida
+- El contenido aparece como tarjeta flotante en móvil/tableta.
+- Se añadió zoom táctil con dos dedos (pinch-to-zoom), además de botones.

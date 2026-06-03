@@ -1,0 +1,7 @@
+VERIFICACIÓN REALIZADA
+
+1. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.
+2. Se añadió visualización flotante del contenido en celular y tableta.
+3. Se añadió zoom con dos dedos (pinch-to-zoom) y botones + / -.
+4. Se mantuvo el botón Mostrar contenido sin marcador.
+5. Se mantuvieron las funciones para Image, Video, YouTube, PDF document y Web link.

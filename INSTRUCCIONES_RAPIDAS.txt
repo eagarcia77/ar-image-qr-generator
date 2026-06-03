@@ -1,14 +1,31 @@
-INSTRUCCIONES RÁPIDAS
+GUÍA RÁPIDA – GENERADOR UNIVERSAL AR INTER SG
 
-1. Sube todos los archivos al servidor.
-2. Abre index.html.
-3. Pega el URL directo de la imagen del Content Collection de Blackboard.
-4. Presiona Probar imagen.
-5. Si la imagen aparece en vista previa, presiona Generar QR Code.
-6. Comparte el QR en Blackboard Ultra.
+FUNCIONES INTEGRADAS
+- Imagen PNG/JPG/WEBP/GIF
+- Video directo MP4/WebM
+- YouTube
+- PDF document
+- Web link
+- QR Code + Marker INTER SG en una sola imagen
+- Mostrar contenido sin marcador
+- Activar video
+- Abrir video en YouTube
+- Abrir contenido
+- Zoom In / Zoom Out
+- Diagnóstico de enlaces Blackboard
 
-Si al escanear dice “No hay contenido”, el QR viejo fue creado con la versión anterior.
-Genera un QR nuevo usando esta versión corregida.
+USO
+1. Abra index.html.
+2. Seleccione Tipo de contenido.
+3. Pegue el URL del Content Collection o enlace.
+4. Escriba título y descripción.
+5. Presione Probar contenido.
+6. Presione Generar imagen única.
+7. Descargue el PNG.
+8. Publique o imprima esa imagen en Blackboard.
 
-Si dice “La imagen no se pudo cargar”, el enlace de Blackboard probablemente requiere login,
-está vencido o no es un enlace directo a imagen.
+NOTA
+Si el marcador no detecta, el estudiante puede usar Mostrar contenido sin marcador.
+
+- En celular o tableta, el contenido aparece como una tarjeta flotante.
+- El usuario puede hacer zoom con dos dedos (pinch) o con los botones + y -.
