@@ -1,0 +1,24 @@
+VERIFICACIÓN DEL PROGRAMA
+
+1. Estructura verificada:
+- index.html
+- viewer-ar.html
+- marker-inter-sg.html
+- test-marker.html
+- diagnostico-pdf-link.html
+- css/app.css
+- js/generator.js
+- js/viewer-ar.js
+- assets/inter-sg-marker.png
+- assets/inter-sg-marker.patt
+
+2. Cambios realizados:
+- QR Code genera con error correction H.
+- Marker INTER SG queda en el centro del QR Code.
+- Marker reducido a un tamaño validado dentro del QR para mantener la lectura del QR.
+- Se descarga una sola imagen PNG.
+
+3. Recomendación:
+- Use la imagen impresa o en otra pantalla.
+- Escanee el QR con un celular y luego apunte al Marker INTER SG en la misma imagen.
+- Si Blackboard bloquea la vista embebida del PDF, use Abrir documento.

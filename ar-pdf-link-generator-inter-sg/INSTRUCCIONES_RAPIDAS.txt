@@ -1,28 +1,22 @@
-GUÍA RÁPIDA – GENERADOR AR PDF/LINK INTER SG
+GUÍA RÁPIDA – GENERADOR AR PDF/LINK INTER SG (IMAGEN ÚNICA)
 
-PROPÓSITO
-Este programa crea experiencias AR para documentos PDF o enlaces. Está pensado para Blackboard Content Collection.
-
-ARCHIVOS PRINCIPALES
-- index.html: generador principal.
-- viewer-ar.html: experiencia AR que muestra el documento o enlace.
-- marker-inter-sg.html: marcador INTER SG.
-- test-marker.html: prueba del marcador.
-- diagnostico-pdf-link.html: prueba de enlaces PDF/Link.
-
-CÓMO USARLO
 1. Suba el PDF al Content Collection de Blackboard.
 2. Verifique permisos: Student o Course Users con Read.
-3. Copie el URL directo del PDF.
+3. Copie el URL directo del PDF o enlace.
 4. Abra index.html.
-5. Pegue el URL en URL directa del documento o enlace.
+5. Pegue el URL.
 6. Seleccione PDF document o Web link.
-7. Escriba un título.
-8. Escriba una descripción breve.
-9. Presione Probar enlace.
-10. Presione Generar QR Code y tarjeta.
-11. Descargue la tarjeta híbrida.
-12. Publique la tarjeta en Blackboard.
+7. Presione Probar enlace.
+8. Presione Generar imagen única.
+9. Descargue el archivo PNG.
+10. Publique o imprima esa única imagen.
 
 IMPORTANTE
-Si Blackboard bloquea el PDF dentro del visor, el usuario puede usar Abrir documento. Esto es normal en algunos entornos protegidos.
+- La imagen única contiene el QR Code y el Marker INTER SG en el centro.
+- Funciona mejor si la imagen se muestra en otra pantalla o impresa, y el estudiante usa un celular aparte para escanear y detectar el Marker.
+- Si Blackboard bloquea la vista del PDF, use Abrir documento.
+
+VERIFICACIÓN TÉCNICA
+- El QR se genera con error correction H.
+- El Marker INTER SG se coloca al centro con tamaño controlado para no dañar la lectura del QR.
+- No agrande manualmente el Marker dentro del QR porque puede impedir que el QR escanee.
