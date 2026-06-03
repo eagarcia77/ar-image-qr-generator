@@ -1,16 +1,15 @@
 VERIFICACIÓN REALIZADA
 
 1. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.
-2. Se corrigió el reconocimiento de enlaces de YouTube:
+2. Se dejó YouTube en modo seguro: miniatura + botón Abrir video en YouTube.
+3. Se evita depender del iframe de YouTube, porque puede bloquearse en celulares o por configuración del video.
+4. Se mantiene detección de enlaces:
    - youtube.com/watch?v=
    - youtu.be/
    - youtube.com/shorts/
    - youtube.com/embed/
    - youtube.com/live/
-3. Se corrigió diagnostico-contenido.html para detectar YouTube correctamente.
-4. Se añadió botón visible Abrir video en YouTube dentro de la experiencia AR.
-5. Se mantiene el botón Abrir contenido como respaldo.
-6. Se mantiene contenido flotante en celular/tableta.
-7. Se mantiene pinch-to-zoom con dos dedos y botones + / - / ↺.
+5. Se mantiene imagen única QR Code + Marker INTER SG.
+6. Se mantiene contenido flotante.
+7. Se mantiene zoom con dedos y botones.
 8. Se mantiene fondo transparente para imágenes PNG transparentes.
-9. Se mantiene creación de imagen única QR Code + Marker INTER SG.

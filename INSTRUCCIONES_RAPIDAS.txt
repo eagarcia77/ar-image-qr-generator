@@ -37,3 +37,8 @@ CORRECCIÓN DE YOUTUBE
 - Puede usar enlaces youtube.com/watch, youtu.be, shorts, embed o live.
 - Si el video no carga dentro de la experiencia AR, use el botón Abrir video en YouTube.
 - El botón Abrir contenido también cambia a Abrir video en YouTube cuando el contenido es YouTube.
+
+YOUTUBE – IMPORTANTE
+- YouTube no siempre permite reproducirse dentro de un panel AR.
+- Esta versión muestra la miniatura y un botón grande Abrir video en YouTube.
+- Ese botón abre el video en YouTube o en la app de YouTube del dispositivo.

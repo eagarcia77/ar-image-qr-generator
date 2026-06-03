@@ -53,7 +53,15 @@ function applyScale(){
 function showContent(){
   if(!mediaUrl){ showError('No hay contenido. Regenera el QR Code.'); return; }
   mediaLayer.style.display = 'block';
-  showAction(type === 'image' ? 'Imagen visible con fondo transparente. Usa + y − o pellizca con dos dedos.' : 'Contenido visible. Usa + y − o pellizca con dos dedos.');
+
+  if(type === 'youtube'){
+    showAction('YouTube listo. Toca Abrir video en YouTube.');
+  } else if(type === 'image'){
+    showAction('Imagen visible con fondo transparente. Usa + y − o pellizca con dos dedos.');
+  } else {
+    showAction('Contenido visible. Usa + y − o pellizca con dos dedos.');
+  }
+
   if(type === 'video') playVideoIfNeeded();
 }
 
@@ -111,23 +119,21 @@ function buildContent(){
 
   if(type === 'youtube'){
     const id = extractYoutubeId(mediaUrl);
-    if(!id){ showError('No se pudo identificar el video de YouTube. Abre el video con el botón Abrir contenido.'); return; }
+    if(!id){
+      showError('No se pudo identificar el video de YouTube. Verifica que el enlace sea de YouTube.');
+      return;
+    }
 
     const watchUrl = `https://www.youtube.com/watch?v=${id}`;
-    const embedUrl = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0`;
+    const thumbnailUrl = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
 
-    const iframe = document.createElement('iframe');
-    iframe.src = embedUrl;
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-    iframe.allowFullscreen = true;
-    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-    mediaBody.appendChild(iframe);
-
-    const note = document.createElement('p');
-    note.textContent = 'Si el reproductor de YouTube no carga aquí, presiona Abrir video en YouTube.';
-    note.style.fontSize = '.9rem';
-    note.style.color = '#5d716b';
-    mediaBody.appendChild(note);
+    mediaBody.innerHTML = `
+      <div class="youtube-card">
+        <img src="${thumbnailUrl}" alt="Miniatura del video de YouTube">
+        <a class="yt-button" href="${watchUrl}" target="_blank" rel="noopener">Abrir video en YouTube</a>
+        <p>YouTube puede bloquear la reproducción embebida dentro de experiencias AR. Este botón abre el video directamente en YouTube o en la app del dispositivo.</p>
+      </div>
+    `;
 
     openContentBtn.href = watchUrl;
     openContentBtn.textContent = 'Abrir video en YouTube';
@@ -168,7 +174,7 @@ buildContent();
 marker.addEventListener('markerFound', () => {
   markerDetected = true;
   showContent();
-  showAction('Marker INTER SG detectado.');
+  showAction(type === 'youtube' ? 'Marker detectado. Toca Abrir video en YouTube.' : 'Marker INTER SG detectado.');
 });
 
 marker.addEventListener('markerLost', () => {
@@ -186,6 +192,7 @@ resetBtn.addEventListener('click', () => { scale = 1; applyScale(); });
 
 let pinchStartDistance = null;
 let pinchStartScale = 1;
+
 function distance(t1, t2){
   const dx = t2.clientX - t1.clientX;
   const dy = t2.clientY - t1.clientY;
