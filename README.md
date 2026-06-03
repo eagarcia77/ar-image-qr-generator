@@ -1,24 +1,16 @@
-# Generador Universal AR INTER SG
+# Generador Universal AR INTER SG – YouTube verificado
 
-Versión integrada que añade las funciones del programa de imagen/video al programa PDF/Link.
+Compatible con Image, Video MP4/WebM, YouTube, PDF document, Web link y Blackboard Content Collection.
 
-## Compatible con
-- Image
-- Video MP4/WebM
-- YouTube
-- PDF document
-- Web link
-- Blackboard Content Collection
+## Corrección de YouTube
+Acepta:
+- youtube.com/watch?v=ID
+- youtu.be/ID
+- youtube.com/shorts/ID
+- youtube.com/embed/ID
+- youtube.com/live/ID
 
-## Archivo principal
-Abra `index.html`.
+La experiencia incluye botón visible: **Abrir video en YouTube**.
 
 ## Salida
-Genera una sola imagen PNG con el QR Code y el Marker INTER SG al centro.
-
-## Verificación añadida
-- El contenido aparece como tarjeta flotante en móvil/tableta.
-- Se añadió zoom táctil con dos dedos (pinch-to-zoom), además de botones.
-
-- Las imágenes PNG transparentes se muestran sin fondo sólido en la experiencia AR.
-- Los PDF y Web links se muestran en un panel para lectura.
+Genera una sola imagen PNG con QR Code + Marker INTER SG en el centro.

@@ -1,4 +1,3 @@
-
 const params = new URLSearchParams(window.location.search);
 const mediaUrl = params.get('data') || '';
 const type = params.get('type') || 'link';
@@ -43,26 +42,43 @@ function showError(message){
   errorBox.textContent = message;
   errorBox.style.display = 'block';
 }
+
 function showAction(message){ actionText.textContent = message; }
-function applyScale(){ mediaLayer.classList.add('no-float'); mediaLayer.style.transform = `translate(-50%, -50%) scale(${scale})`; }
+
+function applyScale(){
+  mediaLayer.classList.add('no-float');
+  mediaLayer.style.transform = `translate(-50%, -50%) scale(${scale})`;
+}
+
 function showContent(){
   if(!mediaUrl){ showError('No hay contenido. Regenera el QR Code.'); return; }
   mediaLayer.style.display = 'block';
-  showAction(type === 'image' ? 'Imagen visible con fondo transparente. Usa + y − o pellizca con dos dedos para cambiar el tamaño.' : 'Contenido visible. Usa + y − o pellizca con dos dedos para cambiar el tamaño.');
+  showAction(type === 'image' ? 'Imagen visible con fondo transparente. Usa + y − o pellizca con dos dedos.' : 'Contenido visible. Usa + y − o pellizca con dos dedos.');
   if(type === 'video') playVideoIfNeeded();
 }
+
 function hideContent(){ mediaLayer.style.display = 'none'; }
 
 function extractYoutubeId(url){
-  const patterns = [
-    /youtu\.be\/([A-Za-z0-9_-]{6,})/,
-    /youtube\.com\/watch\?v=([A-Za-z0-9_-]{6,})/,
-    /youtube\.com\/embed\/([A-Za-z0-9_-]{6,})/,
-    /youtube\.com\/shorts\/([A-Za-z0-9_-]{6,})/
-  ];
-  for(const p of patterns){ const m = url.match(p); if(m) return m[1]; }
-  try { return new URL(url).searchParams.get('v') || ''; }
-  catch { return ''; }
+  const raw = (url || '').trim();
+  try {
+    const u = new URL(raw);
+    const host = u.hostname.replace(/^www\./, '').toLowerCase();
+
+    if(host === 'youtu.be'){
+      return u.pathname.split('/').filter(Boolean)[0] || '';
+    }
+
+    if(host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com'){
+      if(u.pathname === '/watch') return u.searchParams.get('v') || '';
+      if(u.pathname.startsWith('/embed/')) return u.pathname.split('/')[2] || '';
+      if(u.pathname.startsWith('/shorts/')) return u.pathname.split('/')[2] || '';
+      if(u.pathname.startsWith('/live/')) return u.pathname.split('/')[2] || '';
+    }
+  } catch(e) {}
+
+  const fallback = raw.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{6,})/);
+  return fallback ? fallback[1] : '';
 }
 
 function buildContent(){
@@ -95,14 +111,29 @@ function buildContent(){
 
   if(type === 'youtube'){
     const id = extractYoutubeId(mediaUrl);
-    if(!id){ showError('No se pudo identificar el video de YouTube.'); return; }
+    if(!id){ showError('No se pudo identificar el video de YouTube. Abre el video con el botón Abrir contenido.'); return; }
+
+    const watchUrl = `https://www.youtube.com/watch?v=${id}`;
+    const embedUrl = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0`;
+
     const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube.com/embed/${id}?playsinline=1&rel=0`;
+    iframe.src = embedUrl;
     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     iframe.allowFullscreen = true;
+    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
     mediaBody.appendChild(iframe);
-    youtubeBtn.href = mediaUrl;
+
+    const note = document.createElement('p');
+    note.textContent = 'Si el reproductor de YouTube no carga aquí, presiona Abrir video en YouTube.';
+    note.style.fontSize = '.9rem';
+    note.style.color = '#5d716b';
+    mediaBody.appendChild(note);
+
+    openContentBtn.href = watchUrl;
+    openContentBtn.textContent = 'Abrir video en YouTube';
+    youtubeBtn.href = watchUrl;
     youtubeBtn.style.display = 'inline-block';
+    youtubeBtn.textContent = 'Abrir video en YouTube';
     return;
   }
 
@@ -139,6 +170,7 @@ marker.addEventListener('markerFound', () => {
   showContent();
   showAction('Marker INTER SG detectado.');
 });
+
 marker.addEventListener('markerLost', () => {
   markerDetected = false;
   showAction('Marker perdido. Vuelve a apuntar o usa Mostrar contenido sin marcador.');
@@ -154,13 +186,19 @@ resetBtn.addEventListener('click', () => { scale = 1; applyScale(); });
 
 let pinchStartDistance = null;
 let pinchStartScale = 1;
-function distance(t1, t2){ const dx = t2.clientX - t1.clientX; const dy = t2.clientY - t1.clientY; return Math.hypot(dx, dy); }
+function distance(t1, t2){
+  const dx = t2.clientX - t1.clientX;
+  const dy = t2.clientY - t1.clientY;
+  return Math.hypot(dx, dy);
+}
+
 document.addEventListener('touchstart', (event) => {
   if(event.touches.length === 2 && mediaLayer.style.display === 'block'){
     pinchStartDistance = distance(event.touches[0], event.touches[1]);
     pinchStartScale = scale;
   }
 }, {passive:true});
+
 document.addEventListener('touchmove', (event) => {
   if(event.touches.length === 2 && pinchStartDistance && mediaLayer.style.display === 'block'){
     const newDistance = distance(event.touches[0], event.touches[1]);
@@ -168,6 +206,7 @@ document.addEventListener('touchmove', (event) => {
     applyScale();
   }
 }, {passive:true});
+
 document.addEventListener('touchend', (event) => {
   if(event.touches.length < 2) pinchStartDistance = null;
 }, {passive:true});

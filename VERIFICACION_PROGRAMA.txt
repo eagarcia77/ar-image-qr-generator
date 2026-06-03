@@ -1,10 +1,16 @@
 VERIFICACIÓN REALIZADA
 
 1. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.
-2. Se confirmó la creación de la imagen única desde generator.js: el archivo final combina QR Code + Marker INTER SG en una sola imagen PNG.
-3. Se mantuvo el QR con error correction H para mayor tolerancia.
-4. Se confirmó que el contenido aparece flotando en celular y tableta.
-5. Se confirmó zoom táctil con dos dedos (pinch-to-zoom), además de botones + / - / ↺.
-6. Se ajustó la presentación para que las imágenes PNG transparentes se vean con fondo transparente.
-7. Para PDF y Web link se mantiene un panel de lectura, ya que requieren iframe o visor embebido.
-8. Se mantuvieron las funciones de Image, Video, YouTube, PDF document y Web link, además del botón Mostrar contenido sin marcador.
+2. Se corrigió el reconocimiento de enlaces de YouTube:
+   - youtube.com/watch?v=
+   - youtu.be/
+   - youtube.com/shorts/
+   - youtube.com/embed/
+   - youtube.com/live/
+3. Se corrigió diagnostico-contenido.html para detectar YouTube correctamente.
+4. Se añadió botón visible Abrir video en YouTube dentro de la experiencia AR.
+5. Se mantiene el botón Abrir contenido como respaldo.
+6. Se mantiene contenido flotante en celular/tableta.
+7. Se mantiene pinch-to-zoom con dos dedos y botones + / - / ↺.
+8. Se mantiene fondo transparente para imágenes PNG transparentes.
+9. Se mantiene creación de imagen única QR Code + Marker INTER SG.

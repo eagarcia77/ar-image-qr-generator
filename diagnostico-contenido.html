@@ -31,8 +31,82 @@
   </main>
   <script>
     const type=document.getElementById('contentType'), url=document.getElementById('url'), test=document.getElementById('test'), openBtn=document.getElementById('open'), result=document.getElementById('result'), preview=document.getElementById('preview');
-    function ytId(u){for(const p of [/youtu\\.be\\/([A-Za-z0-9_-]{6,})/,/youtube\\.com\\/watch\\?v=([A-Za-z0-9_-]{6,})/,/youtube\\.com\\/embed\\/([A-Za-z0-9_-]{6,})/,/youtube\\.com\\/shorts\\/([A-Za-z0-9_-]{6,})/]){const m=u.match(p);if(m)return m[1]}try{return new URL(u).searchParams.get('v')||''}catch{return''}}
-    test.addEventListener('click',()=>{const u=url.value.trim();preview.innerHTML='';openBtn.href=u||'#';if(!u){result.textContent='Escriba un URL.';result.className='status error';return;}const t=type.value;if(t==='image'){const img=document.createElement('img');img.src=u;img.className='preview';img.onload=()=>{result.textContent='Imagen cargó correctamente.';result.className='status ok'};img.onerror=()=>{result.textContent='La imagen no cargó. Revise permisos.';result.className='status warn'};preview.appendChild(img);return;}if(t==='video'){const v=document.createElement('video');v.src=u;v.controls=true;v.muted=true;v.playsInline=true;v.className='preview';v.onloadedmetadata=()=>{result.textContent='Video cargó correctamente.';result.className='status ok'};v.onerror=()=>{result.textContent='El video no cargó. Revise permisos/formato.';result.className='status warn'};preview.appendChild(v);return;}if(t==='youtube'){const id=ytId(u);const img=document.createElement('img');img.src=`https://img.youtube.com/vi/${id}/hqdefault.jpg`;img.className='preview';preview.appendChild(img);result.textContent=id?'YouTube detectado.':'No se detectó YouTube.';result.className=id?'status ok':'status error';return;}const iframe=document.createElement('iframe');iframe.src=u;iframe.className='preview-frame';preview.appendChild(iframe);result.textContent='Vista previa cargada. Si no se ve, use Abrir en pestaña nueva.';result.className='status warn';});
+
+    function ytId(raw){
+      raw = (raw || '').trim();
+      try {
+        const u = new URL(raw);
+        const host = u.hostname.replace(/^www\./,'').toLowerCase();
+        if(host === 'youtu.be') return u.pathname.split('/').filter(Boolean)[0] || '';
+        if(host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com'){
+          if(u.pathname === '/watch') return u.searchParams.get('v') || '';
+          if(u.pathname.startsWith('/embed/')) return u.pathname.split('/')[2] || '';
+          if(u.pathname.startsWith('/shorts/')) return u.pathname.split('/')[2] || '';
+          if(u.pathname.startsWith('/live/')) return u.pathname.split('/')[2] || '';
+        }
+      } catch(e) {}
+      const m = raw.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{6,})/);
+      return m ? m[1] : '';
+    }
+
+    test.addEventListener('click',()=>{
+      const u=url.value.trim();
+      preview.innerHTML='';
+      openBtn.href=u||'#';
+      if(!u){result.textContent='Escriba un URL.';result.className='status error';return;}
+      const t=type.value;
+
+      if(t==='image'){
+        const img=document.createElement('img');
+        img.src=u;
+        img.className='preview';
+        img.onload=()=>{result.textContent='Imagen cargó correctamente.';result.className='status ok'};
+        img.onerror=()=>{result.textContent='La imagen no cargó. Revise permisos.';result.className='status warn'};
+        preview.appendChild(img);
+        return;
+      }
+
+      if(t==='video'){
+        const v=document.createElement('video');
+        v.src=u;
+        v.controls=true;
+        v.muted=true;
+        v.playsInline=true;
+        v.className='preview';
+        v.onloadedmetadata=()=>{result.textContent='Video cargó correctamente.';result.className='status ok'};
+        v.onerror=()=>{result.textContent='El video no cargó. Revise permisos/formato.';result.className='status warn'};
+        preview.appendChild(v);
+        return;
+      }
+
+      if(t==='youtube'){
+        const id=ytId(u);
+        if(!id){
+          result.textContent='No se detectó el ID de YouTube.';
+          result.className='status error';
+          return;
+        }
+        const watchUrl = `https://www.youtube.com/watch?v=${id}`;
+        openBtn.href = watchUrl;
+        const img=document.createElement('img');
+        img.src=`https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+        img.className='preview';
+        preview.appendChild(img);
+        const p=document.createElement('p');
+        p.innerHTML = `YouTube detectado. <a href="${watchUrl}" target="_blank" rel="noopener">Abrir video en YouTube</a>`;
+        preview.appendChild(p);
+        result.textContent='YouTube detectado correctamente.';
+        result.className='status ok';
+        return;
+      }
+
+      const iframe=document.createElement('iframe');
+      iframe.src=u;
+      iframe.className='preview-frame';
+      preview.appendChild(iframe);
+      result.textContent='Vista previa cargada. Si no se ve, use Abrir en pestaña nueva.';
+      result.className='status warn';
+    });
   </script>
 </body>
 </html>

@@ -1,4 +1,3 @@
-
 const $ = id => document.getElementById(id);
 const contentTypeInput = $('contentType');
 const contentUrlInput = $('contentUrl');
@@ -32,18 +31,30 @@ function currentBaseUrl(){
 }
 
 function extractYoutubeId(url){
-  const patterns = [
-    /youtu\.be\/([A-Za-z0-9_-]{6,})/,
-    /youtube\.com\/watch\?v=([A-Za-z0-9_-]{6,})/,
-    /youtube\.com\/embed\/([A-Za-z0-9_-]{6,})/,
-    /youtube\.com\/shorts\/([A-Za-z0-9_-]{6,})/
-  ];
-  for(const p of patterns){
-    const m = url.match(p);
-    if(m) return m[1];
-  }
-  try { return new URL(url).searchParams.get('v') || ''; }
-  catch { return ''; }
+  const raw = (url || '').trim();
+  try {
+    const u = new URL(raw);
+    const host = u.hostname.replace(/^www\./, '').toLowerCase();
+
+    if(host === 'youtu.be'){
+      return u.pathname.split('/').filter(Boolean)[0] || '';
+    }
+
+    if(host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com'){
+      if(u.pathname === '/watch') return u.searchParams.get('v') || '';
+      if(u.pathname.startsWith('/embed/')) return u.pathname.split('/')[2] || '';
+      if(u.pathname.startsWith('/shorts/')) return u.pathname.split('/')[2] || '';
+      if(u.pathname.startsWith('/live/')) return u.pathname.split('/')[2] || '';
+    }
+  } catch(e) {}
+
+  const fallback = raw.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{6,})/);
+  return fallback ? fallback[1] : '';
+}
+
+function getYoutubeWatchUrl(url){
+  const id = extractYoutubeId(url);
+  return id ? `https://www.youtube.com/watch?v=${id}` : url;
 }
 
 function detectType(url){
@@ -64,7 +75,8 @@ function buildArUrl(){
   const base = (baseUrlInput.value.trim() || currentBaseUrl()).replace(/index\.html$/i, '');
   if(!url) return '';
   const type = detectType(url);
-  return `${base}viewer-ar.html?type=${encodeURIComponent(type)}&data=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`;
+  const finalUrl = type === 'youtube' ? getYoutubeWatchUrl(url) : url;
+  return `${base}viewer-ar.html?type=${encodeURIComponent(type)}&data=${encodeURIComponent(finalUrl)}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`;
 }
 
 function resetPreview(){
@@ -91,11 +103,13 @@ function testContent(){
 
   if(type === 'youtube'){
     const id = extractYoutubeId(url);
-    if(!id){ setStatus('No pude identificar el video de YouTube.', 'error'); return; }
+    if(!id){ setStatus('No pude identificar el video de YouTube. Usa youtube.com/watch?v=, youtu.be, shorts, embed o live.', 'error'); return; }
+    const watchUrl = `https://www.youtube.com/watch?v=${id}`;
     youtubeThumb.src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-    youtubeLink.href = url;
+    youtubeLink.href = watchUrl;
+    previewOpenBtn.href = watchUrl;
     youtubePreview.classList.remove('hidden');
-    setStatus('YouTube detectado. Se usará miniatura y botón para abrir el video.', 'ok');
+    setStatus('YouTube detectado correctamente. La experiencia tendrá botón visible para abrir YouTube.', 'ok');
     return;
   }
 
@@ -173,7 +187,6 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=3){
 async function buildSingleImage(qrUrl,titleText,descriptionText,contentType){
   const qr = await loadImage(qrUrl);
   const marker = await loadImage('assets/inter-sg-marker.png');
-
   const canvas = document.createElement('canvas');
   canvas.width = 1600;
   canvas.height = 1800;
@@ -197,8 +210,6 @@ async function buildSingleImage(qrUrl,titleText,descriptionText,contentType){
   ctx.fillText('Image · Video · YouTube · PDF · Link',800,255);
 
   ctx.drawImage(qr,200,330,1200,1200);
-
-  // Center marker inside the QR. Kept moderate to preserve QR readability.
   drawRoundRect(ctx,555,685,490,490,24,'#ffffff','#d7e5e0');
   ctx.drawImage(marker,585,715,430,430);
 

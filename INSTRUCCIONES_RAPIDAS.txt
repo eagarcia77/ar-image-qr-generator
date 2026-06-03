@@ -32,3 +32,8 @@ Si el marcador no detecta, el estudiante puede usar Mostrar contenido sin marcad
 
 - Si el contenido es una imagen PNG transparente, se mostrará flotando con fondo transparente.
 - Para PDF y enlaces se mantiene un panel de lectura, porque necesitan un visor o iframe.
+
+CORRECCIÓN DE YOUTUBE
+- Puede usar enlaces youtube.com/watch, youtu.be, shorts, embed o live.
+- Si el video no carga dentro de la experiencia AR, use el botón Abrir video en YouTube.
+- El botón Abrir contenido también cambia a Abrir video en YouTube cuando el contenido es YouTube.
