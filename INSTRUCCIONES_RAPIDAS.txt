@@ -42,3 +42,10 @@ YOUTUBE – IMPORTANTE
 - YouTube no siempre permite reproducirse dentro de un panel AR.
 - Esta versión muestra la miniatura y un botón grande Abrir video en YouTube.
 - Ese botón abre el video en YouTube o en la app de YouTube del dispositivo.
+
+CORRECCIÓN QR CODE Y WEB LINK
+- El Marker INTER SG dentro del QR ahora es más pequeño para mejorar el escaneo.
+- Si el QR no escanea, agrande la imagen en pantalla o imprímala más grande.
+- Web link no se presenta como página embebida porque muchas páginas lo bloquean.
+- Web link ahora muestra un botón Abrir página web.
+- YouTube muestra miniatura y botón Abrir video en YouTube.

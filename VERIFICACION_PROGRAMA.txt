@@ -1,15 +1,10 @@
 VERIFICACIÓN REALIZADA
 
 1. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.
-2. Se dejó YouTube en modo seguro: miniatura + botón Abrir video en YouTube.
-3. Se evita depender del iframe de YouTube, porque puede bloquearse en celulares o por configuración del video.
-4. Se mantiene detección de enlaces:
-   - youtube.com/watch?v=
-   - youtu.be/
-   - youtube.com/shorts/
-   - youtube.com/embed/
-   - youtube.com/live/
-5. Se mantiene imagen única QR Code + Marker INTER SG.
-6. Se mantiene contenido flotante.
-7. Se mantiene zoom con dedos y botones.
-8. Se mantiene fondo transparente para imágenes PNG transparentes.
+2. Se redujo el Marker INTER SG dentro del QR para mejorar lectura del QR Code.
+3. Se confirmó el uso de QR error correction H.
+4. Se cambió Web link a modo seguro: tarjeta + botón Abrir página web.
+5. Se mantiene YouTube en modo seguro: miniatura + botón Abrir video en YouTube.
+6. Se mantiene PDF document con iframe + botón Abrir contenido.
+7. Se mantiene Image, Video, YouTube, PDF document y Web link.
+8. Se mantiene contenido flotante, zoom táctil y fondo transparente para PNG.

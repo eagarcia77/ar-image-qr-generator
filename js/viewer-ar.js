@@ -59,7 +59,7 @@ function showContent(){
   } else if(type === 'image'){
     showAction('Imagen visible con fondo transparente. Usa + y − o pellizca con dos dedos.');
   } else {
-    showAction('Contenido visible. Usa + y − o pellizca con dos dedos.');
+    showAction(type === 'link' ? 'Página web lista. Toca Abrir página web.' : 'Contenido visible. Usa + y − o pellizca con dos dedos.');
   }
 
   if(type === 'video') playVideoIfNeeded();
@@ -143,18 +143,32 @@ function buildContent(){
     return;
   }
 
-  const iframe = document.createElement('iframe');
-  iframe.src = mediaUrl;
-  iframe.title = title;
-  mediaBody.appendChild(iframe);
+  if(type === 'pdf'){
+    const iframe = document.createElement('iframe');
+    iframe.src = mediaUrl;
+    iframe.title = title;
+    mediaBody.appendChild(iframe);
 
-  const note = document.createElement('p');
-  note.textContent = type === 'pdf'
-    ? 'Si el PDF no aparece aquí, presiona Abrir contenido. Blackboard puede requerir login o bloquear vista embebida.'
-    : 'Si el enlace no aparece aquí, presiona Abrir contenido.';
-  note.style.fontSize = '.9rem';
-  note.style.color = '#5d716b';
-  mediaBody.appendChild(note);
+    const note = document.createElement('p');
+    note.textContent = 'Si el PDF no aparece aquí, presiona Abrir contenido. Blackboard puede requerir login o bloquear vista embebida.';
+    note.style.fontSize = '.9rem';
+    note.style.color = '#5d716b';
+    mediaBody.appendChild(note);
+    return;
+  }
+
+  // Web pages often block iframe embedding using X-Frame-Options or CSP.
+  // For Web link, show a stable launch card instead of an iframe.
+  mediaBody.innerHTML = `
+    <div class="link-card">
+      <div class="link-icon">↗</div>
+      <a class="link-button" href="${mediaUrl}" target="_blank" rel="noopener">Abrir página web</a>
+      <p>Muchas páginas web no permiten mostrarse dentro de un panel AR. Este botón abre la página directamente en el navegador.</p>
+      <p><strong>URL:</strong> ${mediaUrl}</p>
+    </div>
+  `;
+  openContentBtn.href = mediaUrl;
+  openContentBtn.textContent = 'Abrir página web';
 }
 
 async function playVideoIfNeeded(){

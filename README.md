@@ -1,23 +1,19 @@
-# Generador Universal AR INTER SG – YouTube final
+# Generador Universal AR INTER SG – QR y Web Link corregidos
 
-Esta versión evita depender del reproductor embebido de YouTube. Para YouTube, la experiencia muestra la miniatura y un botón grande: **Abrir video en YouTube**.
+## Correcciones
+1. El Marker INTER SG dentro del QR Code fue reducido para que el QR escanee mejor.
+2. El QR se genera con error correction H.
+3. Web link ya no intenta presentar páginas web dentro de un iframe, porque muchas páginas lo bloquean.
+4. Para Web link ahora se muestra una tarjeta con botón: Abrir página web.
+5. YouTube mantiene miniatura + botón Abrir video en YouTube.
 
-## Por qué
-YouTube puede bloquear la reproducción dentro de iframes o experiencias AR en algunos celulares. Esta versión abre el video directamente en YouTube o en la app del dispositivo.
-
-## Formatos aceptados
-- youtube.com/watch?v=ID
-- youtu.be/ID
-- youtube.com/shorts/ID
-- youtube.com/embed/ID
-- youtube.com/live/ID
-
-## Se mantiene
+## Compatible con
 - Image
 - Video MP4/WebM
+- YouTube
 - PDF document
 - Web link
 - Blackboard Content Collection
-- Fondo transparente para PNG
-- Zoom táctil
-- Imagen única con QR Code + Marker INTER SG
+
+## Salida
+Genera una sola imagen PNG con QR Code + Marker INTER SG en el centro.

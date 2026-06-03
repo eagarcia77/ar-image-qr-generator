@@ -210,8 +210,10 @@ async function buildSingleImage(qrUrl,titleText,descriptionText,contentType){
   ctx.fillText('Image · Video · YouTube · PDF · Link',800,255);
 
   ctx.drawImage(qr,200,330,1200,1200);
-  drawRoundRect(ctx,555,685,490,490,24,'#ffffff','#d7e5e0');
-  ctx.drawImage(marker,585,715,430,430);
+
+  // Marker smaller in the center so the QR Code can scan reliably.
+  drawRoundRect(ctx,650,780,300,300,22,'#ffffff','#d7e5e0');
+  ctx.drawImage(marker,670,800,260,260);
 
   ctx.fillStyle = '#14211d';
   ctx.font = 'bold 25px Arial';
