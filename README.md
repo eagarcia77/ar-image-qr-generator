@@ -19,3 +19,6 @@ Genera una sola imagen PNG con el QR Code y el Marker INTER SG al centro.
 ## Verificación añadida
 - El contenido aparece como tarjeta flotante en móvil/tableta.
 - Se añadió zoom táctil con dos dedos (pinch-to-zoom), además de botones.
+
+- Las imágenes PNG transparentes se muestran sin fondo sólido en la experiencia AR.
+- Los PDF y Web links se muestran en un panel para lectura.

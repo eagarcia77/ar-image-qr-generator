@@ -31,6 +31,14 @@ contentTitle.textContent = title;
 contentDescription.textContent = description;
 openContentBtn.href = mediaUrl || '#';
 
+function configurePresentationMode(){
+  if(type === 'image'){
+    mediaLayer.classList.add('transparent-mode');
+  } else {
+    mediaLayer.classList.remove('transparent-mode');
+  }
+}
+
 function showError(message){
   errorBox.textContent = message;
   errorBox.style.display = 'block';
@@ -40,7 +48,7 @@ function applyScale(){ mediaLayer.classList.add('no-float'); mediaLayer.style.tr
 function showContent(){
   if(!mediaUrl){ showError('No hay contenido. Regenera el QR Code.'); return; }
   mediaLayer.style.display = 'block';
-  showAction('Contenido visible. Usa + y − o pellizca con dos dedos para cambiar el tamaño.');
+  showAction(type === 'image' ? 'Imagen visible con fondo transparente. Usa + y − o pellizca con dos dedos para cambiar el tamaño.' : 'Contenido visible. Usa + y − o pellizca con dos dedos para cambiar el tamaño.');
   if(type === 'video') playVideoIfNeeded();
 }
 function hideContent(){ mediaLayer.style.display = 'none'; }
@@ -123,6 +131,7 @@ async function playVideoIfNeeded(){
   }
 }
 
+configurePresentationMode();
 buildContent();
 
 marker.addEventListener('markerFound', () => {
