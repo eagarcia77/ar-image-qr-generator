@@ -24,3 +24,6 @@ Mejora visual: ahora el Marker seleccionado resalta con borde verde, insignia de
 
 
 Versión premium: ahora incluye tarjetas premium con iconos y animación suave al seleccionar el Marker.
+
+
+Encabezado institucional actualizado: Universidad Interamericana de Puerto Rico Recinto de San Germán.
