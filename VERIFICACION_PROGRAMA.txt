@@ -1,9 +1,11 @@
 VERIFICACIÓN REALIZADA
 
-1. Se añadió un selector de tipo de Marker.
-2. Se añadieron las opciones Marker INTER SG, Marker INTER y Marker HIRO.
-3. Se creó una imagen de Marker INTER genérica.
-4. Se añadió compatibilidad para Marker HIRO en la experiencia AR.
-5. El visor ahora cambia dinámicamente entre el patrón custom y el preset hiro.
-6. Se mantuvieron los estilos de QR y las salidas integrada y separada.
-7. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.
+1. Se corrigió el cambio de Marker.
+2. Se crearon tres archivos de Marker:
+   - assets/inter-sg-marker.png + .patt
+   - assets/inter-marker-generic.png + .patt
+   - assets/hiro-marker-generic.png + .patt
+3. Se actualizó el visor AR para usar el Marker seleccionado.
+4. Se actualizó el generador para dibujar el Marker correcto.
+5. Se añadió `markers.html`.
+6. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.

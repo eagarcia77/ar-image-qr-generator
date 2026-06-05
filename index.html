@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Generador Universal AR INTER SG</title>
+  <title>Generador Universal AR</title>
   <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body>
   <main class="container">
     <section class="hero card">
-      <img src="assets/inter-sg-marker.png" class="logo-marker" alt="Marcador INTER SG"/>
+      <img src="assets/inter-sg-marker.png" class="logo-marker" alt="Marker INTER SG"/>
       <div>
-        <h1>Generador Universal AR INTER SG</h1>
-        <p>Programa integrado para trabajar con <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Ahora puede crear <strong>dos tipos de imagen</strong>: <strong>QR + Marker integrados</strong> y <strong>QR + Marker separados en una sola imagen</strong>. También incluye una <strong>Opción C</strong> con estilo visual más moderno para el QR y una nueva opción <strong>Tiger Style – INTER SG</strong> inspirada en rayas de tigre. También añade opciones de <strong>Marker INTER</strong> y <strong>Marker HIRO</strong> para uso genérico.</p>
+        <h1>Generador Universal AR</h1>
+        <p>Programa integrado para trabajar con <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Ahora permite escoger entre <strong>Marker INTER SG</strong>, <strong>Marker INTER</strong> y <strong>Marker HIRO</strong>.</p>
       </div>
     </section>
 
     <section class="alert card">
-      <h2>Funciones principales</h2>
-      <p>Incluye <strong>fondo transparente para PNG</strong>, <strong>Zoom In/Zoom Out</strong>, <strong>Activar video</strong>, <strong>Abrir video en YouTube</strong>, <strong>Mostrar contenido sin marcador</strong>, diagnóstico para Blackboard y dos formatos de imagen única.</p>
+      <h2>Opciones genéricas de Marker</h2>
+      <p>Use <strong>Marker INTER SG</strong> para San Germán, <strong>Marker INTER</strong> para otras unidades de la Inter, o <strong>Marker HIRO</strong> para una opción totalmente genérica. El programa ahora sí cambia el Marker en la imagen generada y en el visor AR.</p>
     </section>
 
     <section class="grid">
@@ -35,15 +35,13 @@
           <option value="link">Web link</option>
         </select>
 
-        
-
         <label for="markerType">Tipo de Marker</label>
         <select id="markerType">
           <option value="intersg">Marker INTER SG</option>
           <option value="inter">Marker INTER (Genérico para otras Inter)</option>
           <option value="hiro">Marker HIRO (Totalmente genérico)</option>
         </select>
-        <small><strong>INTER</strong> es una opción genérica para otras unidades de la Inter. <strong>HIRO</strong> es una opción totalmente genérica y universal de AR.js.</small>
+        <small>El estudiante debe apuntar al mismo Marker que usted seleccione aquí.</small>
 
         <label for="contentUrl">URL directa del contenido</label>
         <input id="contentUrl" type="url" placeholder="https://interbb.blackboard.com/bbcswebdav/courses/.../archivo.pdf"/>
@@ -66,7 +64,6 @@
           <option value="tiger">Tiger Style – INTER SG</option>
           <option value="inter">Inter Premium – Simple QR</option>
         </select>
-        <small><strong>Modern</strong> usa una presentación visual más limpia. <strong>Tiger Style – INTER SG</strong> crea un QR personalizado con detalles visuales inspirados en rayas de tigre, manteniendo la legibilidad. <strong>Inter Premium – Simple QR</strong> crea una opción súper personalizada en estilo Inter, con colores institucionales y un QR más simple para escanear.</small>
 
         <div class="actions">
           <button id="testBtn" type="button">Probar contenido</button>
@@ -92,23 +89,23 @@
 
       <div class="card">
         <h2>2. Descargar imágenes únicas</h2>
-        <p>El sistema crea dos versiones: <strong>Integrada</strong> y <strong>Separada</strong>. Ambas son una sola imagen PNG. La versión <strong>Separada</strong> ayuda a que el QR escanee más fácil. Ambas versiones pueden generarse también en modo <strong>Tiger Style – INTER SG</strong> o <strong>Inter Premium – Simple QR</strong>.</p>
+        <p>El sistema crea dos versiones: <strong>Integrada</strong> y <strong>Separada</strong>. Ambas usan el Marker seleccionado.</p>
 
         <div class="dual-preview-grid">
           <div class="preview-card">
             <h3>Versión integrada</h3>
             <div id="integratedPreview" class="preview-box"><span>La imagen integrada aparecerá aquí.</span></div>
-            <p class="mode-note">QR Code + Marker INTER SG dentro del mismo QR.</p>
+            <p class="mode-note">QR Code + Marker seleccionado dentro del mismo QR.</p>
             <div class="actions">
-              <a id="downloadIntegratedBtn" href="#" download="QR_Marker_Integrado_INTER_SG.png" class="button-link gold disabled">Descargar integrada</a>
+              <a id="downloadIntegratedBtn" href="#" download="QR_Marker_Integrado.png" class="button-link gold disabled">Descargar integrada</a>
             </div>
           </div>
           <div class="preview-card">
             <h3>Versión separada</h3>
             <div id="separatedPreview" class="preview-box"><span>La imagen separada aparecerá aquí.</span></div>
-            <p class="mode-note">Una sola imagen con el QR aparte y el Marker aparte.</p>
+            <p class="mode-note">Una sola imagen con el QR aparte y el Marker seleccionado aparte.</p>
             <div class="actions">
-              <a id="downloadSeparatedBtn" href="#" download="QR_Marker_Separado_INTER_SG.png" class="button-link gold disabled">Descargar separada</a>
+              <a id="downloadSeparatedBtn" href="#" download="QR_Marker_Separado.png" class="button-link gold disabled">Descargar separada</a>
             </div>
           </div>
         </div>
@@ -118,6 +115,7 @@
 
         <div class="actions">
           <a id="openBtn" href="#" target="_blank" rel="noopener" class="button-link disabled">Abrir experiencia AR</a>
+          <a href="markers.html" target="_blank" rel="noopener" class="button-link">Ver Markers</a>
           <a href="test-marker.html" target="_blank" rel="noopener" class="button-link">Probar marcador</a>
           <a href="diagnostico-contenido.html" target="_blank" rel="noopener" class="button-link">Diagnóstico</a>
         </div>
@@ -125,15 +123,14 @@
     </section>
 
     <section class="card">
-      <h2>Cómo se usa en Blackboard</h2>
+      <h2>Uso recomendado</h2>
       <ol>
+        <li>Seleccione el <strong>Tipo de Marker</strong>.</li>
         <li>Genere las dos imágenes.</li>
-        <li>Descargue la versión que prefiera: <strong>integrada</strong> o <strong>separada</strong>.</li>
-        <li>Publique el archivo PNG en Blackboard o imprímalo. Seleccione también el tipo de Marker adecuado antes de generar las imágenes.</li>
-        <li>El estudiante escanea el QR Code y luego apunta al Marker seleccionado: INTER SG, INTER o HIRO.</li>
-        <li>Si el marcador no detecta, usa <strong>Mostrar contenido sin marcador</strong>.</li>
+        <li>Publique la versión integrada o separada en Blackboard.</li>
+        <li>El estudiante escanea el QR y apunta al mismo Marker seleccionado.</li>
       </ol>
-      <p class="important">Para enlaces largos como YouTube o Web link, normalmente la versión <strong>separada</strong> escanea mejor. Para archivos de Blackboard, revise que el Content Collection tenga permisos Student/Course Users → Read.</p>
+      <p class="important">Para otras unidades de la Inter, use <strong>Marker INTER</strong>. Para una opción totalmente genérica, use <strong>Marker HIRO</strong>.</p>
     </section>
   </main>
 

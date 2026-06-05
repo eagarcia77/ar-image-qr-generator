@@ -18,7 +18,8 @@ const manualShowBtn = document.getElementById('manualShowBtn');
 const overlayMarkerLabel = document.getElementById('overlayMarkerLabel');
 const playVideoBtn = document.getElementById('playVideoBtn');
 const youtubeBtn = document.getElementById('youtubeBtn');
-const patternMarker = document.getElementById('patternMarker');
+const interSgMarker = document.getElementById('interSgMarker');
+const interMarker = document.getElementById('interMarker');
 const hiroMarker = document.getElementById('hiroMarker');
 const zoomInBtn = document.getElementById('zoomInBtn');
 const zoomOutBtn = document.getElementById('zoomOutBtn');
@@ -33,18 +34,19 @@ function getMarkerLabel(){
   if(markerMode === 'inter') return 'INTER';
   return 'INTER SG';
 }
+
 const markerLabel = getMarkerLabel();
-const activeMarker = markerMode === 'hiro' ? hiroMarker : patternMarker;
-if(patternMarker && markerMode === 'hiro') patternMarker.setAttribute('visible', 'false');
-if(hiroMarker && markerMode !== 'hiro') hiroMarker.setAttribute('visible', 'false');
+const activeMarker = markerMode === 'hiro' ? hiroMarker : (markerMode === 'inter' ? interMarker : interSgMarker);
+[interSgMarker, interMarker, hiroMarker].forEach(m => {
+  if(m && m !== activeMarker) m.setAttribute('visible', 'false');
+});
 
 pageTitle.textContent = title;
 contentTitle.textContent = title;
-if(overlayMarkerLabel) overlayMarkerLabel.textContent = `Apunta al Marker ${markerLabel}.`;
-actionText.textContent = `Buscando Marker ${markerLabel}...`;
-manualShowBtn.textContent = `Mostrar contenido sin marcador`; 
 contentDescription.textContent = description;
 openContentBtn.href = mediaUrl || '#';
+if(overlayMarkerLabel) overlayMarkerLabel.textContent = `Apunta al Marker ${markerLabel}.`;
+actionText.textContent = `Buscando Marker ${markerLabel}...`;
 
 function configurePresentationMode(){
   if(type === 'image'){
@@ -74,8 +76,10 @@ function showContent(){
     showAction('YouTube listo. Toca Abrir video en YouTube.');
   } else if(type === 'image'){
     showAction('Imagen visible con fondo transparente. Usa + y − o pellizca con dos dedos.');
+  } else if(type === 'link'){
+    showAction('Página web lista. Toca Abrir página web.');
   } else {
-    showAction(type === 'link' ? 'Página web lista. Toca Abrir página web.' : 'Contenido visible. Usa + y − o pellizca con dos dedos.');
+    showAction('Contenido visible. Usa + y − o pellizca con dos dedos.');
   }
 
   if(type === 'video') playVideoIfNeeded();
@@ -173,8 +177,6 @@ function buildContent(){
     return;
   }
 
-  // Web pages often block iframe embedding using X-Frame-Options or CSP.
-  // For Web link, show a stable launch card instead of an iframe.
   mediaBody.innerHTML = `
     <div class="link-card">
       <div class="link-icon">↗</div>

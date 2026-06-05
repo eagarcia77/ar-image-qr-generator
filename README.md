@@ -1,19 +1,18 @@
-# Generador Universal AR INTER SG – Opciones genéricas de Marker
+# Generador Universal AR – Markers corregidos
 
-Esta versión añade nuevas opciones para que otras unidades de la Inter o cualquier otra institución puedan utilizar el generador.
+Esta versión corrige el problema donde el Marker seleccionado no cambiaba correctamente.
 
-## Nuevas opciones de Marker
-- **Marker INTER SG**: opción original.
-- **Marker INTER**: opción genérica para otras Inter. El diseño del marcador muestra **INTER**.
-- **Marker HIRO**: opción totalmente genérica usando el marcador universal **HIRO** de AR.js.
+## Markers disponibles
+- Marker INTER SG
+- Marker INTER (genérico para otras Inter)
+- Marker HIRO (totalmente genérico)
 
-## Estilos de QR disponibles
-- Classic
-- Modern (Opción C)
-- Tiger Style – INTER SG
-- Inter Premium – Simple QR
+## Corrección realizada
+- Cada Marker tiene su propia imagen PNG.
+- Cada Marker tiene su propio archivo `.patt`.
+- El visor AR carga tres Markers diferentes y activa el que se seleccione en el generador.
+- El QR incluye el parámetro `m` para indicar el Marker correcto.
+- La imagen generada muestra el Marker correcto.
 
-## Recomendación
-- Para otras unidades de la Inter, use **Marker INTER**.
-- Para una solución totalmente genérica, use **Marker HIRO**.
-- Para mejor escaneo, use preferiblemente la **versión separada**.
+## Archivo útil
+- `markers.html`: muestra los tres Markers disponibles.
