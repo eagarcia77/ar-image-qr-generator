@@ -1,11 +1,14 @@
-# Generador Universal AR INTER SG – QR integrado y separado v2
+# Generador Universal AR INTER SG – Tiger Style
 
-Nuevos ajustes solicitados:
+Esta versión añade una nueva opción de diseño:
 
-1. En la **versión separada**, el **Marker** es más grande.
-2. En la **versión separada**, el **QR** es más simple:
-   - usa un enlace más corto (`v.html` + parámetros cortos),
-   - usa corrección `M` en vez de `H`,
-   - y mantiene un diseño más limpio.
-3. La **versión integrada** se mantiene disponible.
-4. La **Opción C / Modern** se mantiene para la versión integrada.
+- **Classic**
+- **Modern (Opción C)**
+- **Tiger Style – INTER SG**
+
+## Tiger Style – INTER SG
+- QR personalizado con identidad visual inspirada en rayas de tigre.
+- Colores institucionales: verde `#007B5F` y amarillo `#FED141`.
+- Detalles decorativos de rayas de tigre alrededor del diseño.
+- Mantiene dos salidas: **integrada** y **separada**.
+- La versión separada conserva el QR más simple y el Marker más grande.

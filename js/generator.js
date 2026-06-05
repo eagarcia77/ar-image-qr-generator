@@ -76,7 +76,6 @@ function buildArUrl(){
   if(!url) return '';
   const type = detectType(url);
   const finalUrl = type === 'youtube' ? getYoutubeWatchUrl(url) : url;
-  // Shorter URL to keep QR simpler: v.html + short parameter names.
   const params = new URLSearchParams();
   params.set('t', type);
   params.set('u', finalUrl);
@@ -172,27 +171,37 @@ function dataUrlFromBlob(blob){
 
 async function createQrDataUrl(data, style='classic', simple=false){
   const ecc = simple ? 'M' : 'H';
-  if(style === 'modern' && window.QRCodeStyling){
+  if(window.QRCodeStyling && (style === 'modern' || style === 'tiger')){
     try{
       qrRenderHost.innerHTML = '';
-      const qr = new QRCodeStyling({
+      const options = {
         width: 1200,
         height: 1200,
         type: 'canvas',
         data,
         margin: simple ? 8 : 0,
         qrOptions: { errorCorrectionLevel: ecc },
-        dotsOptions: simple
+        backgroundOptions: { color: '#ffffff' }
+      };
+      if(style === 'modern'){
+        options.dotsOptions = simple
           ? { color: '#111111', type: 'square' }
-          : { color: '#14211d', type: 'rounded' },
-        backgroundOptions: { color: '#ffffff' },
-        cornersSquareOptions: simple
+          : { color: '#14211d', type: 'rounded' };
+        options.cornersSquareOptions = simple
           ? { color: '#007B5F', type: 'square' }
-          : { color: '#007B5F', type: 'extra-rounded' },
-        cornersDotOptions: simple
+          : { color: '#007B5F', type: 'extra-rounded' };
+        options.cornersDotOptions = simple
           ? { color: '#007B5F', type: 'square' }
-          : { color: '#FED141', type: 'dot' }
-      });
+          : { color: '#FED141', type: 'dot' };
+      }
+      if(style === 'tiger'){
+        options.dotsOptions = simple
+          ? { color: '#111111', type: 'square' }
+          : { color: '#111111', type: 'classy-rounded' };
+        options.cornersSquareOptions = { color: '#007B5F', type: 'extra-rounded' };
+        options.cornersDotOptions = { color: '#FED141', type: 'dot' };
+      }
+      const qr = new QRCodeStyling(options);
       qr.append(qrRenderHost);
       await new Promise(r => setTimeout(r, 120));
       const canvas = qrRenderHost.querySelector('canvas');
@@ -202,7 +211,7 @@ async function createQrDataUrl(data, style='classic', simple=false){
         return await dataUrlFromBlob(blob);
       }
     }catch(e){
-      console.warn('Modern QR fallback', e);
+      console.warn('Styled QR fallback', e);
     }
   }
   return `https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&ecc=${ecc}&format=png&data=${encodeURIComponent(data)}`;
@@ -238,9 +247,45 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=3){
 }
 
 function getTheme(style){
+  if(style === 'tiger') return {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#fff6d8', stripe:'#1e1e1e'};
   return style === 'modern'
-    ? {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#eef7f3'}
-    : {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#f4f4f4'};
+    ? {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#eef7f3', stripe:'#1e1e1e'}
+    : {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#f4f4f4', stripe:'#1e1e1e'};
+}
+
+function drawTigerStripes(ctx, x, y, w, h, color='#1e1e1e', alpha=0.14, flip=false){
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = color;
+  for(let i=0;i<6;i++){
+    const sx = flip ? x + w - (i*48) - 36 : x + i*48;
+    const sy = y + (i%2)*16;
+    ctx.beginPath();
+    if(!flip){
+      ctx.moveTo(sx, sy);
+      ctx.quadraticCurveTo(sx+20, sy+18, sx+14, sy+52);
+      ctx.quadraticCurveTo(sx+8, sy+78, sx+34, sy+112);
+      ctx.quadraticCurveTo(sx+46, sy+76, sx+56, sy+12);
+    } else {
+      ctx.moveTo(sx, sy);
+      ctx.quadraticCurveTo(sx-20, sy+18, sx-14, sy+52);
+      ctx.quadraticCurveTo(sx-8, sy+78, sx-34, sy+112);
+      ctx.quadraticCurveTo(sx-46, sy+76, sx-56, sy+12);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawTigerBanner(ctx, x, y, w, h, theme){
+  drawRoundRect(ctx, x, y, w, h, 18, theme.accent2, null);
+  drawTigerStripes(ctx, x+12, y+8, w-24, h-16, theme.stripe, 0.2, false);
+  drawTigerStripes(ctx, x+12, y+8, w-24, h-16, theme.stripe, 0.12, true);
+  ctx.fillStyle = theme.text;
+  ctx.font = 'bold 22px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('TIGER STYLE – INTER SG', x + w/2, y + h/2 + 8);
 }
 
 async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentType,style){
@@ -255,42 +300,54 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
   drawRoundRect(ctx,60,60,1480,1680,44,'#ffffff',theme.accent);
+  if(style === 'tiger'){
+    drawTigerStripes(ctx, 95, 85, 260, 170, theme.stripe, 0.11, false);
+    drawTigerStripes(ctx, 1240, 85, 260, 170, theme.stripe, 0.11, true);
+  }
 
   ctx.fillStyle = theme.accent;
   ctx.font = 'bold 58px Arial';
   ctx.textAlign = 'center';
   ctx.fillText('AR Universal INTER SG',800,140);
 
+  if(style === 'tiger') drawTigerBanner(ctx, 560, 155, 480, 52, theme);
+
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 40px Arial';
-  ctx.fillText(titleText || 'Experiencia AR',800,205);
+  ctx.fillText(titleText || 'Experiencia AR',800,245);
 
   ctx.fillStyle = theme.sub;
   ctx.font = '28px Arial';
-  ctx.fillText(style === 'modern' ? 'Image · Video · YouTube · PDF · Link · Modern QR' : 'Image · Video · YouTube · PDF · Link',800,255);
+  const subtitle = style === 'modern'
+    ? 'Image · Video · YouTube · PDF · Link · Modern QR'
+    : style === 'tiger'
+      ? 'Image · Video · YouTube · PDF · Link · Tiger Style'
+      : 'Image · Video · YouTube · PDF · Link';
+  ctx.fillText(subtitle,800,295);
 
-  ctx.drawImage(qr,200,330,1200,1200);
-  drawRoundRect(ctx,650,780,300,300,22,'#ffffff','#d7e5e0');
-  ctx.drawImage(marker,670,800,260,260);
+  ctx.drawImage(qr,200,360,1200,1200);
+  drawRoundRect(ctx,650,810,300,300,22,'#ffffff','#d7e5e0');
+  ctx.drawImage(marker,670,830,260,260);
 
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 25px Arial';
-  ctx.fillText('QR Code + Marker INTER SG integrado',800,1275);
+  ctx.fillText('QR Code + Marker INTER SG integrado',800,1305);
 
   ctx.fillStyle = '#85714D';
   ctx.font = 'bold 24px Arial';
-  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1328);
+  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1358);
 
   if(descriptionText){
     ctx.fillStyle = theme.text;
     ctx.font = '24px Arial';
-    wrapText(ctx,descriptionText,800,1378,1040,30,3);
+    wrapText(ctx,descriptionText,800,1408,1040,30,3);
   }
 
-  drawRoundRect(ctx,210,1530,1180,120,28,'#FFF4CC',theme.accent2);
+  drawRoundRect(ctx,210,1560,1180,120,28,'#FFF4CC',theme.accent2);
+  if(style === 'tiger') drawTigerStripes(ctx, 245, 1572, 80, 72, theme.stripe, 0.18, false);
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 24px Arial';
-  wrapText(ctx,'Escanea el QR y luego apunta al Marker INTER SG del centro. Esta versión es visualmente compacta.',800,1575,1040,30,3);
+  wrapText(ctx,'Escanea el QR y luego apunta al Marker INTER SG del centro. Esta versión es visualmente compacta.',800,1605,1040,30,3);
 
   return canvas.toDataURL('image/png');
 }
@@ -307,11 +364,17 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
   drawRoundRect(ctx,60,60,1680,1330,40,'#ffffff',theme.accent);
+  if(style === 'tiger'){
+    drawTigerStripes(ctx, 90, 90, 220, 170, theme.stripe, 0.13, false);
+    drawTigerStripes(ctx, 1490, 90, 220, 170, theme.stripe, 0.13, true);
+  }
 
   ctx.fillStyle = theme.accent;
   ctx.font = 'bold 54px Arial';
   ctx.textAlign = 'left';
   ctx.fillText('AR Universal INTER SG',110,135);
+
+  if(style === 'tiger') drawTigerBanner(ctx, 1190, 96, 440, 52, theme);
 
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 34px Arial';
@@ -323,21 +386,22 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.fillText(`Tipo: ${contentType}`,128,264);
 
   ctx.textAlign = 'center';
-  // Bigger QR area but simpler QR content (short URL + ECC M)
   ctx.drawImage(qr,110,310,660,660);
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 26px Arial';
   ctx.fillText('Paso 1: Escanea el QR Code',440,1010);
 
-  // Marker much larger
-  drawRoundRect(ctx,920,260,760,760,28,'#f9fbfa','#d7e5e0');
-  ctx.drawImage(marker,1030,345,540,540);
+  drawRoundRect(ctx,900,240,800,800,30,'#f9fbfa','#d7e5e0');
+  if(style === 'tiger'){
+    drawTigerStripes(ctx, 930, 280, 140, 180, theme.stripe, 0.10, false);
+    drawTigerStripes(ctx, 1560, 280, 140, 180, theme.stripe, 0.10, true);
+  }
+  ctx.drawImage(marker,1020,340,560,560);
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 26px Arial';
   ctx.fillText('Paso 2: Apunta al Marker INTER SG',1300,1010);
 
-  // helper callout
-  drawRoundRect(ctx,105,1065,1590,95,18,'#eef7f3',null);
+  drawRoundRect(ctx,105,1065,1590,95,18,style === 'tiger' ? '#fff6d8' : '#eef7f3',null);
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 22px Arial';
   wrapText(ctx,'La versión separada usa un QR más simple para facilitar el escaneo y un Marker más grande para una mejor detección.',900,1102,1480,28,2);
@@ -350,6 +414,7 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   }
 
   drawRoundRect(ctx,110,1270,1490,78,18,'#FFF4CC',theme.accent2);
+  if(style === 'tiger') drawTigerStripes(ctx, 135, 1280, 100, 54, theme.stripe, 0.18, false);
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 22px Arial';
   wrapText(ctx,'Recomendado para YouTube y Web link. Esta versión suele escanear mejor que la integrada.',855,1318,1400,28,2);
@@ -371,7 +436,7 @@ async function generate(){
 
   try{
     const integratedQr = await createQrDataUrl(arUrl, style, false);
-    const separatedQr = await createQrDataUrl(arUrl, 'classic', true);
+    const separatedQr = await createQrDataUrl(arUrl, style === 'tiger' ? 'tiger' : 'classic', true);
     const integrated = await buildIntegratedImage(integratedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style);
     const separated = await buildSeparatedImage(separatedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style);
 
@@ -379,11 +444,11 @@ async function generate(){
     separatedPreview.innerHTML = `<img src="${separated}" alt="Versión separada del QR y Marker">`;
 
     downloadIntegratedBtn.href = integrated;
-    downloadIntegratedBtn.download = `QR_Marker_Integrado_INTER_SG_${type}.png`;
+    downloadIntegratedBtn.download = `QR_Marker_Integrado_INTER_SG_${type}_${style}.png`;
     downloadIntegratedBtn.classList.remove('disabled');
 
     downloadSeparatedBtn.href = separated;
-    downloadSeparatedBtn.download = `QR_Marker_Separado_INTER_SG_${type}.png`;
+    downloadSeparatedBtn.download = `QR_Marker_Separado_INTER_SG_${type}_${style}.png`;
     downloadSeparatedBtn.classList.remove('disabled');
 
     setStatus('Listo. Ya puedes descargar la versión integrada y la versión separada.', 'ok');

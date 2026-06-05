@@ -1,7 +1,8 @@
 VERIFICACIÓN REALIZADA
 
-1. Se aumentó el tamaño del Marker en la versión separada.
-2. Se simplificó el QR de la versión separada con una URL más corta y corrección M.
-3. Se añadió `v.html` como alias corto de `viewer-ar.html`.
-4. `viewer-ar.js` ahora acepta parámetros largos y cortos.
-5. Se verificó la sintaxis de `js/generator.js` y `js/viewer-ar.js`.
+1. Se añadió la opción Tiger Style – INTER SG.
+2. Se añadió personalización visual inspirada en rayas de tigre.
+3. Se mantuvieron las opciones Classic y Modern.
+4. Se mantuvieron las salidas integrada y separada.
+5. La versión separada conserva QR más simple y Marker más grande.
+6. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.
