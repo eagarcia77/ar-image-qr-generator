@@ -1,10 +1,9 @@
 VERIFICACIÓN REALIZADA
 
-1. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.
-2. Se redujo el Marker INTER SG dentro del QR para mejorar lectura del QR Code.
-3. Se confirmó el uso de QR error correction H.
-4. Se cambió Web link a modo seguro: tarjeta + botón Abrir página web.
-5. Se mantiene YouTube en modo seguro: miniatura + botón Abrir video en YouTube.
-6. Se mantiene PDF document con iframe + botón Abrir contenido.
-7. Se mantiene Image, Video, YouTube, PDF document y Web link.
-8. Se mantiene contenido flotante, zoom táctil y fondo transparente para PNG.
+1. Se añadieron dos salidas: integrada y separada.
+2. Se conservó la imagen integrada original.
+3. Se añadió una segunda imagen con QR y Marker separados dentro de una sola imagen.
+4. Se añadió selector de estilo: Classic / Modern.
+5. Se añadió soporte para QR visual más moderno mediante qr-code-styling cuando esté disponible.
+6. Si el estilo moderno no carga, el programa usa un QR clásico automáticamente.
+7. Se verificó la sintaxis de js/generator.js.

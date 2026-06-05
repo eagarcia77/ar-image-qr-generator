@@ -1,9 +1,11 @@
+
 const $ = id => document.getElementById(id);
 const contentTypeInput = $('contentType');
 const contentUrlInput = $('contentUrl');
 const titleInput = $('title');
 const descriptionInput = $('description');
 const baseUrlInput = $('baseUrl');
+const qrStyleInput = $('qrStyle');
 const testBtn = $('testBtn');
 const generateBtn = $('generateBtn');
 const statusBox = $('status');
@@ -16,9 +18,12 @@ const youtubeLink = $('youtubeLink');
 const documentPreview = $('documentPreview');
 const previewOpenBtn = $('previewOpenBtn');
 const resultUrl = $('resultUrl');
-const oneImagePreview = $('oneImagePreview');
-const downloadSingleBtn = $('downloadSingleBtn');
+const integratedPreview = $('integratedPreview');
+const separatedPreview = $('separatedPreview');
+const downloadIntegratedBtn = $('downloadIntegratedBtn');
+const downloadSeparatedBtn = $('downloadSeparatedBtn');
 const openBtn = $('openBtn');
+const qrRenderHost = $('qrRenderHost');
 
 function setStatus(message, type='ok'){
   statusBox.textContent = message;
@@ -35,11 +40,7 @@ function extractYoutubeId(url){
   try {
     const u = new URL(raw);
     const host = u.hostname.replace(/^www\./, '').toLowerCase();
-
-    if(host === 'youtu.be'){
-      return u.pathname.split('/').filter(Boolean)[0] || '';
-    }
-
+    if(host === 'youtu.be') return u.pathname.split('/').filter(Boolean)[0] || '';
     if(host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com'){
       if(u.pathname === '/watch') return u.searchParams.get('v') || '';
       if(u.pathname.startsWith('/embed/')) return u.pathname.split('/')[2] || '';
@@ -47,7 +48,6 @@ function extractYoutubeId(url){
       if(u.pathname.startsWith('/live/')) return u.pathname.split('/')[2] || '';
     }
   } catch(e) {}
-
   const fallback = raw.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{6,})/);
   return fallback ? fallback[1] : '';
 }
@@ -155,6 +155,47 @@ function loadImage(src){
   });
 }
 
+function dataUrlFromBlob(blob){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function createQrDataUrl(data, style='classic'){
+  if(style === 'modern' && window.QRCodeStyling){
+    try{
+      qrRenderHost.innerHTML = '';
+      const qr = new QRCodeStyling({
+        width: 1200,
+        height: 1200,
+        type: 'canvas',
+        data,
+        margin: 0,
+        qrOptions: { errorCorrectionLevel: 'H' },
+        imageOptions: { hideBackgroundDots: false, imageSize: 0.3, margin: 6 },
+        dotsOptions: { color: '#14211d', type: 'rounded' },
+        backgroundOptions: { color: '#ffffff' },
+        cornersSquareOptions: { color: '#007B5F', type: 'extra-rounded' },
+        cornersDotOptions: { color: '#FED141', type: 'dot' }
+      });
+      qr.append(qrRenderHost);
+      await new Promise(r => setTimeout(r, 120));
+      const canvas = qrRenderHost.querySelector('canvas');
+      if(canvas) return canvas.toDataURL('image/png');
+      if(typeof qr.getRawData === 'function'){
+        const blob = await qr.getRawData('png');
+        return await dataUrlFromBlob(blob);
+      }
+    }catch(e){
+      console.warn('Modern QR fallback', e);
+    }
+  }
+  return `https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&ecc=H&format=png&data=${encodeURIComponent(data)}`;
+}
+
 function drawRoundRect(ctx,x,y,w,h,r,fill,stroke){
   ctx.beginPath();
   ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
@@ -184,55 +225,114 @@ function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=3){
   lines.slice(0,maxLines).forEach((ln,i)=>ctx.fillText(ln,x,y+(i*lineHeight)));
 }
 
-async function buildSingleImage(qrUrl,titleText,descriptionText,contentType){
-  const qr = await loadImage(qrUrl);
+function getTheme(style){
+  return style === 'modern'
+    ? {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#eef7f3'}
+    : {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#f4f4f4'};
+}
+
+async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentType,style){
+  const qr = await loadImage(qrDataUrl);
   const marker = await loadImage('assets/inter-sg-marker.png');
+  const theme = getTheme(style);
   const canvas = document.createElement('canvas');
   canvas.width = 1600;
   canvas.height = 1800;
   const ctx = canvas.getContext('2d');
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1480,1680,44,'#ffffff','#007B5F');
+  drawRoundRect(ctx,60,60,1480,1680,44,'#ffffff',theme.accent);
 
-  ctx.fillStyle = '#007B5F';
+  ctx.fillStyle = theme.accent;
   ctx.font = 'bold 58px Arial';
   ctx.textAlign = 'center';
   ctx.fillText('AR Universal INTER SG',800,140);
 
-  ctx.fillStyle = '#14211d';
+  ctx.fillStyle = theme.text;
   ctx.font = 'bold 40px Arial';
   ctx.fillText(titleText || 'Experiencia AR',800,205);
 
-  ctx.fillStyle = '#5d716b';
+  ctx.fillStyle = theme.sub;
   ctx.font = '28px Arial';
-  ctx.fillText('Image · Video · YouTube · PDF · Link',800,255);
+  ctx.fillText(style === 'modern' ? 'Image · Video · YouTube · PDF · Link · Modern QR' : 'Image · Video · YouTube · PDF · Link',800,255);
 
   ctx.drawImage(qr,200,330,1200,1200);
-
-  // Marker smaller in the center so the QR Code can scan reliably.
   drawRoundRect(ctx,650,780,300,300,22,'#ffffff','#d7e5e0');
   ctx.drawImage(marker,670,800,260,260);
 
-  ctx.fillStyle = '#14211d';
+  ctx.fillStyle = theme.text;
   ctx.font = 'bold 25px Arial';
-  ctx.fillText('QR Code + Marker INTER SG',800,1275);
+  ctx.fillText('QR Code + Marker INTER SG integrado',800,1275);
 
   ctx.fillStyle = '#85714D';
   ctx.font = 'bold 24px Arial';
   ctx.fillText(`Tipo de contenido: ${contentType}`,800,1328);
 
   if(descriptionText){
-    ctx.fillStyle = '#14211d';
+    ctx.fillStyle = theme.text;
     ctx.font = '24px Arial';
     wrapText(ctx,descriptionText,800,1378,1040,30,3);
   }
 
-  drawRoundRect(ctx,210,1530,1180,120,28,'#FFF4CC','#FED141');
-  ctx.fillStyle = '#14211d';
+  drawRoundRect(ctx,210,1530,1180,120,28,'#FFF4CC',theme.accent2);
+  ctx.fillStyle = theme.text;
   ctx.font = 'bold 24px Arial';
-  wrapText(ctx,'Publique o imprima esta imagen. El estudiante escanea el QR y luego apunta al Marker INTER SG del centro.',800,1575,1040,30,3);
+  wrapText(ctx,'Escanea el QR y luego apunta al Marker INTER SG del centro. Esta versión es visualmente compacta.',800,1575,1040,30,3);
+
+  return canvas.toDataURL('image/png');
+}
+
+async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentType,style){
+  const qr = await loadImage(qrDataUrl);
+  const marker = await loadImage('assets/inter-sg-marker.png');
+  const theme = getTheme(style);
+  const canvas = document.createElement('canvas');
+  canvas.width = 1800;
+  canvas.height = 1400;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = theme.bg;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  drawRoundRect(ctx,60,60,1680,1280,40,'#ffffff',theme.accent);
+
+  ctx.fillStyle = theme.accent;
+  ctx.font = 'bold 54px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('AR Universal INTER SG',110,135);
+
+  ctx.fillStyle = theme.text;
+  ctx.font = 'bold 34px Arial';
+  ctx.fillText(titleText || 'Experiencia AR',110,190);
+
+  drawRoundRect(ctx,108,235,280,44,20,theme.chip,null);
+  ctx.fillStyle = theme.text;
+  ctx.font = 'bold 22px Arial';
+  ctx.fillText(`Tipo: ${contentType}`,128,264);
+
+  ctx.textAlign = 'center';
+  ctx.drawImage(qr,120,330,700,700);
+  ctx.fillStyle = theme.text;
+  ctx.font = 'bold 26px Arial';
+  ctx.fillText('Paso 1: Escanea el QR Code',470,1070);
+
+  drawRoundRect(ctx,980,330,620,700,24,'#f9fbfa','#d7e5e0');
+  ctx.drawImage(marker,1110,410,360,360);
+  ctx.fillStyle = theme.text;
+  ctx.font = 'bold 26px Arial';
+  ctx.fillText('Paso 2: Apunta al Marker INTER SG',1290,1070);
+
+  ctx.textAlign = 'left';
+  if(descriptionText){
+    ctx.fillStyle = theme.sub;
+    ctx.font = '24px Arial';
+    wrapText(ctx,descriptionText,110,1160,1480,30,2);
+  }
+
+  drawRoundRect(ctx,110,1210,1490,78,18,'#FFF4CC',theme.accent2);
+  ctx.fillStyle = theme.text;
+  ctx.font = 'bold 22px Arial';
+  wrapText(ctx,'La versión separada reduce la densidad del QR y normalmente facilita el escaneo, especialmente con YouTube y Web link.',855,1258,1400,28,2);
 
   return canvas.toDataURL('image/png');
 }
@@ -242,24 +342,35 @@ async function generate(){
   if(!arUrl){ setStatus('Falta el URL del contenido.', 'error'); return; }
 
   const type = detectType(contentUrlInput.value.trim());
+  const style = qrStyleInput.value;
   resultUrl.value = arUrl;
   openBtn.href = arUrl;
   openBtn.classList.remove('disabled');
 
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&ecc=H&format=png&data=${encodeURIComponent(arUrl)}`;
-
-  setStatus('Creando imagen única...', 'warn');
+  setStatus('Creando ambas imágenes...', 'warn');
 
   try{
-    const single = await buildSingleImage(qrUrl,titleInput.value.trim(),descriptionInput.value.trim(),type);
-    oneImagePreview.innerHTML = `<img src="${single}" alt="QR Code con Marker INTER SG en el centro">`;
-    downloadSingleBtn.href = single;
-    downloadSingleBtn.download = `QR_Marker_INTER_SG_${type}.png`;
-    downloadSingleBtn.classList.remove('disabled');
-    setStatus('Listo. Descarga la imagen única y publícala en Blackboard.', 'ok');
+    const qrDataUrl = await createQrDataUrl(arUrl, style);
+    const integrated = await buildIntegratedImage(qrDataUrl,titleInput.value.trim(),descriptionInput.value.trim(),type,style);
+    const separated = await buildSeparatedImage(qrDataUrl,titleInput.value.trim(),descriptionInput.value.trim(),type,style);
+
+    integratedPreview.innerHTML = `<img src="${integrated}" alt="Versión integrada del QR y Marker">`;
+    separatedPreview.innerHTML = `<img src="${separated}" alt="Versión separada del QR y Marker">`;
+
+    downloadIntegratedBtn.href = integrated;
+    downloadIntegratedBtn.download = `QR_Marker_Integrado_INTER_SG_${type}.png`;
+    downloadIntegratedBtn.classList.remove('disabled');
+
+    downloadSeparatedBtn.href = separated;
+    downloadSeparatedBtn.download = `QR_Marker_Separado_INTER_SG_${type}.png`;
+    downloadSeparatedBtn.classList.remove('disabled');
+
+    setStatus('Listo. Ya puedes descargar la versión integrada y la versión separada.', 'ok');
   }catch(e){
-    oneImagePreview.innerHTML = '<p>No se pudo crear la imagen única. Verifica conexión a internet para generar el QR.</p>';
-    setStatus('No se pudo crear la imagen única.', 'error');
+    console.error(e);
+    integratedPreview.innerHTML = '<p>No se pudo crear la versión integrada.</p>';
+    separatedPreview.innerHTML = '<p>No se pudo crear la versión separada.</p>';
+    setStatus('No se pudieron crear las imágenes. Verifica conexión a internet para generar el QR.', 'error');
   }
 }
 

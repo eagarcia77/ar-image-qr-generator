@@ -2,11 +2,6 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
-    <!-- <p>Creado por El Dr. Eduardo Augusto García Rodríguez</p> -->
-    <!-- <p>Desarrollador Curricular - Coordinador de Proyecto</p> -->
-    <!-- <p>Developing Postbacc and Postgrad Curriculum Program</p> -->
-    <!-- <p>University Center for Advancing and Nurturing Postbacc Quality (UCAN)</p> -->
-    <!-- <p>Title V PPOHA #P031M230038</p> -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Generador Universal AR INTER SG</title>
   <link rel="stylesheet" href="css/app.css"/>
@@ -16,15 +11,14 @@
     <section class="hero card">
       <img src="assets/inter-sg-marker.png" class="logo-marker" alt="Marcador INTER SG"/>
       <div>
-        <h1>Generador de Realidad Aumentada INTER SG</h1>
-        <p>Programa integrado para trabajar con <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Genera una sola imagen descargable con el <strong>QR Code</strong> y el <strong>Marker INTER SG</strong> en el centro. Para YouTube, el sistema abre el video directamente en YouTube para evitar bloqueos del reproductor embebido. En celular o tableta, el contenido aparece como una <strong>tarjeta flotante</strong> y permite <strong>zoom con los dedos</strong>. Cuando el contenido es una <strong>imagen PNG transparente</strong>, se muestra con <strong>fondo transparente</strong>.</p>
+        <h1>Generador Universal AR INTER SG</h1>
+        <p>Programa integrado para trabajar con <strong>Image</strong>, <strong>Video MP4/WebM</strong>, <strong>YouTube</strong>, <strong>PDF document</strong> y <strong>Web link</strong>. Ahora puede crear <strong>dos tipos de imagen</strong>: <strong>QR + Marker integrados</strong> y <strong>QR + Marker separados en una sola imagen</strong>. También incluye una <strong>Opción C</strong> con estilo visual más moderno para el QR.</p>
       </div>
     </section>
 
     <section class="alert card">
-      <h2>Funciones</h2>
-      <p>Esta versión integra las funciones del generador de imágenes/videos: <strong>fondo transparente para PNG</strong>, <strong>Zoom In/Zoom Out</strong>, <strong>Activar video</strong>, <strong>Abrir video en YouTube</strong>, <strong>Mostrar contenido sin marcador</strong> y diagnóstico para Blackboard.</p>
-      <p><a target="_blank" href="https://eagarcia77.github.io/ar-image-qr-generator/Manual_Generador_AR_INTER_SG.pdf" aria-label="Manual Generador de Realidad Aumentada INTER SG">Manual Generador de Realidad Aumentada INTER SG</a></p>
+      <h2>Funciones principales</h2>
+      <p>Incluye <strong>fondo transparente para PNG</strong>, <strong>Zoom In/Zoom Out</strong>, <strong>Activar video</strong>, <strong>Abrir video en YouTube</strong>, <strong>Mostrar contenido sin marcador</strong>, diagnóstico para Blackboard y dos formatos de imagen única.</p>
     </section>
 
     <section class="grid">
@@ -55,9 +49,16 @@
         <input id="baseUrl" type="url"/>
         <small>Si esta página ya está publicada, déjela como aparece.</small>
 
+        <label for="qrStyle">Estilo del QR</label>
+        <select id="qrStyle">
+          <option value="classic">Classic</option>
+          <option value="modern">Modern (Opción C)</option>
+        </select>
+        <small><strong>Modern</strong> usa una presentación visual más limpia y, cuando sea posible, un QR con puntos redondeados.</small>
+
         <div class="actions">
           <button id="testBtn" type="button">Probar contenido</button>
-          <button id="generateBtn" type="button" class="primary">Generar imagen única</button>
+          <button id="generateBtn" type="button" class="primary">Generar ambas imágenes</button>
         </div>
 
         <div id="status" class="status"></div>
@@ -78,18 +79,32 @@
       </div>
 
       <div class="card">
-        <h2>2. Descargar una sola imagen</h2>
-        <p>El sistema genera una imagen PNG con el <strong>QR Code</strong> y el <strong>Marker INTER SG</strong> en el centro. La experiencia AR muestra el contenido flotando en pantalla y permite hacer <strong>pinch-to-zoom</strong> con dos dedos. Para imágenes PNG transparentes, el fondo se mantiene transparente.</p>
+        <h2>2. Descargar imágenes únicas</h2>
+        <p>El sistema crea dos versiones: <strong>Integrada</strong> y <strong>Separada</strong>. Ambas son una sola imagen PNG. La versión <strong>Separada</strong> ayuda a que el QR escanee más fácil.</p>
 
-        <div id="oneImagePreview" class="one-preview">
-          <span>La imagen aparecerá aquí.</span>
+        <div class="dual-preview-grid">
+          <div class="preview-card">
+            <h3>Versión integrada</h3>
+            <div id="integratedPreview" class="preview-box"><span>La imagen integrada aparecerá aquí.</span></div>
+            <p class="mode-note">QR Code + Marker INTER SG dentro del mismo QR.</p>
+            <div class="actions">
+              <a id="downloadIntegratedBtn" href="#" download="QR_Marker_Integrado_INTER_SG.png" class="button-link gold disabled">Descargar integrada</a>
+            </div>
+          </div>
+          <div class="preview-card">
+            <h3>Versión separada</h3>
+            <div id="separatedPreview" class="preview-box"><span>La imagen separada aparecerá aquí.</span></div>
+            <p class="mode-note">Una sola imagen con el QR aparte y el Marker aparte.</p>
+            <div class="actions">
+              <a id="downloadSeparatedBtn" href="#" download="QR_Marker_Separado_INTER_SG.png" class="button-link gold disabled">Descargar separada</a>
+            </div>
+          </div>
         </div>
 
         <label for="resultUrl">Enlace AR generado</label>
         <textarea id="resultUrl" rows="4" readonly></textarea>
 
         <div class="actions">
-          <a id="downloadSingleBtn" href="#" download="QR_Marker_INTER_SG.png" class="button-link gold disabled">Descargar imagen única</a>
           <a id="openBtn" href="#" target="_blank" rel="noopener" class="button-link disabled">Abrir experiencia AR</a>
           <a href="test-marker.html" target="_blank" rel="noopener" class="button-link">Probar marcador</a>
           <a href="diagnostico-contenido.html" target="_blank" rel="noopener" class="button-link">Diagnóstico</a>
@@ -100,16 +115,18 @@
     <section class="card">
       <h2>Cómo se usa en Blackboard</h2>
       <ol>
-        <li>Genere la imagen única.</li>
-        <li>Descargue el archivo PNG.</li>
-        <li>Publíquelo en Blackboard o imprímalo.</li>
-        <li>El estudiante escanea el QR Code y luego apunta al Marker INTER SG del centro.</li>
+        <li>Genere las dos imágenes.</li>
+        <li>Descargue la versión que prefiera: <strong>integrada</strong> o <strong>separada</strong>.</li>
+        <li>Publique el archivo PNG en Blackboard o imprímalo.</li>
+        <li>El estudiante escanea el QR Code y luego apunta al Marker INTER SG.</li>
         <li>Si el marcador no detecta, usa <strong>Mostrar contenido sin marcador</strong>.</li>
       </ol>
-      <p class="important">Para archivos de Blackboard, revise que el Content Collection tenga permisos Student/Course Users → Read.</p>
+      <p class="important">Para enlaces largos como YouTube o Web link, normalmente la versión <strong>separada</strong> escanea mejor. Para archivos de Blackboard, revise que el Content Collection tenga permisos Student/Course Users → Read.</p>
     </section>
   </main>
 
+  <div id="qrRenderHost" class="hidden-render" aria-hidden="true"></div>
+  <script src="https://unpkg.com/qr-code-styling@1.8.3/lib/qr-code-styling.js"></script>
   <script src="js/generator.js"></script>
 </body>
 </html>

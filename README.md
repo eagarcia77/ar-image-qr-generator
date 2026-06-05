@@ -1,19 +1,13 @@
-# Generador Universal AR INTER SG – QR y Web Link corregidos
+# Generador Universal AR INTER SG – QR integrado y separado
 
-## Correcciones
-1. El Marker INTER SG dentro del QR Code fue reducido para que el QR escanee mejor.
-2. El QR se genera con error correction H.
-3. Web link ya no intenta presentar páginas web dentro de un iframe, porque muchas páginas lo bloquean.
-4. Para Web link ahora se muestra una tarjeta con botón: Abrir página web.
-5. YouTube mantiene miniatura + botón Abrir video en YouTube.
+Esta versión añade dos formas de salida:
 
-## Compatible con
-- Image
-- Video MP4/WebM
-- YouTube
-- PDF document
-- Web link
-- Blackboard Content Collection
+1. **Versión integrada**: QR Code + Marker INTER SG dentro del mismo QR.
+2. **Versión separada**: QR Code y Marker INTER SG aparte, dentro de una sola imagen.
 
-## Salida
-Genera una sola imagen PNG con QR Code + Marker INTER SG en el centro.
+También añade la **Opción C** de estilo visual más moderno para el QR.
+
+## Recomendación
+- Use **Separada** cuando quiera facilitar el escaneo del QR.
+- Use **Integrada** cuando quiera una presentación compacta.
+- Use **Modern** para una apariencia más limpia.

@@ -1,51 +1,21 @@
 GUÍA RÁPIDA – GENERADOR UNIVERSAL AR INTER SG
 
-FUNCIONES INTEGRADAS
-- Imagen PNG/JPG/WEBP/GIF
-- Video directo MP4/WebM
-- YouTube
-- PDF document
-- Web link
-- QR Code + Marker INTER SG en una sola imagen
-- Mostrar contenido sin marcador
-- Activar video
-- Abrir video en YouTube
-- Abrir contenido
-- Zoom In / Zoom Out
-- Diagnóstico de enlaces Blackboard
+NOVEDADES
+- Ahora genera dos imágenes:
+  1. Integrada
+  2. Separada
+- Incluye estilo de QR: Classic o Modern (Opción C)
 
 USO
 1. Abra index.html.
 2. Seleccione Tipo de contenido.
-3. Pegue el URL del Content Collection o enlace.
-4. Escriba título y descripción.
-5. Presione Probar contenido.
-6. Presione Generar imagen única.
-7. Descargue el PNG.
-8. Publique o imprima esa imagen en Blackboard.
+3. Pegue el URL del contenido.
+4. Escriba el título y la descripción.
+5. Seleccione el estilo del QR.
+6. Presione Probar contenido.
+7. Presione Generar ambas imágenes.
+8. Descargue la versión integrada y/o la separada.
 
-NOTA
-Si el marcador no detecta, el estudiante puede usar Mostrar contenido sin marcador.
-
-- En celular o tableta, el contenido aparece como una tarjeta flotante.
-- El usuario puede hacer zoom con dos dedos (pinch) o con los botones + y -.
-
-- Si el contenido es una imagen PNG transparente, se mostrará flotando con fondo transparente.
-- Para PDF y enlaces se mantiene un panel de lectura, porque necesitan un visor o iframe.
-
-CORRECCIÓN DE YOUTUBE
-- Puede usar enlaces youtube.com/watch, youtu.be, shorts, embed o live.
-- Si el video no carga dentro de la experiencia AR, use el botón Abrir video en YouTube.
-- El botón Abrir contenido también cambia a Abrir video en YouTube cuando el contenido es YouTube.
-
-YOUTUBE – IMPORTANTE
-- YouTube no siempre permite reproducirse dentro de un panel AR.
-- Esta versión muestra la miniatura y un botón grande Abrir video en YouTube.
-- Ese botón abre el video en YouTube o en la app de YouTube del dispositivo.
-
-CORRECCIÓN QR CODE Y WEB LINK
-- El Marker INTER SG dentro del QR ahora es más pequeño para mejorar el escaneo.
-- Si el QR no escanea, agrande la imagen en pantalla o imprímala más grande.
-- Web link no se presenta como página embebida porque muchas páginas lo bloquean.
-- Web link ahora muestra un botón Abrir página web.
-- YouTube muestra miniatura y botón Abrir video en YouTube.
+RECOMENDACIÓN
+- Para YouTube y Web link, normalmente la versión separada escanea mejor.
+- La versión integrada conserva el diseño compacto original.
