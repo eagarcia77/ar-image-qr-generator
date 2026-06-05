@@ -24,6 +24,10 @@ const downloadIntegratedBtn = $('downloadIntegratedBtn');
 const downloadSeparatedBtn = $('downloadSeparatedBtn');
 const openBtn = $('openBtn');
 const qrRenderHost = $('qrRenderHost');
+const markerPickerCards = document.querySelectorAll('.marker-picker-card');
+const selectedMarkerPreview = $('selectedMarkerPreview');
+const selectedMarkerCaption = $('selectedMarkerCaption');
+const selectedMarkerStatus = $('selectedMarkerStatus');
 
 function setStatus(message, type='ok'){
   statusBox.textContent = message;
@@ -40,6 +44,17 @@ function getMarkerConfig(){
   if(mode === 'hiro') return { mode:'hiro', label:'HIRO', image:'assets/hiro-marker-generic.png' };
   if(mode === 'inter') return { mode:'inter', label:'INTER', image:'assets/inter-marker-generic.png' };
   return { mode:'intersg', label:'INTER SG', image:'assets/inter-sg-marker.png' };
+}
+
+function refreshMarkerSelectionUI(){
+  const cfg = getMarkerConfig();
+  markerPickerCards.forEach(card => {
+    card.classList.toggle('selected', card.dataset.marker === cfg.mode);
+  });
+  if(selectedMarkerPreview) selectedMarkerPreview.src = cfg.image;
+  if(selectedMarkerPreview) selectedMarkerPreview.alt = `Vista previa del Marker ${cfg.label}`;
+  if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Actualmente está seleccionado: ${cfg.label}.`;
+  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Selected: ${cfg.label}`;
 }
 
 function extractYoutubeId(url){
@@ -460,6 +475,16 @@ async function generate(){
   }
 }
 
+
 baseUrlInput.value = currentBaseUrl();
+markerTypeInput.addEventListener('change', refreshMarkerSelectionUI);
+markerPickerCards.forEach(card => {
+  card.addEventListener('click', () => {
+    markerTypeInput.value = card.dataset.marker;
+    refreshMarkerSelectionUI();
+  });
+});
+refreshMarkerSelectionUI();
 testBtn.addEventListener('click', testContent);
 generateBtn.addEventListener('click', generate);
+

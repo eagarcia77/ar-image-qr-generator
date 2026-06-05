@@ -22,3 +22,9 @@ NOTA: La opción Marker INTER ahora usa un marcador que dice solamente INTER.
 
 
 Descarga individual de Markers: ahora puede descargar INTER SG, INTER y HIRO por separado, tanto en PNG como en PATT.
+
+
+Nueva función: ahora el usuario puede previsualizar el Marker grande y escogerlo visualmente antes de generar.
+
+
+Mejora visual: ahora el Marker seleccionado resalta con borde verde, insignia de seleccionado y estilo más moderno.

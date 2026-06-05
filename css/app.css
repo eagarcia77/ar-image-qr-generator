@@ -62,3 +62,33 @@ code{background:#f0f4f3;padding:2px 6px;border-radius:6px}
 .marker-card .actions{display:flex;flex-wrap:wrap;gap:8px}
 .marker-card .actions a{flex:1 1 auto;text-align:center}
 @media(max-width:1000px){.marker-card-grid{grid-template-columns:1fr}}
+
+
+.marker-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:14px 0 8px}
+.marker-picker-card{border:2px solid #d7e5e0;border-radius:18px;padding:14px;background:#fff;cursor:pointer;transition:all .18s ease;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+.marker-picker-card:hover{transform:translateY(-2px);border-color:#007B5F;box-shadow:0 8px 18px rgba(0,123,95,.12)}
+.marker-picker-card.selected{border-color:#007B5F;box-shadow:0 0 0 4px rgba(0,123,95,.12);background:#f7fcfa}
+.marker-picker-card h4{margin:0 0 6px;color:#007B5F}
+.marker-picker-card p{margin:0 0 10px;font-size:.95rem;color:#5d716b;min-height:44px}
+.marker-picker-card img{width:100%;height:auto;border:1px solid #d7e5e0;border-radius:12px;background:#fff}
+.marker-preview-large{margin-top:14px;padding:16px;border:1px solid #d7e5e0;border-radius:18px;background:#fff}
+.marker-preview-large h3{margin:0 0 10px;color:#007B5F}
+.marker-preview-large img{display:block;max-width:100%;width:min(420px,100%);margin:0 auto;border:1px solid #d7e5e0;border-radius:14px;background:#fff}
+.marker-preview-caption{margin-top:10px;text-align:center;color:#5d716b;font-size:.95rem}
+@media(max-width:1000px){.marker-picker-grid{grid-template-columns:1fr}}
+
+
+.marker-picker-card{position:relative;overflow:hidden;background:linear-gradient(180deg,#ffffff 0%,#fbfdfc 100%)}
+.marker-picker-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,123,95,.04),rgba(254,209,65,.07));opacity:0;transition:opacity .18s ease;pointer-events:none}
+.marker-picker-card:hover::before,.marker-picker-card.selected::before{opacity:1}
+.marker-picker-card.selected{border-color:#007B5F;box-shadow:0 0 0 4px rgba(0,123,95,.14),0 14px 30px rgba(0,123,95,.14);background:linear-gradient(180deg,#ffffff 0%,#f6fcfa 100%)}
+.marker-picker-card.selected img{border-color:#007B5F}
+.marker-selected-badge{position:absolute;top:12px;right:12px;display:none;padding:6px 10px;border-radius:999px;background:#007B5F;color:#fff;font-weight:800;font-size:.82rem;box-shadow:0 8px 18px rgba(0,123,95,.22)}
+.marker-picker-card.selected .marker-selected-badge{display:inline-flex;align-items:center;gap:6px}
+.marker-picker-card.selected h4{color:#005b46}
+.marker-preview-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.marker-preview-pill,.marker-preview-status{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;font-size:.88rem;font-weight:800}
+.marker-preview-pill{background:#eef7f3;color:#007B5F}
+.marker-preview-status{background:#fff6d6;color:#7a6116;border:1px solid #f1d56b}
+.marker-preview-large{box-shadow:0 10px 24px rgba(0,0,0,.05)}
+.marker-preview-large img{box-shadow:0 12px 26px rgba(0,0,0,.08)}
