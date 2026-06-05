@@ -19,3 +19,6 @@ Esta versión corrige el problema donde el Marker seleccionado no cambiaba corre
 
 
 NOTA: La opción Marker INTER ahora usa un marcador que dice solamente INTER.
+
+
+Descarga individual de Markers: ahora puede descargar INTER SG, INTER y HIRO por separado, tanto en PNG como en PATT.
