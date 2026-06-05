@@ -92,3 +92,22 @@ code{background:#f0f4f3;padding:2px 6px;border-radius:6px}
 .marker-preview-status{background:#fff6d6;color:#7a6116;border:1px solid #f1d56b}
 .marker-preview-large{box-shadow:0 10px 24px rgba(0,0,0,.05)}
 .marker-preview-large img{box-shadow:0 12px 26px rgba(0,0,0,.08)}
+
+
+.premium-helper{margin:.25rem 0 1rem;color:#5d716b}
+.marker-picker-grid{perspective:1200px}
+.marker-picker-card{position:relative;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background .22s ease}
+.marker-picker-card::after{content:"";position:absolute;inset:auto -40% -55% auto;width:180px;height:180px;background:radial-gradient(circle, rgba(254,209,65,.25), rgba(254,209,65,0));transform:rotate(12deg);pointer-events:none}
+.marker-picker-card:hover{transform:translateY(-6px) scale(1.01)}
+.marker-picker-card.selected{transform:translateY(-4px) scale(1.015)}
+.marker-card-title{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.marker-card-title h4{margin:0}
+.marker-card-icon{width:42px;height:42px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;font-size:1.2rem;background:linear-gradient(135deg,#007B5F,#159878);color:#fff;box-shadow:0 10px 20px rgba(0,123,95,.18)}
+.marker-picker-card[data-marker="inter"] .marker-card-icon{background:linear-gradient(135deg,#007B5F,#FED141);color:#14211d}
+.marker-picker-card[data-marker="hiro"] .marker-card-icon{background:linear-gradient(135deg,#14211d,#007B5F)}
+.marker-picker-card img{transition:transform .22s ease, box-shadow .22s ease}
+.marker-picker-card:hover img,.marker-picker-card.selected img{transform:scale(1.02);box-shadow:0 12px 22px rgba(0,0,0,.08)}
+.marker-selected-badge{letter-spacing:.02em}
+.marker-preview-large{background:linear-gradient(180deg,#ffffff 0%, #fbfdfc 100%)}
+.marker-preview-large img{transition:transform .22s ease}
+.marker-preview-large:hover img{transform:scale(1.01)}

@@ -54,7 +54,7 @@ function refreshMarkerSelectionUI(){
   if(selectedMarkerPreview) selectedMarkerPreview.src = cfg.image;
   if(selectedMarkerPreview) selectedMarkerPreview.alt = `Vista previa del Marker ${cfg.label}`;
   if(selectedMarkerCaption) selectedMarkerCaption.textContent = `Actualmente está seleccionado: ${cfg.label}.`;
-  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Selected: ${cfg.label}`;
+  if(selectedMarkerStatus) selectedMarkerStatus.textContent = `Premium selected: ${cfg.label}`;
 }
 
 function extractYoutubeId(url){
@@ -479,9 +479,18 @@ async function generate(){
 baseUrlInput.value = currentBaseUrl();
 markerTypeInput.addEventListener('change', refreshMarkerSelectionUI);
 markerPickerCards.forEach(card => {
+  card.tabIndex = 0;
+  card.setAttribute('role','button');
   card.addEventListener('click', () => {
     markerTypeInput.value = card.dataset.marker;
     refreshMarkerSelectionUI();
+  });
+  card.addEventListener('keydown', (event) => {
+    if(event.key === 'Enter' || event.key === ' '){
+      event.preventDefault();
+      markerTypeInput.value = card.dataset.marker;
+      refreshMarkerSelectionUI();
+    }
   });
 });
 refreshMarkerSelectionUI();

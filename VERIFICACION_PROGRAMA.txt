@@ -21,3 +21,6 @@ Nueva función: ahora el usuario puede previsualizar el Marker grande y escogerl
 
 
 Mejora visual: ahora el Marker seleccionado resalta con borde verde, insignia de seleccionado y estilo más moderno.
+
+
+Versión premium: ahora incluye tarjetas premium con iconos y animación suave al seleccionar el Marker.
