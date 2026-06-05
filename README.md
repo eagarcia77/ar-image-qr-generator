@@ -1,4 +1,4 @@
-# Generador Universal AR – Markers corregidos
+# Generador Realidad Aumentada – Markers corregidos
 
 Esta versión corrige el problema donde el Marker seleccionado no cambiaba correctamente.
 

@@ -335,7 +335,7 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   ctx.fillStyle = theme.accent;
   ctx.font='bold 58px Arial';
   ctx.textAlign='center';
-  ctx.fillText('AR Universal',800,170);
+  ctx.fillText('AR',800,170);
   if(style==='inter') drawInterRibbon(ctx, 520, 190, 560, 64, theme, markerCfg.mode === 'inter' ? 'INTER' : markerCfg.mode === 'hiro' ? 'HIRO' : 'INTER SAN GERMÁN');
 
   ctx.fillStyle = theme.text;
@@ -389,7 +389,7 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.fillStyle = theme.accent;
   ctx.font='bold 54px Arial';
   ctx.textAlign='left';
-  ctx.fillText('AR Universal',110,170);
+  ctx.fillText('AR',110,170);
 
   if(style==='inter') drawInterRibbon(ctx, 1180, 120, 460, 58, theme, markerCfg.mode === 'inter' ? 'INTER' : markerCfg.mode === 'hiro' ? 'HIRO' : 'INTER SAN GERMÁN');
 
