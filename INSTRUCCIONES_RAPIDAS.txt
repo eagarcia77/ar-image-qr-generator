@@ -1,18 +1,22 @@
 GUÍA RÁPIDA – GENERADOR UNIVERSAL AR INTER SG
 
-NUEVA OPCIÓN
-- Tiger Style – INTER SG
+NUEVAS OPCIONES DE MARKER
+1. Marker INTER SG
+2. Marker INTER (Genérico para otras Inter)
+3. Marker HIRO (Totalmente genérico)
 
-CÓMO USARLA
+CÓMO USARLAS
 1. Abra index.html.
 2. Seleccione el tipo de contenido.
-3. Pegue la URL.
-4. Escriba título y descripción.
-5. En Estilo del QR, seleccione Tiger Style – INTER SG.
-6. Presione Probar contenido.
-7. Presione Generar ambas imágenes.
-8. Descargue la versión integrada o la separada.
+3. Seleccione el tipo de Marker.
+4. Pegue la URL.
+5. Escriba título y descripción.
+6. Seleccione el estilo del QR.
+7. Presione Probar contenido.
+8. Presione Generar ambas imágenes.
+9. Descargue la versión integrada o la separada.
 
 RECOMENDACIÓN
-- Use la versión separada para escaneo más fácil.
-- Use la integrada si quiere una apariencia más compacta.
+- Use Marker INTER para otras unidades de la Inter.
+- Use Marker HIRO cuando quiera una opción totalmente genérica.
+- Para mejor escaneo, use preferiblemente la versión separada.

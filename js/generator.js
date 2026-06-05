@@ -6,6 +6,7 @@ const titleInput = $('title');
 const descriptionInput = $('description');
 const baseUrlInput = $('baseUrl');
 const qrStyleInput = $('qrStyle');
+const markerTypeInput = $('markerType');
 const testBtn = $('testBtn');
 const generateBtn = $('generateBtn');
 const statusBox = $('status');
@@ -29,12 +30,17 @@ function setStatus(message, type='ok'){
   statusBox.textContent = message;
   statusBox.className = `status ${type}`;
 }
-
 function currentBaseUrl(){
   const c = window.location.href;
   return c.substring(0, c.lastIndexOf('/') + 1);
 }
 
+function getMarkerConfig(){
+  const mode = markerTypeInput ? markerTypeInput.value : 'intersg';
+  if(mode === 'hiro') return { mode:'hiro', label:'HIRO', image:'https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png' };
+  if(mode === 'inter') return { mode:'inter', label:'INTER', image:'assets/inter-marker-generic.png' };
+  return { mode:'intersg', label:'INTER SG', image:'assets/inter-sg-marker.png' };
+}
 function extractYoutubeId(url){
   const raw = (url || '').trim();
   try {
@@ -51,12 +57,10 @@ function extractYoutubeId(url){
   const fallback = raw.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{6,})/);
   return fallback ? fallback[1] : '';
 }
-
 function getYoutubeWatchUrl(url){
   const id = extractYoutubeId(url);
   return id ? `https://www.youtube.com/watch?v=${id}` : url;
 }
-
 function detectType(url){
   const selected = contentTypeInput.value;
   const clean = url.split('?')[0].toLowerCase();
@@ -67,7 +71,6 @@ function detectType(url){
   if(clean.endsWith('.pdf')) return 'pdf';
   return 'link';
 }
-
 function buildArUrl(){
   const url = contentUrlInput.value.trim();
   const title = titleInput.value.trim();
@@ -81,9 +84,10 @@ function buildArUrl(){
   params.set('u', finalUrl);
   if(title) params.set('n', title);
   if(description) params.set('x', description);
+  const markerCfg = getMarkerConfig();
+  params.set('m', markerCfg.mode);
   return `${base}v.html?${params.toString()}`;
 }
-
 function resetPreview(){
   previewWrap.classList.add('hidden');
   imagePreview.classList.add('hidden');
@@ -95,17 +99,14 @@ function resetPreview(){
   youtubeThumb.removeAttribute('src');
   documentPreview.removeAttribute('src');
 }
-
 function testContent(){
   const url = contentUrlInput.value.trim();
   if(!url){ setStatus('Pega primero el URL del contenido.', 'error'); return; }
-
   resetPreview();
   previewOpenBtn.href = url;
   previewWrap.classList.remove('hidden');
   const type = detectType(url);
   setStatus('Probando contenido...', 'warn');
-
   if(type === 'youtube'){
     const id = extractYoutubeId(url);
     if(!id){ setStatus('No pude identificar el video de YouTube. Usa youtube.com/watch?v=, youtu.be, shorts, embed o live.', 'error'); return; }
@@ -117,61 +118,34 @@ function testContent(){
     setStatus('YouTube detectado correctamente. La experiencia tendrá botón visible para abrir YouTube.', 'ok');
     return;
   }
-
   if(type === 'video'){
     const tester = document.createElement('video');
-    tester.muted = true;
-    tester.playsInline = true;
-    tester.preload = 'metadata';
-    tester.onloadedmetadata = () => {
-      videoPreview.src = url;
-      videoPreview.classList.remove('hidden');
-      setStatus('El video se cargó correctamente.', 'ok');
-    };
+    tester.muted = true; tester.playsInline = true; tester.preload = 'metadata';
+    tester.onloadedmetadata = () => { videoPreview.src = url; videoPreview.classList.remove('hidden'); setStatus('El video se cargó correctamente.', 'ok'); };
     tester.onerror = () => setStatus('El video no se pudo validar. Aun así puedes generar el QR si tiene permisos Read.', 'warn');
-    tester.src = url;
-    return;
+    tester.src = url; return;
   }
-
   if(type === 'image'){
     const tester = new Image();
-    tester.onload = () => {
-      imagePreview.src = url;
-      imagePreview.classList.remove('hidden');
-      setStatus('La imagen se cargó correctamente. Si es PNG transparente, la transparencia se conserva.', 'ok');
-    };
+    tester.onload = () => { imagePreview.src = url; imagePreview.classList.remove('hidden'); setStatus('La imagen se cargó correctamente. Si es PNG transparente, la transparencia se conserva.', 'ok'); };
     tester.onerror = () => setStatus('La imagen no se pudo validar. Aun así puedes generar el QR si tiene permisos Read.', 'warn');
-    tester.src = url;
-    return;
+    tester.src = url; return;
   }
-
   documentPreview.src = url;
   documentPreview.classList.remove('hidden');
   setStatus('Vista previa cargada. Si Blackboard bloquea el PDF/enlace, use Abrir en pestaña nueva.', 'warn');
 }
-
 function loadImage(src){
-  return new Promise((resolve,reject)=>{
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = src;
-  });
+  return new Promise((resolve,reject)=>{ const img = new Image(); img.crossOrigin='anonymous'; img.onload=()=>resolve(img); img.onerror=reject; img.src=src; });
 }
-
 function dataUrlFromBlob(blob){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
+  return new Promise((resolve,reject)=>{ const reader = new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=reject; reader.readAsDataURL(blob); });
 }
-
 async function createQrDataUrl(data, style='classic', simple=false){
-  const ecc = simple ? 'M' : 'H';
-  if(window.QRCodeStyling && (style === 'modern' || style === 'tiger')){
+  // Super simple QR for Inter Premium uses short URL + ECC M
+  let ecc = simple ? 'M' : 'H';
+  if(style === 'inter') ecc = 'M';
+  if(window.QRCodeStyling && (style === 'modern' || style === 'tiger' || style === 'inter')){
     try{
       qrRenderHost.innerHTML = '';
       const options = {
@@ -179,44 +153,33 @@ async function createQrDataUrl(data, style='classic', simple=false){
         height: 1200,
         type: 'canvas',
         data,
-        margin: simple ? 8 : 0,
+        margin: style === 'inter' ? 16 : (simple ? 8 : 0),
         qrOptions: { errorCorrectionLevel: ecc },
         backgroundOptions: { color: '#ffffff' }
       };
       if(style === 'modern'){
-        options.dotsOptions = simple
-          ? { color: '#111111', type: 'square' }
-          : { color: '#14211d', type: 'rounded' };
-        options.cornersSquareOptions = simple
-          ? { color: '#007B5F', type: 'square' }
-          : { color: '#007B5F', type: 'extra-rounded' };
-        options.cornersDotOptions = simple
-          ? { color: '#007B5F', type: 'square' }
-          : { color: '#FED141', type: 'dot' };
-      }
-      if(style === 'tiger'){
-        options.dotsOptions = simple
-          ? { color: '#111111', type: 'square' }
-          : { color: '#111111', type: 'classy-rounded' };
-        options.cornersSquareOptions = { color: '#007B5F', type: 'extra-rounded' };
-        options.cornersDotOptions = { color: '#FED141', type: 'dot' };
+        options.dotsOptions = simple ? { color:'#111111', type:'square' } : { color:'#14211d', type:'rounded' };
+        options.cornersSquareOptions = simple ? { color:'#007B5F', type:'square' } : { color:'#007B5F', type:'extra-rounded' };
+        options.cornersDotOptions = simple ? { color:'#007B5F', type:'square' } : { color:'#FED141', type:'dot' };
+      } else if(style === 'tiger'){
+        options.dotsOptions = simple ? { color:'#111111', type:'square' } : { color:'#111111', type:'classy-rounded' };
+        options.cornersSquareOptions = { color:'#007B5F', type:'extra-rounded' };
+        options.cornersDotOptions = { color:'#FED141', type:'dot' };
+      } else if(style === 'inter'){
+        options.dotsOptions = { color:'#111111', type:'square' };
+        options.cornersSquareOptions = { color:'#007B5F', type:'square' };
+        options.cornersDotOptions = { color:'#FED141', type:'square' };
       }
       const qr = new QRCodeStyling(options);
       qr.append(qrRenderHost);
       await new Promise(r => setTimeout(r, 120));
       const canvas = qrRenderHost.querySelector('canvas');
       if(canvas) return canvas.toDataURL('image/png');
-      if(typeof qr.getRawData === 'function'){
-        const blob = await qr.getRawData('png');
-        return await dataUrlFromBlob(blob);
-      }
-    }catch(e){
-      console.warn('Styled QR fallback', e);
-    }
+      if(typeof qr.getRawData === 'function') return await dataUrlFromBlob(await qr.getRawData('png'));
+    }catch(e){ console.warn('Styled QR fallback', e); }
   }
   return `https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&ecc=${ecc}&format=png&data=${encodeURIComponent(data)}`;
 }
-
 function drawRoundRect(ctx,x,y,w,h,r,fill,stroke){
   ctx.beginPath();
   ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
@@ -224,234 +187,141 @@ function drawRoundRect(ctx,x,y,w,h,r,fill,stroke){
   ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
   ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
   ctx.closePath();
-  if(fill){ctx.fillStyle=fill; ctx.fill();}
-  if(stroke){ctx.strokeStyle=stroke; ctx.lineWidth=4; ctx.stroke();}
+  if(fill){ ctx.fillStyle=fill; ctx.fill(); }
+  if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=4; ctx.stroke(); }
 }
-
 function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=3){
   if(!text) return;
-  const words = text.split(' ');
-  let line = '';
-  const lines = [];
-  for(const word of words){
-    const test = line + word + ' ';
-    if(ctx.measureText(test).width > maxWidth && line){
-      lines.push(line.trim());
-      line = word + ' ';
-    } else {
-      line = test;
-    }
-  }
-  lines.push(line.trim());
-  lines.slice(0,maxLines).forEach((ln,i)=>ctx.fillText(ln,x,y+(i*lineHeight)));
+  const words = text.split(' '); let line=''; const lines=[];
+  for(const word of words){ const test=line+word+' '; if(ctx.measureText(test).width>maxWidth && line){ lines.push(line.trim()); line=word+' '; } else line=test; }
+  lines.push(line.trim()); lines.slice(0,maxLines).forEach((ln,i)=>ctx.fillText(ln,x,y+(i*lineHeight)));
 }
-
 function getTheme(style){
-  if(style === 'tiger') return {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#fff6d8', stripe:'#1e1e1e'};
-  return style === 'modern'
+  if(style==='inter') return {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#44605a', bg:'#ffffff', chip:'#eef7f3', stripe:'#007B5F'};
+  if(style==='tiger') return {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#fff6d8', stripe:'#1e1e1e'};
+  return style==='modern'
     ? {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#eef7f3', stripe:'#1e1e1e'}
     : {accent:'#007B5F', accent2:'#FED141', text:'#14211d', sub:'#5d716b', bg:'#ffffff', chip:'#f4f4f4', stripe:'#1e1e1e'};
 }
-
 function drawTigerStripes(ctx, x, y, w, h, color='#1e1e1e', alpha=0.14, flip=false){
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.fillStyle = color;
+  ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = color;
   for(let i=0;i<6;i++){
-    const sx = flip ? x + w - (i*48) - 36 : x + i*48;
-    const sy = y + (i%2)*16;
+    const sx = flip ? x + w - (i*48) - 36 : x + i*48; const sy = y + (i%2)*16;
     ctx.beginPath();
-    if(!flip){
-      ctx.moveTo(sx, sy);
-      ctx.quadraticCurveTo(sx+20, sy+18, sx+14, sy+52);
-      ctx.quadraticCurveTo(sx+8, sy+78, sx+34, sy+112);
-      ctx.quadraticCurveTo(sx+46, sy+76, sx+56, sy+12);
-    } else {
-      ctx.moveTo(sx, sy);
-      ctx.quadraticCurveTo(sx-20, sy+18, sx-14, sy+52);
-      ctx.quadraticCurveTo(sx-8, sy+78, sx-34, sy+112);
-      ctx.quadraticCurveTo(sx-46, sy+76, sx-56, sy+12);
-    }
-    ctx.closePath();
-    ctx.fill();
+    if(!flip){ ctx.moveTo(sx, sy); ctx.quadraticCurveTo(sx+20, sy+18, sx+14, sy+52); ctx.quadraticCurveTo(sx+8, sy+78, sx+34, sy+112); ctx.quadraticCurveTo(sx+46, sy+76, sx+56, sy+12); }
+    else { ctx.moveTo(sx, sy); ctx.quadraticCurveTo(sx-20, sy+18, sx-14, sy+52); ctx.quadraticCurveTo(sx-8, sy+78, sx-34, sy+112); ctx.quadraticCurveTo(sx-46, sy+76, sx-56, sy+12); }
+    ctx.closePath(); ctx.fill();
   }
   ctx.restore();
 }
-
+function drawInterRibbon(ctx, x, y, w, h, theme, text='INTER SAN GERMÁN'){
+  drawRoundRect(ctx, x, y, w, h, 16, theme.accent, null);
+  drawRoundRect(ctx, x+8, y+8, w-16, h-16, 12, '#ffffff', null);
+  drawRoundRect(ctx, x+18, y+16, 26, h-32, 8, theme.accent2, null);
+  drawRoundRect(ctx, x+w-44, y+16, 26, h-32, 8, theme.accent2, null);
+  ctx.fillStyle = theme.text;
+  ctx.font = 'bold 22px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(text, x + w/2, y + h/2 + 8);
+}
+function drawInterHeaderBars(ctx, x, y, w, theme){
+  drawRoundRect(ctx, x, y, w, 16, 8, theme.accent, null);
+  drawRoundRect(ctx, x, y+22, w*0.72, 10, 5, theme.accent2, null);
+}
+async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentType,style,markerCfg){
+  const qr = await loadImage(qrDataUrl);
+  const marker = await loadImage(markerCfg.image);
+  const theme = getTheme(style);
+  const canvas = document.createElement('canvas'); canvas.width=1600; canvas.height=1800; const ctx = canvas.getContext('2d');
+  ctx.fillStyle = theme.bg; ctx.fillRect(0,0,canvas.width,canvas.height);
+  drawRoundRect(ctx,60,60,1480,1680,44,'#ffffff',theme.accent);
+  if(style==='tiger'){ drawTigerStripes(ctx,95,85,260,170,theme.stripe,0.11,false); drawTigerStripes(ctx,1240,85,260,170,theme.stripe,0.11,true); }
+  if(style==='inter'){ drawInterHeaderBars(ctx, 110, 94, 1380, theme); }
+  ctx.fillStyle = theme.accent; ctx.font='bold 58px Arial'; ctx.textAlign='center'; ctx.fillText('AR Universal INTER SG',800,170);
+  if(style==='tiger') drawTigerBanner(ctx,560,185,480,52,theme);
+  if(style==='inter') drawInterRibbon(ctx, 520, 190, 560, 64, theme, 'INTER SAN GERMÁN');
+  ctx.fillStyle = theme.text; ctx.font='bold 40px Arial'; ctx.fillText(titleText || 'Experiencia AR',800,285);
+  ctx.fillStyle = theme.sub; ctx.font='28px Arial';
+  const subtitle = style==='modern' ? 'Image · Video · YouTube · PDF · Link · Modern QR' : style==='tiger' ? 'Image · Video · YouTube · PDF · Link · Tiger Style' : style==='inter' ? 'Image · Video · YouTube · PDF · Link · Inter Premium' : 'Image · Video · YouTube · PDF · Link';
+  ctx.fillText(subtitle,800,335);
+  drawRoundRect(ctx,170,380,1260,1230,28, style==='inter' ? '#f8fbfa' : '#ffffff', style==='inter' ? '#d9ebe5' : null);
+  ctx.drawImage(qr,200,410,1200,1200);
+  drawRoundRect(ctx,650,860,300,300,22,'#ffffff','#d7e5e0');
+  ctx.drawImage(marker,670,880,260,260);
+  ctx.fillStyle = theme.text; ctx.font='bold 25px Arial'; ctx.fillText(`QR Code + Marker ${markerCfg.label} integrado`,800,1355);
+  ctx.fillStyle = '#85714D'; ctx.font='bold 24px Arial'; ctx.fillText(`Tipo de contenido: ${contentType}`,800,1408);
+  if(descriptionText){ ctx.fillStyle = theme.text; ctx.font='24px Arial'; wrapText(ctx,descriptionText,800,1458,1040,30,3); }
+  drawRoundRect(ctx,210,1560,1180,120,28,'#FFF4CC',theme.accent2);
+  if(style==='tiger') drawTigerStripes(ctx,245,1572,80,72,theme.stripe,0.18,false);
+  if(style==='inter') drawRoundRect(ctx,235,1583,130,76,14,theme.accent,null);
+  ctx.fillStyle = style==='inter' ? '#ffffff' : theme.text; ctx.font='bold 20px Arial'; if(style==='inter') { ctx.textAlign='center'; ctx.fillText('INTER',300,1630); }
+  ctx.fillStyle = theme.text; ctx.font='bold 24px Arial'; wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro. Esta versión mantiene identidad visual Inter.`,800,1605,1040,30,3);
+  return canvas.toDataURL('image/png');
+}
 function drawTigerBanner(ctx, x, y, w, h, theme){
   drawRoundRect(ctx, x, y, w, h, 18, theme.accent2, null);
   drawTigerStripes(ctx, x+12, y+8, w-24, h-16, theme.stripe, 0.2, false);
   drawTigerStripes(ctx, x+12, y+8, w-24, h-16, theme.stripe, 0.12, true);
-  ctx.fillStyle = theme.text;
-  ctx.font = 'bold 22px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('TIGER STYLE – INTER SG', x + w/2, y + h/2 + 8);
+  ctx.fillStyle = theme.text; ctx.font='bold 22px Arial'; ctx.textAlign='center'; ctx.fillText('TIGER STYLE – INTER SG', x + w/2, y + h/2 + 8);
 }
-
-async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentType,style){
+async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentType,style,markerCfg){
   const qr = await loadImage(qrDataUrl);
-  const marker = await loadImage('assets/inter-sg-marker.png');
+  const marker = await loadImage(markerCfg.image);
   const theme = getTheme(style);
-  const canvas = document.createElement('canvas');
-  canvas.width = 1600;
-  canvas.height = 1800;
-  const ctx = canvas.getContext('2d');
-
-  ctx.fillStyle = theme.bg;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1480,1680,44,'#ffffff',theme.accent);
-  if(style === 'tiger'){
-    drawTigerStripes(ctx, 95, 85, 260, 170, theme.stripe, 0.11, false);
-    drawTigerStripes(ctx, 1240, 85, 260, 170, theme.stripe, 0.11, true);
-  }
-
-  ctx.fillStyle = theme.accent;
-  ctx.font = 'bold 58px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('AR Universal INTER SG',800,140);
-
-  if(style === 'tiger') drawTigerBanner(ctx, 560, 155, 480, 52, theme);
-
-  ctx.fillStyle = theme.text;
-  ctx.font = 'bold 40px Arial';
-  ctx.fillText(titleText || 'Experiencia AR',800,245);
-
-  ctx.fillStyle = theme.sub;
-  ctx.font = '28px Arial';
-  const subtitle = style === 'modern'
-    ? 'Image · Video · YouTube · PDF · Link · Modern QR'
-    : style === 'tiger'
-      ? 'Image · Video · YouTube · PDF · Link · Tiger Style'
-      : 'Image · Video · YouTube · PDF · Link';
-  ctx.fillText(subtitle,800,295);
-
-  ctx.drawImage(qr,200,360,1200,1200);
-  drawRoundRect(ctx,650,810,300,300,22,'#ffffff','#d7e5e0');
-  ctx.drawImage(marker,670,830,260,260);
-
-  ctx.fillStyle = theme.text;
-  ctx.font = 'bold 25px Arial';
-  ctx.fillText('QR Code + Marker INTER SG integrado',800,1305);
-
-  ctx.fillStyle = '#85714D';
-  ctx.font = 'bold 24px Arial';
-  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1358);
-
-  if(descriptionText){
-    ctx.fillStyle = theme.text;
-    ctx.font = '24px Arial';
-    wrapText(ctx,descriptionText,800,1408,1040,30,3);
-  }
-
-  drawRoundRect(ctx,210,1560,1180,120,28,'#FFF4CC',theme.accent2);
-  if(style === 'tiger') drawTigerStripes(ctx, 245, 1572, 80, 72, theme.stripe, 0.18, false);
-  ctx.fillStyle = theme.text;
-  ctx.font = 'bold 24px Arial';
-  wrapText(ctx,'Escanea el QR y luego apunta al Marker INTER SG del centro. Esta versión es visualmente compacta.',800,1605,1040,30,3);
-
-  return canvas.toDataURL('image/png');
-}
-
-async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentType,style){
-  const qr = await loadImage(qrDataUrl);
-  const marker = await loadImage('assets/inter-sg-marker.png');
-  const theme = getTheme(style);
-  const canvas = document.createElement('canvas');
-  canvas.width = 1800;
-  canvas.height = 1450;
-  const ctx = canvas.getContext('2d');
-
-  ctx.fillStyle = theme.bg;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  const canvas = document.createElement('canvas'); canvas.width=1800; canvas.height=1450; const ctx = canvas.getContext('2d');
+  ctx.fillStyle = theme.bg; ctx.fillRect(0,0,canvas.width,canvas.height);
   drawRoundRect(ctx,60,60,1680,1330,40,'#ffffff',theme.accent);
-  if(style === 'tiger'){
-    drawTigerStripes(ctx, 90, 90, 220, 170, theme.stripe, 0.13, false);
-    drawTigerStripes(ctx, 1490, 90, 220, 170, theme.stripe, 0.13, true);
-  }
-
-  ctx.fillStyle = theme.accent;
-  ctx.font = 'bold 54px Arial';
-  ctx.textAlign = 'left';
-  ctx.fillText('AR Universal INTER SG',110,135);
-
-  if(style === 'tiger') drawTigerBanner(ctx, 1190, 96, 440, 52, theme);
-
-  ctx.fillStyle = theme.text;
-  ctx.font = 'bold 34px Arial';
-  ctx.fillText(titleText || 'Experiencia AR',110,190);
-
-  drawRoundRect(ctx,108,235,280,44,20,theme.chip,null);
-  ctx.fillStyle = theme.text;
-  ctx.font = 'bold 22px Arial';
-  ctx.fillText(`Tipo: ${contentType}`,128,264);
-
-  ctx.textAlign = 'center';
-  ctx.drawImage(qr,110,310,660,660);
-  ctx.fillStyle = theme.text;
-  ctx.font = 'bold 26px Arial';
-  ctx.fillText('Paso 1: Escanea el QR Code',440,1010);
-
-  drawRoundRect(ctx,900,240,800,800,30,'#f9fbfa','#d7e5e0');
-  if(style === 'tiger'){
-    drawTigerStripes(ctx, 930, 280, 140, 180, theme.stripe, 0.10, false);
-    drawTigerStripes(ctx, 1560, 280, 140, 180, theme.stripe, 0.10, true);
+  if(style==='tiger'){ drawTigerStripes(ctx,90,90,220,170,theme.stripe,0.13,false); drawTigerStripes(ctx,1490,90,220,170,theme.stripe,0.13,true); }
+  if(style==='inter'){ drawInterHeaderBars(ctx, 95, 92, 1610, theme); }
+  ctx.fillStyle = theme.accent; ctx.font='bold 54px Arial'; ctx.textAlign='left'; ctx.fillText('AR Universal INTER SG',110,170);
+  if(style==='tiger') drawTigerBanner(ctx,1190,126,440,52,theme);
+  if(style==='inter') drawInterRibbon(ctx, 1180, 120, 460, 58, theme, 'INTER SAN GERMÁN');
+  ctx.fillStyle = theme.text; ctx.font='bold 34px Arial'; ctx.fillText(titleText || 'Experiencia AR',110,228);
+  drawRoundRect(ctx,108,268,310,46,20,theme.chip,null);
+  ctx.fillStyle = theme.text; ctx.font='bold 22px Arial'; ctx.fillText(`Tipo: ${contentType}`,128,300);
+  drawRoundRect(ctx,96,336,700,700,30,'#ffffff','#d7e5e0');
+  ctx.textAlign='center'; ctx.drawImage(qr,116,356,660,660);
+  ctx.fillStyle = theme.text; ctx.font='bold 26px Arial'; ctx.fillText('Paso 1: Escanea el QR Code',446,1076);
+  drawRoundRect(ctx,900,250,800,800,30,'#f9fbfa','#d7e5e0');
+  if(style==='tiger'){ drawTigerStripes(ctx,930,280,140,180,theme.stripe,0.10,false); drawTigerStripes(ctx,1560,280,140,180,theme.stripe,0.10,true); }
+  if(style==='inter'){
+    drawRoundRect(ctx,960,285,680,24,10,theme.accent2,null);
+    drawRoundRect(ctx,960,320,450,12,6,theme.accent,null);
   }
   ctx.drawImage(marker,1020,340,560,560);
-  ctx.fillStyle = theme.text;
-  ctx.font = 'bold 26px Arial';
-  ctx.fillText('Paso 2: Apunta al Marker INTER SG',1300,1010);
-
-  drawRoundRect(ctx,105,1065,1590,95,18,style === 'tiger' ? '#fff6d8' : '#eef7f3',null);
-  ctx.fillStyle = theme.text;
-  ctx.font = 'bold 22px Arial';
-  wrapText(ctx,'La versión separada usa un QR más simple para facilitar el escaneo y un Marker más grande para una mejor detección.',900,1102,1480,28,2);
-
-  ctx.textAlign = 'left';
-  if(descriptionText){
-    ctx.fillStyle = theme.sub;
-    ctx.font = '24px Arial';
-    wrapText(ctx,descriptionText,110,1210,1480,30,2);
-  }
-
-  drawRoundRect(ctx,110,1270,1490,78,18,'#FFF4CC',theme.accent2);
-  if(style === 'tiger') drawTigerStripes(ctx, 135, 1280, 100, 54, theme.stripe, 0.18, false);
-  ctx.fillStyle = theme.text;
-  ctx.font = 'bold 22px Arial';
-  wrapText(ctx,'Recomendado para YouTube y Web link. Esta versión suele escanear mejor que la integrada.',855,1318,1400,28,2);
-
+  ctx.fillStyle = theme.text; ctx.font='bold 26px Arial'; ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,1300,1076);
+  const callBg = style==='tiger' ? '#fff6d8' : style==='inter' ? '#eef7f3' : '#eef7f3';
+  drawRoundRect(ctx,105,1112,1590,95,18,callBg,null);
+  ctx.fillStyle = theme.text; ctx.font='bold 22px Arial';
+  const callout = style==='inter' ? 'Inter Premium usa un QR súper simple y limpio, con identidad visual Inter y un Marker más grande para una mejor detección.' : 'La versión separada usa un QR más simple para facilitar el escaneo y un Marker más grande para una mejor detección.';
+  wrapText(ctx,callout,900,1148,1480,28,2);
+  ctx.textAlign='left';
+  if(descriptionText){ ctx.fillStyle = theme.sub; ctx.font='24px Arial'; wrapText(ctx,descriptionText,110,1258,1480,30,2); }
+  drawRoundRect(ctx,110,1310,1490,78,18,'#FFF4CC',theme.accent2);
+  if(style==='tiger') drawTigerStripes(ctx,135,1320,100,54,theme.stripe,0.18,false);
+  if(style==='inter') drawRoundRect(ctx,132,1327,138,44,12,theme.accent,null);
+  if(style==='inter'){ ctx.fillStyle='#ffffff'; ctx.font='bold 18px Arial'; ctx.textAlign='center'; ctx.fillText('INTER SG',201,1356); }
+  ctx.fillStyle = theme.text; ctx.font='bold 22px Arial'; ctx.textAlign='center'; wrapText(ctx,'Recomendado para YouTube y Web link. Esta versión suele escanear mejor que la integrada.',900,1358,1320,28,2);
   return canvas.toDataURL('image/png');
 }
-
 async function generate(){
   const arUrl = buildArUrl();
   if(!arUrl){ setStatus('Falta el URL del contenido.', 'error'); return; }
-
   const type = detectType(contentUrlInput.value.trim());
   const style = qrStyleInput.value;
-  resultUrl.value = arUrl;
-  openBtn.href = arUrl;
-  openBtn.classList.remove('disabled');
-
+  const markerCfg = getMarkerConfig();
+  resultUrl.value = arUrl; openBtn.href = arUrl; openBtn.classList.remove('disabled');
   setStatus('Creando ambas imágenes...', 'warn');
-
   try{
     const integratedQr = await createQrDataUrl(arUrl, style, false);
-    const separatedQr = await createQrDataUrl(arUrl, style === 'tiger' ? 'tiger' : 'classic', true);
-    const integrated = await buildIntegratedImage(integratedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style);
-    const separated = await buildSeparatedImage(separatedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style);
-
+    const separatedQr = await createQrDataUrl(arUrl, style === 'tiger' ? 'tiger' : style === 'inter' ? 'inter' : 'classic', true);
+    const integrated = await buildIntegratedImage(integratedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style,markerCfg);
+    const separated = await buildSeparatedImage(separatedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style,markerCfg);
     integratedPreview.innerHTML = `<img src="${integrated}" alt="Versión integrada del QR y Marker">`;
     separatedPreview.innerHTML = `<img src="${separated}" alt="Versión separada del QR y Marker">`;
-
-    downloadIntegratedBtn.href = integrated;
-    downloadIntegratedBtn.download = `QR_Marker_Integrado_INTER_SG_${type}_${style}.png`;
-    downloadIntegratedBtn.classList.remove('disabled');
-
-    downloadSeparatedBtn.href = separated;
-    downloadSeparatedBtn.download = `QR_Marker_Separado_INTER_SG_${type}_${style}.png`;
-    downloadSeparatedBtn.classList.remove('disabled');
-
-    setStatus('Listo. Ya puedes descargar la versión integrada y la versión separada.', 'ok');
+    downloadIntegratedBtn.href = integrated; downloadIntegratedBtn.download = `QR_Marker_Integrado_${markerCfg.mode}_${type}_${style}.png`; downloadIntegratedBtn.classList.remove('disabled');
+    downloadSeparatedBtn.href = separated; downloadSeparatedBtn.download = `QR_Marker_Separado_${markerCfg.mode}_${type}_${style}.png`; downloadSeparatedBtn.classList.remove('disabled');
+    setStatus(style === 'inter' ? `Listo. Ya puedes descargar la versión Inter Premium con Marker ${markerCfg.label}.` : `Listo. Ya puedes descargar la versión integrada y la versión separada con Marker ${markerCfg.label}.`, 'ok');
   }catch(e){
     console.error(e);
     integratedPreview.innerHTML = '<p>No se pudo crear la versión integrada.</p>';
@@ -459,7 +329,5 @@ async function generate(){
     setStatus('No se pudieron crear las imágenes. Verifica conexión a internet para generar el QR.', 'error');
   }
 }
-
 baseUrlInput.value = currentBaseUrl();
-testBtn.addEventListener('click', testContent);
-generateBtn.addEventListener('click', generate);
+testBtn.addEventListener('click', testContent); generateBtn.addEventListener('click', generate);

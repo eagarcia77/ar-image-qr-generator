@@ -3,6 +3,7 @@ const mediaUrl = params.get('data') || params.get('u') || '';
 const type = params.get('type') || params.get('t') || 'link';
 const title = params.get('title') || params.get('n') || 'Contenido AR';
 const description = params.get('description') || params.get('x') || '';
+const markerMode = params.get('m') || 'intersg';
 
 const pageTitle = document.getElementById('pageTitle');
 const contentTitle = document.getElementById('contentTitle');
@@ -14,9 +15,11 @@ const hideBtn = document.getElementById('hideBtn');
 const errorBox = document.getElementById('errorBox');
 const actionText = document.getElementById('actionText');
 const manualShowBtn = document.getElementById('manualShowBtn');
+const overlayMarkerLabel = document.getElementById('overlayMarkerLabel');
 const playVideoBtn = document.getElementById('playVideoBtn');
 const youtubeBtn = document.getElementById('youtubeBtn');
-const marker = document.getElementById('interMarker');
+const patternMarker = document.getElementById('patternMarker');
+const hiroMarker = document.getElementById('hiroMarker');
 const zoomInBtn = document.getElementById('zoomInBtn');
 const zoomOutBtn = document.getElementById('zoomOutBtn');
 const resetBtn = document.getElementById('resetBtn');
@@ -25,8 +28,21 @@ let scale = 1;
 let markerDetected = false;
 let videoElement = null;
 
+function getMarkerLabel(){
+  if(markerMode === 'hiro') return 'HIRO';
+  if(markerMode === 'inter') return 'INTER';
+  return 'INTER SG';
+}
+const markerLabel = getMarkerLabel();
+const activeMarker = markerMode === 'hiro' ? hiroMarker : patternMarker;
+if(patternMarker && markerMode === 'hiro') patternMarker.setAttribute('visible', 'false');
+if(hiroMarker && markerMode !== 'hiro') hiroMarker.setAttribute('visible', 'false');
+
 pageTitle.textContent = title;
 contentTitle.textContent = title;
+if(overlayMarkerLabel) overlayMarkerLabel.textContent = `Apunta al Marker ${markerLabel}.`;
+actionText.textContent = `Buscando Marker ${markerLabel}...`;
+manualShowBtn.textContent = `Mostrar contenido sin marcador`; 
 contentDescription.textContent = description;
 openContentBtn.href = mediaUrl || '#';
 
@@ -185,15 +201,15 @@ async function playVideoIfNeeded(){
 configurePresentationMode();
 buildContent();
 
-marker.addEventListener('markerFound', () => {
+activeMarker.addEventListener('markerFound', () => {
   markerDetected = true;
   showContent();
-  showAction(type === 'youtube' ? 'Marker detectado. Toca Abrir video en YouTube.' : 'Marker INTER SG detectado.');
+  showAction(type === 'youtube' ? `Marker ${markerLabel} detectado. Toca Abrir video en YouTube.` : `Marker ${markerLabel} detectado.`);
 });
 
-marker.addEventListener('markerLost', () => {
+activeMarker.addEventListener('markerLost', () => {
   markerDetected = false;
-  showAction('Marker perdido. Vuelve a apuntar o usa Mostrar contenido sin marcador.');
+  showAction(`Marker ${markerLabel} perdido. Vuelve a apuntar o usa Mostrar contenido sin marcador.`);
 });
 
 manualShowBtn.addEventListener('click', showContent);
@@ -233,5 +249,5 @@ document.addEventListener('touchend', (event) => {
 }, {passive:true});
 
 setTimeout(() => {
-  if(!markerDetected) showAction('Si el Marker no se detecta, usa Mostrar contenido sin marcador.');
+  if(!markerDetected) showAction(`Si el Marker ${markerLabel} no se detecta, usa Mostrar contenido sin marcador.`);
 }, 8000);

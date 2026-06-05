@@ -1,14 +1,19 @@
-# Generador Universal AR INTER SG – Tiger Style
+# Generador Universal AR INTER SG – Opciones genéricas de Marker
 
-Esta versión añade una nueva opción de diseño:
+Esta versión añade nuevas opciones para que otras unidades de la Inter o cualquier otra institución puedan utilizar el generador.
 
-- **Classic**
-- **Modern (Opción C)**
-- **Tiger Style – INTER SG**
+## Nuevas opciones de Marker
+- **Marker INTER SG**: opción original.
+- **Marker INTER**: opción genérica para otras Inter. El diseño del marcador muestra **INTER**.
+- **Marker HIRO**: opción totalmente genérica usando el marcador universal **HIRO** de AR.js.
 
-## Tiger Style – INTER SG
-- QR personalizado con identidad visual inspirada en rayas de tigre.
-- Colores institucionales: verde `#007B5F` y amarillo `#FED141`.
-- Detalles decorativos de rayas de tigre alrededor del diseño.
-- Mantiene dos salidas: **integrada** y **separada**.
-- La versión separada conserva el QR más simple y el Marker más grande.
+## Estilos de QR disponibles
+- Classic
+- Modern (Opción C)
+- Tiger Style – INTER SG
+- Inter Premium – Simple QR
+
+## Recomendación
+- Para otras unidades de la Inter, use **Marker INTER**.
+- Para una solución totalmente genérica, use **Marker HIRO**.
+- Para mejor escaneo, use preferiblemente la **versión separada**.

@@ -22,7 +22,7 @@
 <body>
   <div class="overlay">
     <h1 id="pageTitle">AR Universal INTER SG</h1>
-    <p>Permite la cámara. Apunta al Marker INTER SG. El contenido aparece como una tarjeta flotante y también puedes hacer zoom con dos dedos o con los botones.</p>
+    <p>Permite la cámara. <span id="overlayMarkerLabel">Apunta al Marker INTER SG.</span> El contenido aparece como una tarjeta flotante y también puedes hacer zoom con dos dedos o con los botones.</p>
   </div>
 
   <div id="mediaLayer" class="media-layer">
@@ -58,7 +58,8 @@
     renderer="logarithmicDepthBuffer:true;colorManagement:true;alpha:true;"
     arjs="trackingMethod:best;sourceType:webcam;debugUIEnabled:false;patternRatio:0.5;"
   >
-    <a-marker id="interMarker" type="pattern" url="assets/inter-sg-marker.patt"></a-marker>
+    <a-marker id="patternMarker" type="pattern" url="assets/inter-sg-marker.patt"></a-marker>
+    <a-marker id="hiroMarker" preset="hiro"></a-marker>
     <a-entity camera></a-entity>
   </a-scene>
 
