@@ -1,8 +1,8 @@
 const params = new URLSearchParams(window.location.search);
-const mediaUrl = params.get('data') || '';
-const type = params.get('type') || 'link';
-const title = params.get('title') || 'Contenido AR';
-const description = params.get('description') || '';
+const mediaUrl = params.get('data') || params.get('u') || '';
+const type = params.get('type') || params.get('t') || 'link';
+const title = params.get('title') || params.get('n') || 'Contenido AR';
+const description = params.get('description') || params.get('x') || '';
 
 const pageTitle = document.getElementById('pageTitle');
 const contentTitle = document.getElementById('contentTitle');

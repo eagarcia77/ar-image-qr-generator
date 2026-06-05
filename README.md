@@ -1,13 +1,11 @@
-# Generador Universal AR INTER SG – QR integrado y separado
+# Generador Universal AR INTER SG – QR integrado y separado v2
 
-Esta versión añade dos formas de salida:
+Nuevos ajustes solicitados:
 
-1. **Versión integrada**: QR Code + Marker INTER SG dentro del mismo QR.
-2. **Versión separada**: QR Code y Marker INTER SG aparte, dentro de una sola imagen.
-
-También añade la **Opción C** de estilo visual más moderno para el QR.
-
-## Recomendación
-- Use **Separada** cuando quiera facilitar el escaneo del QR.
-- Use **Integrada** cuando quiera una presentación compacta.
-- Use **Modern** para una apariencia más limpia.
+1. En la **versión separada**, el **Marker** es más grande.
+2. En la **versión separada**, el **QR** es más simple:
+   - usa un enlace más corto (`v.html` + parámetros cortos),
+   - usa corrección `M` en vez de `H`,
+   - y mantiene un diseño más limpio.
+3. La **versión integrada** se mantiene disponible.
+4. La **Opción C / Modern** se mantiene para la versión integrada.

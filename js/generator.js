@@ -76,7 +76,13 @@ function buildArUrl(){
   if(!url) return '';
   const type = detectType(url);
   const finalUrl = type === 'youtube' ? getYoutubeWatchUrl(url) : url;
-  return `${base}viewer-ar.html?type=${encodeURIComponent(type)}&data=${encodeURIComponent(finalUrl)}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`;
+  // Shorter URL to keep QR simpler: v.html + short parameter names.
+  const params = new URLSearchParams();
+  params.set('t', type);
+  params.set('u', finalUrl);
+  if(title) params.set('n', title);
+  if(description) params.set('x', description);
+  return `${base}v.html?${params.toString()}`;
 }
 
 function resetPreview(){
@@ -164,7 +170,8 @@ function dataUrlFromBlob(blob){
   });
 }
 
-async function createQrDataUrl(data, style='classic'){
+async function createQrDataUrl(data, style='classic', simple=false){
+  const ecc = simple ? 'M' : 'H';
   if(style === 'modern' && window.QRCodeStyling){
     try{
       qrRenderHost.innerHTML = '';
@@ -173,13 +180,18 @@ async function createQrDataUrl(data, style='classic'){
         height: 1200,
         type: 'canvas',
         data,
-        margin: 0,
-        qrOptions: { errorCorrectionLevel: 'H' },
-        imageOptions: { hideBackgroundDots: false, imageSize: 0.3, margin: 6 },
-        dotsOptions: { color: '#14211d', type: 'rounded' },
+        margin: simple ? 8 : 0,
+        qrOptions: { errorCorrectionLevel: ecc },
+        dotsOptions: simple
+          ? { color: '#111111', type: 'square' }
+          : { color: '#14211d', type: 'rounded' },
         backgroundOptions: { color: '#ffffff' },
-        cornersSquareOptions: { color: '#007B5F', type: 'extra-rounded' },
-        cornersDotOptions: { color: '#FED141', type: 'dot' }
+        cornersSquareOptions: simple
+          ? { color: '#007B5F', type: 'square' }
+          : { color: '#007B5F', type: 'extra-rounded' },
+        cornersDotOptions: simple
+          ? { color: '#007B5F', type: 'square' }
+          : { color: '#FED141', type: 'dot' }
       });
       qr.append(qrRenderHost);
       await new Promise(r => setTimeout(r, 120));
@@ -193,7 +205,7 @@ async function createQrDataUrl(data, style='classic'){
       console.warn('Modern QR fallback', e);
     }
   }
-  return `https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&ecc=H&format=png&data=${encodeURIComponent(data)}`;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&ecc=${ecc}&format=png&data=${encodeURIComponent(data)}`;
 }
 
 function drawRoundRect(ctx,x,y,w,h,r,fill,stroke){
@@ -289,12 +301,12 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   const theme = getTheme(style);
   const canvas = document.createElement('canvas');
   canvas.width = 1800;
-  canvas.height = 1400;
+  canvas.height = 1450;
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1680,1280,40,'#ffffff',theme.accent);
+  drawRoundRect(ctx,60,60,1680,1330,40,'#ffffff',theme.accent);
 
   ctx.fillStyle = theme.accent;
   ctx.font = 'bold 54px Arial';
@@ -311,28 +323,36 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.fillText(`Tipo: ${contentType}`,128,264);
 
   ctx.textAlign = 'center';
-  ctx.drawImage(qr,120,330,700,700);
+  // Bigger QR area but simpler QR content (short URL + ECC M)
+  ctx.drawImage(qr,110,310,660,660);
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 26px Arial';
-  ctx.fillText('Paso 1: Escanea el QR Code',470,1070);
+  ctx.fillText('Paso 1: Escanea el QR Code',440,1010);
 
-  drawRoundRect(ctx,980,330,620,700,24,'#f9fbfa','#d7e5e0');
-  ctx.drawImage(marker,1110,410,360,360);
+  // Marker much larger
+  drawRoundRect(ctx,920,260,760,760,28,'#f9fbfa','#d7e5e0');
+  ctx.drawImage(marker,1030,345,540,540);
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 26px Arial';
-  ctx.fillText('Paso 2: Apunta al Marker INTER SG',1290,1070);
+  ctx.fillText('Paso 2: Apunta al Marker INTER SG',1300,1010);
+
+  // helper callout
+  drawRoundRect(ctx,105,1065,1590,95,18,'#eef7f3',null);
+  ctx.fillStyle = theme.text;
+  ctx.font = 'bold 22px Arial';
+  wrapText(ctx,'La versión separada usa un QR más simple para facilitar el escaneo y un Marker más grande para una mejor detección.',900,1102,1480,28,2);
 
   ctx.textAlign = 'left';
   if(descriptionText){
     ctx.fillStyle = theme.sub;
     ctx.font = '24px Arial';
-    wrapText(ctx,descriptionText,110,1160,1480,30,2);
+    wrapText(ctx,descriptionText,110,1210,1480,30,2);
   }
 
-  drawRoundRect(ctx,110,1210,1490,78,18,'#FFF4CC',theme.accent2);
+  drawRoundRect(ctx,110,1270,1490,78,18,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font = 'bold 22px Arial';
-  wrapText(ctx,'La versión separada reduce la densidad del QR y normalmente facilita el escaneo, especialmente con YouTube y Web link.',855,1258,1400,28,2);
+  wrapText(ctx,'Recomendado para YouTube y Web link. Esta versión suele escanear mejor que la integrada.',855,1318,1400,28,2);
 
   return canvas.toDataURL('image/png');
 }
@@ -350,9 +370,10 @@ async function generate(){
   setStatus('Creando ambas imágenes...', 'warn');
 
   try{
-    const qrDataUrl = await createQrDataUrl(arUrl, style);
-    const integrated = await buildIntegratedImage(qrDataUrl,titleInput.value.trim(),descriptionInput.value.trim(),type,style);
-    const separated = await buildSeparatedImage(qrDataUrl,titleInput.value.trim(),descriptionInput.value.trim(),type,style);
+    const integratedQr = await createQrDataUrl(arUrl, style, false);
+    const separatedQr = await createQrDataUrl(arUrl, 'classic', true);
+    const integrated = await buildIntegratedImage(integratedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style);
+    const separated = await buildSeparatedImage(separatedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style);
 
     integratedPreview.innerHTML = `<img src="${integrated}" alt="Versión integrada del QR y Marker">`;
     separatedPreview.innerHTML = `<img src="${separated}" alt="Versión separada del QR y Marker">`;

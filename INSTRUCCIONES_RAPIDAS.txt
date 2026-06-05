@@ -1,21 +1,10 @@
 GUÍA RÁPIDA – GENERADOR UNIVERSAL AR INTER SG
 
-NOVEDADES
-- Ahora genera dos imágenes:
-  1. Integrada
-  2. Separada
-- Incluye estilo de QR: Classic o Modern (Opción C)
-
-USO
-1. Abra index.html.
-2. Seleccione Tipo de contenido.
-3. Pegue el URL del contenido.
-4. Escriba el título y la descripción.
-5. Seleccione el estilo del QR.
-6. Presione Probar contenido.
-7. Presione Generar ambas imágenes.
-8. Descargue la versión integrada y/o la separada.
+NOVEDADES DE ESTA VERSIÓN
+- La versión separada tiene un Marker más grande.
+- La versión separada usa un QR más simple.
+- Se usa `v.html` con parámetros cortos para reducir la densidad del QR.
 
 RECOMENDACIÓN
-- Para YouTube y Web link, normalmente la versión separada escanea mejor.
-- La versión integrada conserva el diseño compacto original.
+- Use la versión separada cuando quiera el escaneo más fácil.
+- Use la versión integrada si prefiere un diseño compacto.

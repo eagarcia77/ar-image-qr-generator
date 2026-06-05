@@ -1,9 +1,7 @@
 VERIFICACIÓN REALIZADA
 
-1. Se añadieron dos salidas: integrada y separada.
-2. Se conservó la imagen integrada original.
-3. Se añadió una segunda imagen con QR y Marker separados dentro de una sola imagen.
-4. Se añadió selector de estilo: Classic / Modern.
-5. Se añadió soporte para QR visual más moderno mediante qr-code-styling cuando esté disponible.
-6. Si el estilo moderno no carga, el programa usa un QR clásico automáticamente.
-7. Se verificó la sintaxis de js/generator.js.
+1. Se aumentó el tamaño del Marker en la versión separada.
+2. Se simplificó el QR de la versión separada con una URL más corta y corrección M.
+3. Se añadió `v.html` como alias corto de `viewer-ar.html`.
+4. `viewer-ar.js` ahora acepta parámetros largos y cortos.
+5. Se verificó la sintaxis de `js/generator.js` y `js/viewer-ar.js`.
