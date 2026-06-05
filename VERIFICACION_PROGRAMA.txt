@@ -9,3 +9,6 @@ VERIFICACIÓN REALIZADA
 4. Se actualizó el generador para dibujar el Marker correcto.
 5. Se añadió `markers.html`.
 6. Se verificó la sintaxis de js/generator.js y js/viewer-ar.js.
+
+
+NOTA: La opción Marker INTER ahora usa un marcador que dice solamente INTER.

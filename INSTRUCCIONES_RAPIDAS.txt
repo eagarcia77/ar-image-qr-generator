@@ -13,3 +13,6 @@ GUÍA RÁPIDA – GENERADOR UNIVERSAL AR
 
 IMPORTANTE
 El estudiante debe apuntar al mismo Marker que usted seleccionó al generar la imagen.
+
+
+NOTA: La opción Marker INTER ahora usa un marcador que dice solamente INTER.

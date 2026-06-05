@@ -16,3 +16,6 @@ Esta versión corrige el problema donde el Marker seleccionado no cambiaba corre
 
 ## Archivo útil
 - `markers.html`: muestra los tres Markers disponibles.
+
+
+NOTA: La opción Marker INTER ahora usa un marcador que dice solamente INTER.
