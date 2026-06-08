@@ -41,9 +41,9 @@ function currentBaseUrl(){
 
 function getMarkerConfig(){
   const mode = markerTypeInput ? markerTypeInput.value : 'intersg';
-  if(mode === 'hiro') return { mode:'hiro', label:'HIRO', image:'./assets/hiro-marker-generic.png' };
-  if(mode === 'inter') return { mode:'inter', label:'INTER', image:'./assets/inter-marker-generic.png' };
-  return { mode:'intersg', label:'INTER SG', image:'./assets/inter-sg-marker.png' };
+  if(mode === 'hiro') return { mode:'hiro', label:'HIRO', image:'assets/hiro-marker-generic.png' };
+  if(mode === 'inter') return { mode:'inter', label:'INTER', image:'assets/inter-marker-generic.png' };
+  return { mode:'intersg', label:'INTER SG', image:'assets/inter-sg-marker.png' };
 }
 
 function refreshMarkerSelectionUI(){
@@ -324,12 +324,12 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   const theme = getTheme(style);
   const canvas = document.createElement('canvas');
   canvas.width=1600;
-  canvas.height=1800;
+  canvas.height=1820;
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1480,1680,44,'#ffffff',theme.accent);
+  drawRoundRect(ctx,60,60,1480,1700,44,'#ffffff',theme.accent);
   if(style==='inter') drawInterHeaderBars(ctx, 110, 94, 1380, theme);
 
   ctx.fillStyle = theme.accent;
@@ -346,29 +346,30 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   ctx.font='28px Arial';
   ctx.fillText('Image · Video · YouTube · PDF · Link',800,335);
 
-  drawRoundRect(ctx,170,380,1260,1230,28, style==='inter' ? '#f8fbfa' : '#ffffff', style==='inter' ? '#d9ebe5' : null);
-  ctx.drawImage(qr,200,410,1200,1200);
-  drawRoundRect(ctx,650,860,300,300,22,'#ffffff','#d7e5e0');
-  ctx.drawImage(marker,670,880,260,260);
+  drawRoundRect(ctx,220,390,1160,1080,28, style==='inter' ? '#f8fbfa' : '#ffffff', style==='inter' ? '#d9ebe5' : null);
+  ctx.drawImage(qr,290,430,1020,1020);
+
+  drawRoundRect(ctx,620,785,360,360,26,'#ffffff','#d7e5e0');
+  ctx.drawImage(marker,660,825,280,280);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 25px Arial';
-  ctx.fillText(`QR Code + Marker ${markerCfg.label} integrado`,800,1355);
+  ctx.fillText(`QR Code + Marker ${markerCfg.label} integrado`,800,1515);
 
   ctx.fillStyle = '#85714D';
   ctx.font='bold 24px Arial';
-  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1408);
+  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1562);
 
   if(descriptionText){
     ctx.fillStyle = theme.text;
     ctx.font='24px Arial';
-    wrapText(ctx,descriptionText,800,1458,1040,30,3);
+    wrapText(ctx,descriptionText,800,1605,1040,30,3);
   }
 
-  drawRoundRect(ctx,210,1560,1180,120,28,'#FFF4CC',theme.accent2);
+  drawRoundRect(ctx,210,1642,1180,90,28,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 24px Arial';
-  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1605,1040,30,3);
+  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1676,1040,28,2);
   return canvas.toDataURL('image/png');
 }
 
@@ -410,7 +411,7 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.fillText('Paso 1: Escanea el QR Code',446,1076);
 
   drawRoundRect(ctx,900,250,800,800,30,'#f9fbfa','#d7e5e0');
-  ctx.drawImage(marker,1020,340,560,560);
+  ctx.drawImage(marker,990,330,620,620);
   ctx.fillStyle = theme.text;
   ctx.font='bold 26px Arial';
   ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,1300,1076);
@@ -418,7 +419,7 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   drawRoundRect(ctx,105,1112,1590,95,18,style==='inter' ? '#eef7f3' : '#eef7f3',null);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
-  wrapText(ctx,`Esta versión usa QR simple y Marker ${markerCfg.label} grande para facilitar el escaneo y la detección.`,900,1148,1480,28,2);
+  wrapText(ctx,`Esta versión usa QR simple y un Marker ${markerCfg.label} más grande para facilitar el escaneo y la detección.`,900,1148,1480,28,2);
 
   ctx.textAlign='left';
   if(descriptionText){

@@ -34,3 +34,6 @@ Encabezado institucional actualizado: Universidad Interamericana de Puerto Rico 
 
 
 Actualización 3D: las imágenes ahora se muestran con un efecto visual más futurista, flotante y con apariencia 3D dentro de la experiencia de Realidad Aumentada.
+
+
+Verificación adicional: se agrandó el Marker visual y se corrigió la versión integrada para que la parte inferior del QR Code no quede tapada por texto ni elementos superpuestos.
