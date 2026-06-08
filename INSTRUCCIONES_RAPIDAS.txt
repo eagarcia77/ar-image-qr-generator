@@ -88,3 +88,9 @@ Optimización final solicitada:
 - En la versión integrada, el Marker se mantiene en el centro del QR Code, pero con tamaño más controlado para mejorar el escaneo.
 - El QR integrado ahora usa margen amplio y estilo Fast Scan de alto contraste.
 - En la versión separada, el QR y el Marker se agrandaron para facilitar lectura y detección.
+
+
+Corrección de estilos QR:
+- Se corrigió el generador para que use realmente el estilo de QR seleccionado.
+- Ahora las opciones Modern, Tiger Style, Inter Premium y Fast Scan se reflejan en las imágenes generadas.
+- Fast Scan sigue disponible como la opción recomendada cuando se busca mayor rapidez de lectura.
