@@ -243,6 +243,17 @@ function drawRoundRect(ctx,x,y,w,h,r,fill,stroke){
   if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=4; ctx.stroke(); }
 }
 
+
+function drawWatermark(ctx, canvas){
+  ctx.save();
+  ctx.globalAlpha = 0.18;
+  ctx.fillStyle = '#14211d';
+  ctx.font = 'bold 18px Arial';
+  ctx.textAlign = 'right';
+  ctx.fillText('E.A.G.R.', canvas.width - 22, canvas.height - 18);
+  ctx.restore();
+}
+
 function wrapText(ctx,text,x,y,maxWidth,lineHeight,maxLines=3){
   if(!text) return;
   const words = text.split(' ');
@@ -372,6 +383,7 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   ctx.fillStyle = theme.text;
   ctx.font='bold 24px Arial';
   wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1728,1040,28,2);
+  drawWatermark(ctx, canvas);
   return canvas.toDataURL('image/png');
 }
 
@@ -435,6 +447,7 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.font='bold 22px Arial';
   ctx.textAlign='center';
   wrapText(ctx,'Recomendado para YouTube y Web link. Esta versión suele escanear mejor que la integrada.',900,1358,1320,28,2);
+  drawWatermark(ctx, canvas);
   return canvas.toDataURL('image/png');
 }
 

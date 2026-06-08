@@ -42,3 +42,12 @@ Innovación añadida: el visor AR ahora incluye una experiencia más moderna e i
 
 
 Actualización YouTube: los videos de YouTube ahora se muestran en una tarjeta flotante futurista dentro del visor AR. El sistema solicita autoplay y audio; si el navegador bloquea el sonido automático, aparece un botón para reproducir YouTube y activar la reproducción mediante interacción del usuario.
+
+
+
+Actualización:
+- Se añadió una marca de agua pequeña y discreta con el texto E.A.G.R. en la esquina inferior derecha.
+- La marca de agua no interfiere con el uso del programa ni con el contenido.
+- En el visor AR, los comentarios/mensajes desaparecen automáticamente después de 10 segundos.
+- Los controles de zoom (+, -, reinicio y controles siguientes) permanecen visibles.
+- Los botones de acción también permanecen disponibles.

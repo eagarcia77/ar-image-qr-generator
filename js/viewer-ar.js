@@ -14,6 +14,8 @@ const openContentBtn = document.getElementById('openContentBtn');
 const hideBtn = document.getElementById('hideBtn');
 const errorBox = document.getElementById('errorBox');
 const actionText = document.getElementById('actionText');
+const actionBox = document.getElementById('actionBox');
+const overlayBox = document.querySelector('.overlay');
 const manualShowBtn = document.getElementById('manualShowBtn');
 const overlayMarkerLabel = document.getElementById('overlayMarkerLabel');
 const playVideoBtn = document.getElementById('playVideoBtn');
@@ -85,6 +87,28 @@ function showError(message){
 
 function showAction(message){ actionText.textContent = message; }
 
+let commentHideTimer = null;
+
+function resetCommentVisibility(){
+  if(overlayBox) overlayBox.classList.remove('auto-hidden');
+  if(actionBox) actionBox.classList.remove('text-hidden');
+  if(commentHideTimer) clearTimeout(commentHideTimer);
+}
+
+function hideCommentsAfterDelay(){
+  if(commentHideTimer) clearTimeout(commentHideTimer);
+  commentHideTimer = setTimeout(() => {
+    if(overlayBox) overlayBox.classList.add('auto-hidden');
+    if(actionBox) actionBox.classList.add('text-hidden');
+  }, 10000);
+}
+
+function scheduleCommentFade(){
+  resetCommentVisibility();
+  hideCommentsAfterDelay();
+}
+
+
 function activateVideoAudio(){
   if(!videoElement) return;
   videoElement.muted = false;
@@ -107,6 +131,7 @@ function applyScale(){
 function showContent(){
   if(!mediaUrl){ showError('No hay contenido. Regenera el QR Code.'); return; }
   mediaLayer.style.display = 'block';
+  scheduleCommentFade();
 
   if(type === 'youtube'){
     showAction('YouTube flotante listo. El sistema intentará reproducirlo automáticamente. Si no se escucha, toca Reproducir YouTube.');
@@ -304,13 +329,16 @@ buildContent();
 
 activeMarker.addEventListener('markerFound', () => {
   markerDetected = true;
+  resetCommentVisibility();
   showContent();
   showAction(type === 'youtube' ? `Marker ${markerLabel} detectado. YouTube flotante listo para reproducirse.` : type === 'video' ? `Marker ${markerLabel} detectado. El video se abrirá en modo inmersivo.` : `Marker ${markerLabel} detectado.`);
 });
 
 activeMarker.addEventListener('markerLost', () => {
   markerDetected = false;
+  resetCommentVisibility();
   showAction(`Marker ${markerLabel} perdido. Vuelve a apuntar o usa Mostrar contenido sin marcador.`);
+  hideCommentsAfterDelay();
 });
 
 manualShowBtn.addEventListener('click', () => { showContent(); if(type === 'video') playVideoIfNeeded(true); });
@@ -352,5 +380,9 @@ document.addEventListener('touchend', (event) => {
 }, {passive:true});
 
 setTimeout(() => {
-  if(!markerDetected) showAction(`Si el Marker ${markerLabel} no se detecta, usa Mostrar contenido sin marcador.`);
+  if(!markerDetected){
+    resetCommentVisibility();
+    showAction(`Si el Marker ${markerLabel} no se detecta, usa Mostrar contenido sin marcador.`);
+    hideCommentsAfterDelay();
+  }
 }, 8000);
