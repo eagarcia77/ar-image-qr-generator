@@ -46,3 +46,6 @@ Ajuste adicional en versión integrada: el Marker integrado ahora es más grande
 
 
 Innovación añadida: el visor AR ahora incluye una experiencia más moderna e inmersiva. Los videos se muestran en una tarjeta futurista y el sistema intenta reproducirlos automáticamente. Si el dispositivo bloquea el audio, aparecen botones para reproducir y activar audio fácilmente.
+
+
+Actualización YouTube: los videos de YouTube ahora se muestran en una tarjeta flotante futurista dentro del visor AR. El sistema solicita autoplay y audio; si el navegador bloquea el sonido automático, aparece un botón para reproducir YouTube y activar la reproducción mediante interacción del usuario.

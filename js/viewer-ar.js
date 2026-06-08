@@ -19,6 +19,7 @@ const overlayMarkerLabel = document.getElementById('overlayMarkerLabel');
 const playVideoBtn = document.getElementById('playVideoBtn');
 const audioBtn = document.getElementById('audioBtn');
 const youtubeBtn = document.getElementById('youtubeBtn');
+const youtubeAudioBtn = document.getElementById('youtubeAudioBtn');
 const interSgMarker = document.getElementById('interSgMarker');
 const interMarker = document.getElementById('interMarker');
 const hiroMarker = document.getElementById('hiroMarker');
@@ -30,6 +31,9 @@ let scale = 1;
 let markerDetected = false;
 let videoElement = null;
 let videoAudioEnabled = false;
+let youtubeIframe = null;
+let youtubeWatchUrl = '';
+let youtubeEmbedUrl = '';
 
 function getMarkerLabel(){
   if(markerMode === 'hiro') return 'HIRO';
@@ -49,6 +53,20 @@ contentDescription.textContent = description;
 openContentBtn.href = mediaUrl || '#';
 if(overlayMarkerLabel) overlayMarkerLabel.textContent = `Apunta al Marker ${markerLabel}.`;
 actionText.textContent = `Buscando Marker ${markerLabel}...`;
+
+
+function activateYoutubePlayback(){
+  const panel = document.getElementById('youtubeStartPanel');
+  if(panel) panel.classList.add('hidden-panel');
+
+  if(youtubeIframe && youtubeEmbedUrl){
+    // Re-load with autoplay requested after user interaction. This is the most reliable way on phones.
+    youtubeIframe.src = youtubeEmbedUrl + '&start=0';
+  }
+
+  if(youtubeAudioBtn) youtubeAudioBtn.style.display = 'none';
+  showAction('YouTube reproduciéndose. Si no escuchas audio, toca dentro del video o usa Abrir video en YouTube.');
+}
 
 function configurePresentationMode(){
   if(type === 'image'){
@@ -91,7 +109,7 @@ function showContent(){
   mediaLayer.style.display = 'block';
 
   if(type === 'youtube'){
-    showAction('YouTube listo. Toca Abrir video en YouTube.');
+    showAction('YouTube flotante listo. El sistema intentará reproducirlo automáticamente. Si no se escucha, toca Reproducir YouTube.');
   } else if(type === 'image'){
     showAction('Imagen 3D visible con efecto futurista. Usa + y − o pellizca con dos dedos.');
   } else if(type === 'link'){
@@ -185,22 +203,41 @@ function buildContent(){
       return;
     }
 
-    const watchUrl = `https://www.youtube.com/watch?v=${id}`;
-    const thumbnailUrl = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+    youtubeWatchUrl = `https://www.youtube.com/watch?v=${id}`;
+    youtubeEmbedUrl = `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&playsinline=1&controls=1&rel=0&modestbranding=1&enablejsapi=1`;
 
     mediaBody.innerHTML = `
-      <div class="youtube-card">
-        <img src="${thumbnailUrl}" alt="Miniatura del video de YouTube">
-        <a class="yt-button" href="${watchUrl}" target="_blank" rel="noopener">Abrir video en YouTube</a>
-        <p>YouTube puede bloquear la reproducción embebida dentro de experiencias AR. Este botón abre el video directamente en YouTube o en la app del dispositivo.</p>
+      <div class="youtube-float-stage">
+        <div class="youtube-holo-glow"></div>
+        <div class="youtube-player-card">
+          <div class="youtube-topbar">
+            <span class="youtube-live-badge">Floating YouTube</span>
+            <span class="youtube-audio-badge">Autoplay + Audio</span>
+          </div>
+          <div class="youtube-frame-wrap">
+            <iframe id="youtubeFrame" src="${youtubeEmbedUrl}" title="${title.replace(/"/g, '&quot;')}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <div id="youtubeStartPanel" class="youtube-start-panel">
+              <button id="youtubeBigPlay" class="youtube-play-big" type="button">▶</button>
+              <strong>Reproducir YouTube</strong>
+              <span>Si el navegador bloquea el audio automático, toca este botón para iniciar el video y activar el sonido.</span>
+            </div>
+          </div>
+          <p class="youtube-help">El video flota dentro de la experiencia AR. Algunos celulares bloquean el sonido automático; por eso se incluye el botón de reproducción.</p>
+        </div>
       </div>
     `;
 
-    openContentBtn.href = watchUrl;
+    youtubeIframe = document.getElementById('youtubeFrame');
+    const bigPlay = document.getElementById('youtubeBigPlay');
+    if(bigPlay) bigPlay.addEventListener('click', activateYoutubePlayback);
+
+    openContentBtn.href = youtubeWatchUrl;
     openContentBtn.textContent = 'Abrir video en YouTube';
-    youtubeBtn.href = watchUrl;
+    youtubeBtn.href = youtubeWatchUrl;
     youtubeBtn.style.display = 'inline-block';
     youtubeBtn.textContent = 'Abrir video en YouTube';
+    youtubeAudioBtn.style.display = 'inline-block';
+    youtubeAudioBtn.textContent = '▶ Reproducir YouTube';
     return;
   }
 
@@ -268,7 +305,7 @@ buildContent();
 activeMarker.addEventListener('markerFound', () => {
   markerDetected = true;
   showContent();
-  showAction(type === 'youtube' ? `Marker ${markerLabel} detectado. Toca Abrir video en YouTube.` : type === 'video' ? `Marker ${markerLabel} detectado. El video se abrirá en modo inmersivo.` : `Marker ${markerLabel} detectado.`);
+  showAction(type === 'youtube' ? `Marker ${markerLabel} detectado. YouTube flotante listo para reproducirse.` : type === 'video' ? `Marker ${markerLabel} detectado. El video se abrirá en modo inmersivo.` : `Marker ${markerLabel} detectado.`);
 });
 
 activeMarker.addEventListener('markerLost', () => {
@@ -280,6 +317,7 @@ manualShowBtn.addEventListener('click', () => { showContent(); if(type === 'vide
 hideBtn.addEventListener('click', hideContent);
 playVideoBtn.addEventListener('click', () => playVideoIfNeeded(true));
 audioBtn.addEventListener('click', activateVideoAudio);
+youtubeAudioBtn.addEventListener('click', activateYoutubePlayback);
 
 zoomInBtn.addEventListener('click', () => { scale = Math.min(scale + 0.15, 2.8); applyScale(); });
 zoomOutBtn.addEventListener('click', () => { scale = Math.max(scale - 0.15, 0.35); applyScale(); });
