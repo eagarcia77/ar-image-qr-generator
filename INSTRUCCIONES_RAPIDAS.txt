@@ -40,3 +40,6 @@ Verificación adicional: se agrandó el Marker visual y se corrigió la versión
 
 
 Ajuste adicional en versión integrada: el Marker integrado ahora es más grande para mejorar la detección, y el diseño del QR se reorganizó para que solo tenga una superposición mínima y siga funcionando mejor.
+
+
+Innovación añadida: el visor AR ahora incluye una experiencia más moderna e inmersiva. Los videos se muestran en una tarjeta futurista y el sistema intenta reproducirlos automáticamente. Si el dispositivo bloquea el audio, aparecen botones para reproducir y activar audio fácilmente.

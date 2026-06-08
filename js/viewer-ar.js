@@ -17,6 +17,7 @@ const actionText = document.getElementById('actionText');
 const manualShowBtn = document.getElementById('manualShowBtn');
 const overlayMarkerLabel = document.getElementById('overlayMarkerLabel');
 const playVideoBtn = document.getElementById('playVideoBtn');
+const audioBtn = document.getElementById('audioBtn');
 const youtubeBtn = document.getElementById('youtubeBtn');
 const interSgMarker = document.getElementById('interSgMarker');
 const interMarker = document.getElementById('interMarker');
@@ -28,6 +29,7 @@ const resetBtn = document.getElementById('resetBtn');
 let scale = 1;
 let markerDetected = false;
 let videoElement = null;
+let videoAudioEnabled = false;
 
 function getMarkerLabel(){
   if(markerMode === 'hiro') return 'HIRO';
@@ -65,6 +67,20 @@ function showError(message){
 
 function showAction(message){ actionText.textContent = message; }
 
+function activateVideoAudio(){
+  if(!videoElement) return;
+  videoElement.muted = false;
+  videoElement.volume = 1;
+  videoAudioEnabled = true;
+  videoElement.play().then(() => {
+    audioBtn.style.display = 'none';
+    playVideoBtn.style.display = 'none';
+    showAction('Audio activado. El video ya se puede escuchar.');
+  }).catch(() => {
+    showAction('Toca el video una vez para permitir el audio en este dispositivo.');
+  });
+}
+
 function applyScale(){
   mediaLayer.classList.add('no-float');
   mediaLayer.style.transform = `translate(-50%, -50%) scale(${scale})`;
@@ -80,11 +96,13 @@ function showContent(){
     showAction('Imagen 3D visible con efecto futurista. Usa + y − o pellizca con dos dedos.');
   } else if(type === 'link'){
     showAction('Página web lista. Toca Abrir página web.');
+  } else if(type === 'video'){
+    showAction('Video inmersivo listo. El sistema intentará reproducirlo automáticamente.');
   } else {
     showAction('Contenido visible. Usa + y − o pellizca con dos dedos.');
   }
 
-  if(type === 'video') playVideoIfNeeded();
+  if(type === 'video') playVideoIfNeeded(false);
 }
 
 function hideContent(){ mediaLayer.style.display = 'none'; }
@@ -135,16 +153,27 @@ function buildContent(){
   }
 
   if(type === 'video'){
-    const video = document.createElement('video');
-    video.src = mediaUrl;
-    video.controls = true;
-    video.muted = true;
+    const stage = document.createElement('div');
+    stage.className = 'video-stage-future';
+    stage.innerHTML = `
+      <div class="video-glow-ring"></div>
+      <div class="video-card-future">
+        <div class="video-badge-row">
+          <span class="video-badge">Immersive Video</span>
+          <span class="audio-badge">Audio Ready</span>
+        </div>
+        <video class="video-player-future" src="${mediaUrl}" controls playsinline webkit-playsinline preload="auto"></video>
+        <p class="video-help">El sistema intentará reproducir el video automáticamente. Si el dispositivo bloquea el audio, usa los botones <strong>Reproducir video</strong> y <strong>Activar audio</strong>.</p>
+      </div>
+    `;
+    const video = stage.querySelector('video');
+    video.muted = false;
+    video.volume = 1;
     video.loop = true;
-    video.playsInline = true;
+    video.setAttribute('playsinline', 'true');
     video.setAttribute('webkit-playsinline','true');
-    video.preload = 'auto';
     video.onerror = () => showError('El video no pudo cargar. Verifica MP4/WebM y permisos Read.');
-    mediaBody.appendChild(video);
+    mediaBody.appendChild(stage);
     videoElement = video;
     return;
   }
@@ -201,14 +230,35 @@ function buildContent(){
   openContentBtn.textContent = 'Abrir página web';
 }
 
-async function playVideoIfNeeded(){
+async function playVideoIfNeeded(forceAudio = false){
   if(!videoElement) return;
   try{
+    if(forceAudio){
+      videoElement.muted = false;
+      videoElement.volume = 1;
+      videoAudioEnabled = true;
+    }
     await videoElement.play();
     playVideoBtn.style.display = 'none';
+    if(videoElement.muted){
+      audioBtn.style.display = 'inline-block';
+      showAction('Video reproduciéndose. Si no escuchas audio, toca Activar audio.');
+    } else {
+      audioBtn.style.display = 'none';
+      showAction('Video reproduciéndose con audio.');
+    }
   }catch{
-    playVideoBtn.style.display = 'inline-block';
-    showAction('Si el video no comienza, toca Activar video.');
+    try{
+      videoElement.muted = true;
+      await videoElement.play();
+      playVideoBtn.style.display = 'inline-block';
+      audioBtn.style.display = 'inline-block';
+      showAction('El video comenzó en silencio. Toca Activar audio para escucharlo.');
+    }catch{
+      playVideoBtn.style.display = 'inline-block';
+      audioBtn.style.display = 'inline-block';
+      showAction('Si el video no comienza, toca Reproducir video. Luego toca Activar audio.');
+    }
   }
 }
 
@@ -218,7 +268,7 @@ buildContent();
 activeMarker.addEventListener('markerFound', () => {
   markerDetected = true;
   showContent();
-  showAction(type === 'youtube' ? `Marker ${markerLabel} detectado. Toca Abrir video en YouTube.` : `Marker ${markerLabel} detectado.`);
+  showAction(type === 'youtube' ? `Marker ${markerLabel} detectado. Toca Abrir video en YouTube.` : type === 'video' ? `Marker ${markerLabel} detectado. El video se abrirá en modo inmersivo.` : `Marker ${markerLabel} detectado.`);
 });
 
 activeMarker.addEventListener('markerLost', () => {
@@ -226,9 +276,10 @@ activeMarker.addEventListener('markerLost', () => {
   showAction(`Marker ${markerLabel} perdido. Vuelve a apuntar o usa Mostrar contenido sin marcador.`);
 });
 
-manualShowBtn.addEventListener('click', showContent);
+manualShowBtn.addEventListener('click', () => { showContent(); if(type === 'video') playVideoIfNeeded(true); });
 hideBtn.addEventListener('click', hideContent);
-playVideoBtn.addEventListener('click', playVideoIfNeeded);
+playVideoBtn.addEventListener('click', () => playVideoIfNeeded(true));
+audioBtn.addEventListener('click', activateVideoAudio);
 
 zoomInBtn.addEventListener('click', () => { scale = Math.min(scale + 0.15, 2.8); applyScale(); });
 zoomOutBtn.addEventListener('click', () => { scale = Math.max(scale - 0.15, 0.35); applyScale(); });
