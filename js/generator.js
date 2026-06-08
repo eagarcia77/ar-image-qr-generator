@@ -194,9 +194,11 @@ function dataUrlFromBlob(blob){
 }
 
 async function createQrDataUrl(data, style='classic', simple=false){
+  // Fast Scan: QR de alto contraste, más margen y menos decoración para lectura rápida.
+  if(style === 'fastscan') simple = true;
   let ecc = simple ? 'M' : 'H';
   if(style === 'inter') ecc = 'M';
-  if(window.QRCodeStyling && (style === 'modern' || style === 'tiger' || style === 'inter')){
+  if(window.QRCodeStyling && (style === 'modern' || style === 'tiger' || style === 'inter' || style === 'fastscan')){
     try{
       qrRenderHost.innerHTML = '';
       const options = {
@@ -204,7 +206,7 @@ async function createQrDataUrl(data, style='classic', simple=false){
         height: 1200,
         type: 'canvas',
         data,
-        margin: style === 'inter' ? 16 : (simple ? 8 : 0),
+        margin: style === 'fastscan' ? 28 : (style === 'inter' ? 16 : (simple ? 14 : 0)),
         qrOptions: { errorCorrectionLevel: ecc },
         backgroundOptions: { color: '#ffffff' }
       };
@@ -229,7 +231,7 @@ async function createQrDataUrl(data, style='classic', simple=false){
       if(typeof qr.getRawData === 'function') return await dataUrlFromBlob(await qr.getRawData('png'));
     }catch(e){ console.warn('Styled QR fallback', e); }
   }
-  return `https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&ecc=${ecc}&format=png&data=${encodeURIComponent(data)}`;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&ecc=${ecc}&margin=${style === 'fastscan' ? 28 : 12}&color=000000&bgcolor=FFFFFF&format=png&data=${encodeURIComponent(data)}`;
 }
 
 function drawRoundRect(ctx,x,y,w,h,r,fill,stroke){
@@ -335,54 +337,53 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   const theme = getTheme(style);
   const canvas = document.createElement('canvas');
   canvas.width=1600;
-  canvas.height=1860;
+  canvas.height=1900;
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1480,1740,44,'#ffffff',theme.accent);
+  drawRoundRect(ctx,60,60,1480,1780,44,'#ffffff',theme.accent);
   if(style==='inter') drawInterHeaderBars(ctx, 110, 94, 1380, theme);
 
   ctx.fillStyle = theme.accent;
   ctx.font='bold 58px Arial';
   ctx.textAlign='center';
-  ctx.fillText('AR',800,170);
-  if(style==='inter') drawInterRibbon(ctx, 520, 190, 560, 64, theme, markerCfg.mode === 'inter' ? 'INTER' : markerCfg.mode === 'hiro' ? 'HIRO' : 'INTER SAN GERMÁN');
+  ctx.fillText('AR',800,165);
+
+  if(style==='inter') {
+    drawInterRibbon(ctx, 520, 185, 560, 64, theme, markerCfg.mode === 'inter' ? 'INTER' : markerCfg.mode === 'hiro' ? 'HIRO' : 'INTER SAN GERMÁN');
+  }
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 40px Arial';
-  ctx.fillText(titleText || 'Experiencia AR',800,285);
+  ctx.fillText(titleText || 'Experiencia AR',800,282);
 
   ctx.fillStyle = theme.sub;
   ctx.font='28px Arial';
-  ctx.fillText('Image · Video · YouTube · PDF · Link',800,335);
+  ctx.fillText('Scan rápido · QR limpio · Marker ampliado',800,330);
 
-  // Larger QR area with more protected bottom space for a bigger marker.
-  drawRoundRect(ctx,210,385,1180,1120,28, style==='inter' ? '#f8fbfa' : '#ffffff', style==='inter' ? '#d9ebe5' : null);
-  ctx.drawImage(qr,280,425,1040,1040);
-
-  // Bigger marker in the integrated version, positioned lower so the QR stays readable.
-  drawRoundRect(ctx,585,900,430,430,28,'#ffffff','#d7e5e0');
-  ctx.drawImage(marker,630,945,340,340);
+  // Zona superior: QR limpio, sin objetos encima. Esto mejora mucho el escaneo.
+  drawRoundRect(ctx,230,375,1140,1140,30,'#ffffff','#d7e5e0');
+  ctx.drawImage(qr,290,435,1020,1020);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 25px Arial';
-  ctx.fillText(`QR Code + Marker ${markerCfg.label} integrado`,800,1555);
+  ctx.fillText('Paso 1: Escanea el QR Code',800,1540);
 
-  ctx.fillStyle = '#85714D';
-  ctx.font='bold 24px Arial';
-  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1600);
+  // Zona inferior: Marker grande, separado del QR para que AR.js lo detecte mejor.
+  drawRoundRect(ctx,480,1582,640,230,28,'#f9fbfa','#d7e5e0');
+  ctx.drawImage(marker,515,1605,190,190);
 
-  if(descriptionText){
-    ctx.fillStyle = theme.text;
-    ctx.font='24px Arial';
-    wrapText(ctx,descriptionText,800,1642,1040,30,3);
-  }
-
-  drawRoundRect(ctx,210,1692,1180,96,28,'#FFF4CC',theme.accent2);
+  ctx.textAlign='left';
   ctx.fillStyle = theme.text;
-  ctx.font='bold 24px Arial';
-  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1728,1040,28,2);
+  ctx.font='bold 28px Arial';
+  ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,730,1665);
+  ctx.font='21px Arial';
+  ctx.fillStyle = theme.sub;
+  ctx.fillText('El Marker está separado del QR para mejorar la detección.',730,1702);
+  ctx.fillText(`Tipo de contenido: ${contentType}`,730,1736);
+
+  ctx.textAlign='center';
   drawWatermark(ctx, canvas);
   return canvas.toDataURL('image/png');
 }
@@ -393,12 +394,12 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   const theme = getTheme(style);
   const canvas = document.createElement('canvas');
   canvas.width=1800;
-  canvas.height=1450;
+  canvas.height=1500;
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1680,1330,40,'#ffffff',theme.accent);
+  drawRoundRect(ctx,60,60,1680,1380,40,'#ffffff',theme.accent);
   if(style==='inter') drawInterHeaderBars(ctx, 95, 92, 1610, theme);
 
   ctx.fillStyle = theme.accent;
@@ -406,51 +407,47 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   ctx.textAlign='left';
   ctx.fillText('AR',110,170);
 
-  if(style==='inter') drawInterRibbon(ctx, 1180, 120, 460, 58, theme, markerCfg.mode === 'inter' ? 'INTER' : markerCfg.mode === 'hiro' ? 'HIRO' : 'INTER SAN GERMÁN');
+  if(style==='inter') {
+    drawInterRibbon(ctx, 1180, 120, 460, 58, theme, markerCfg.mode === 'inter' ? 'INTER' : markerCfg.mode === 'hiro' ? 'HIRO' : 'INTER SAN GERMÁN');
+  }
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 34px Arial';
   ctx.fillText(titleText || 'Experiencia AR',110,228);
 
-  drawRoundRect(ctx,108,268,310,46,20,theme.chip,null);
+  drawRoundRect(ctx,108,268,360,46,20,theme.chip,null);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
   ctx.fillText(`Tipo: ${contentType}`,128,300);
 
-  drawRoundRect(ctx,96,336,700,700,30,'#ffffff','#d7e5e0');
+  // QR grande, limpio y separado.
+  drawRoundRect(ctx,92,340,730,730,30,'#ffffff','#d7e5e0');
   ctx.textAlign='center';
-  ctx.drawImage(qr,116,356,660,660);
+  ctx.drawImage(qr,122,370,670,670);
   ctx.fillStyle = theme.text;
-  ctx.font='bold 26px Arial';
-  ctx.fillText('Paso 1: Escanea el QR Code',446,1076);
+  ctx.font='bold 28px Arial';
+  ctx.fillText('Paso 1: Escanea el QR Code',457,1125);
 
-  drawRoundRect(ctx,900,250,800,800,30,'#f9fbfa','#d7e5e0');
-  ctx.drawImage(marker,990,330,620,620);
+  // Marker más grande y con área limpia alrededor.
+  drawRoundRect(ctx,900,250,820,820,30,'#ffffff','#d7e5e0');
+  ctx.drawImage(marker,975,325,670,670);
   ctx.fillStyle = theme.text;
-  ctx.font='bold 26px Arial';
-  ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,1300,1076);
+  ctx.font='bold 28px Arial';
+  ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,1310,1125);
 
-  drawRoundRect(ctx,105,1112,1590,95,18,style==='inter' ? '#eef7f3' : '#eef7f3',null);
+  drawRoundRect(ctx,105,1190,1590,120,22,'#eef7f3',null);
+  ctx.fillStyle = theme.text;
+  ctx.font='bold 23px Arial';
+  wrapText(ctx,'Versión optimizada para lectura rápida: QR de alto contraste, margen amplio y Marker separado para mejor detección.',900,1235,1450,30,3);
+
+  drawRoundRect(ctx,110,1345,1490,78,18,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 22px Arial';
-  wrapText(ctx,`Esta versión usa QR simple y un Marker ${markerCfg.label} más grande para facilitar el escaneo y la detección.`,900,1148,1480,28,2);
+  wrapText(ctx,'Recomendación: use esta versión cuando el enlace sea largo o cuando el QR tarde en escanear.',900,1393,1320,28,2);
 
-  ctx.textAlign='left';
-  if(descriptionText){
-    ctx.fillStyle = theme.sub;
-    ctx.font='24px Arial';
-    wrapText(ctx,descriptionText,110,1258,1480,30,2);
-  }
-
-  drawRoundRect(ctx,110,1310,1490,78,18,'#FFF4CC',theme.accent2);
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 22px Arial';
-  ctx.textAlign='center';
-  wrapText(ctx,'Recomendado para YouTube y Web link. Esta versión suele escanear mejor que la integrada.',900,1358,1320,28,2);
   drawWatermark(ctx, canvas);
   return canvas.toDataURL('image/png');
 }
-
 async function generate(){
   const arUrl = buildArUrl();
   if(!arUrl){ setStatus('Falta el URL del contenido.', 'error'); return; }
@@ -462,11 +459,11 @@ async function generate(){
   resultUrl.value = arUrl;
   openBtn.href = arUrl;
   openBtn.classList.remove('disabled');
-  setStatus(`Creando imágenes con Marker ${markerCfg.label}...`, 'warn');
+  setStatus(`Creando imágenes optimizadas para escaneo rápido con Marker ${markerCfg.label}...`, 'warn');
 
   try{
-    const integratedQr = await createQrDataUrl(arUrl, style, false);
-    const separatedQr = await createQrDataUrl(arUrl, style === 'inter' ? 'inter' : 'classic', true);
+    const integratedQr = await createQrDataUrl(arUrl, 'fastscan', true);
+    const separatedQr = await createQrDataUrl(arUrl, 'fastscan', true);
 
     const integrated = await buildIntegratedImage(integratedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style,markerCfg);
     const separated = await buildSeparatedImage(separatedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style,markerCfg);
@@ -482,7 +479,7 @@ async function generate(){
     downloadSeparatedBtn.download = `QR_Marker_Separado_${markerCfg.mode}_${type}_${style}.png`;
     downloadSeparatedBtn.classList.remove('disabled');
 
-    setStatus(`Listo. El Marker seleccionado es ${markerCfg.label}.`, 'ok');
+    setStatus(`Listo. QR y Marker optimizados para escaneo rápido. Marker seleccionado: ${markerCfg.label}.`, 'ok');
   }catch(e){
     console.error(e);
     integratedPreview.innerHTML = '<p>No se pudo crear la versión integrada.</p>';

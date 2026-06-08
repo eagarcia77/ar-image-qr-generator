@@ -28,6 +28,7 @@ const hiroMarker = document.getElementById('hiroMarker');
 const zoomInBtn = document.getElementById('zoomInBtn');
 const zoomOutBtn = document.getElementById('zoomOutBtn');
 const resetBtn = document.getElementById('resetBtn');
+const controlsBox = document.querySelector('.controls');
 
 let scale = 1;
 let markerDetected = false;
@@ -92,6 +93,8 @@ let commentHideTimer = null;
 function resetCommentVisibility(){
   if(overlayBox) overlayBox.classList.remove('auto-hidden');
   if(actionBox) actionBox.classList.remove('text-hidden');
+  if(controlsBox) controlsBox.classList.remove('auto-hidden');
+  if(mediaLayer) mediaLayer.classList.remove('clean-view');
   if(commentHideTimer) clearTimeout(commentHideTimer);
 }
 
@@ -100,12 +103,18 @@ function hideCommentsAfterDelay(){
   commentHideTimer = setTimeout(() => {
     if(overlayBox) overlayBox.classList.add('auto-hidden');
     if(actionBox) actionBox.classList.add('text-hidden');
-  }, 10000);
+    if(controlsBox) controlsBox.classList.add('auto-hidden');
+    if(mediaLayer && mediaLayer.style.display === 'block') mediaLayer.classList.add('clean-view');
+  }, 5000);
 }
 
 function scheduleCommentFade(){
   resetCommentVisibility();
   hideCommentsAfterDelay();
+}
+
+function showInterfaceTemporarily(){
+  if(mediaLayer && mediaLayer.style.display === 'block') scheduleCommentFade();
 }
 
 
@@ -346,6 +355,10 @@ hideBtn.addEventListener('click', hideContent);
 playVideoBtn.addEventListener('click', () => playVideoIfNeeded(true));
 audioBtn.addEventListener('click', activateVideoAudio);
 youtubeAudioBtn.addEventListener('click', activateYoutubePlayback);
+
+
+// Si el usuario toca la pantalla, los controles aparecen otra vez por 5 segundos.
+document.addEventListener('pointerdown', showInterfaceTemporarily, {passive:true});
 
 zoomInBtn.addEventListener('click', () => { scale = Math.min(scale + 0.15, 2.8); applyScale(); });
 zoomOutBtn.addEventListener('click', () => { scale = Math.max(scale - 0.15, 0.35); applyScale(); });

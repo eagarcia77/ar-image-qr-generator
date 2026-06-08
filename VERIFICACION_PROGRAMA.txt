@@ -48,6 +48,22 @@ Actualización YouTube: los videos de YouTube ahora se muestran en una tarjeta f
 Actualización:
 - Se añadió una marca de agua pequeña y discreta con el texto E.A.G.R. en la esquina inferior derecha.
 - La marca de agua no interfiere con el uso del programa ni con el contenido.
-- En el visor AR, los comentarios/mensajes desaparecen automáticamente después de 10 segundos.
-- Los controles de zoom (+, -, reinicio y controles siguientes) permanecen visibles.
-- Los botones de acción también permanecen disponibles.
+- En el visor AR, los comentarios/mensajes y controles se ocultan automáticamente después de 5 segundos.
+- Después de 5 segundos se queda visible solo el contenido presentado por el Marker.
+- Si el usuario toca la pantalla, los controles vuelven por 5 segundos.
+
+
+
+Actualización de interfaz AR:
+- Ahora todo el interfaz visible se oculta automáticamente después de 5 segundos.
+- Se ocultan comentarios, mensajes, controles y botones para dejar solamente el contenido presentado por el Marker.
+- Si el usuario toca la pantalla, los controles vuelven a aparecer por 5 segundos.
+
+
+
+Actualización Scan Rápido:
+- El QR Code ahora se genera en alto contraste, con más margen y menos decoración.
+- La versión integrada ya no coloca el Marker encima del QR; ahora el QR queda limpio y el Marker queda separado abajo.
+- El Marker se aumentó de tamaño en la versión separada para mejorar la detección.
+- La versión separada es la recomendada cuando el enlace es largo o cuando el QR tarda en escanear.
+- Se ajustó la configuración del visor AR para mejorar la detección del Marker.

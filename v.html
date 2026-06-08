@@ -84,6 +84,16 @@
     .hint.text-hidden{background:rgba(0,123,95,.28);backdrop-filter:blur(6px);padding:8px 10px}
     .controls{transition:opacity .2s ease}
 
+  
+    .controls.auto-hidden{opacity:0;pointer-events:none;transition:opacity .45s ease}
+    .hint.text-hidden{opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .45s ease, transform .45s ease}
+    .media-layer.clean-view .media-header{display:none}
+    .media-layer.clean-view .media-actions{display:none}
+    .media-layer.clean-view .video-help,.media-layer.clean-view .youtube-help{display:none}
+    .media-layer.clean-view{max-height:88vh}
+    .media-layer.clean-view .media-body{padding:0;background:transparent}
+    .media-layer.clean-view:not(.transparent-mode){border-color:rgba(0,123,95,.35);background:transparent;box-shadow:none;backdrop-filter:none}
+
   </style>
 </head>
 <body>
@@ -122,7 +132,7 @@
     <button id="youtubeAudioBtn" type="button" style="display:none;">▶ Reproducir YouTube</button>
   </div>
 
-  <a-scene vr-mode-ui="enabled:false" embedded renderer="logarithmicDepthBuffer:true;colorManagement:true;alpha:true;" arjs="trackingMethod:best;sourceType:webcam;debugUIEnabled:false;patternRatio:0.5;">
+  <a-scene vr-mode-ui="enabled:false" embedded renderer="logarithmicDepthBuffer:true;colorManagement:true;alpha:true;" arjs="trackingMethod:best;sourceType:webcam;debugUIEnabled:false;patternRatio:0.5;detectionMode:mono_and_matrix;matrixCodeType:3x3;">
     <a-marker id="interSgMarker" type="pattern" url="assets/inter-sg-marker.patt"></a-marker>
     <a-marker id="interMarker" type="pattern" url="assets/inter-marker-generic.patt"></a-marker>
     <a-marker id="hiroMarker" type="pattern" url="assets/hiro-marker-generic.patt"></a-marker>
