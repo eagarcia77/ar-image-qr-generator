@@ -51,8 +51,10 @@ actionText.textContent = `Buscando Marker ${markerLabel}...`;
 function configurePresentationMode(){
   if(type === 'image'){
     mediaLayer.classList.add('transparent-mode');
+    mediaLayer.classList.add('image-3d-mode');
   } else {
     mediaLayer.classList.remove('transparent-mode');
+    mediaLayer.classList.remove('image-3d-mode');
   }
 }
 
@@ -75,7 +77,7 @@ function showContent(){
   if(type === 'youtube'){
     showAction('YouTube listo. Toca Abrir video en YouTube.');
   } else if(type === 'image'){
-    showAction('Imagen visible con fondo transparente. Usa + y − o pellizca con dos dedos.');
+    showAction('Imagen 3D visible con efecto futurista. Usa + y − o pellizca con dos dedos.');
   } else if(type === 'link'){
     showAction('Página web lista. Toca Abrir página web.');
   } else {
@@ -114,11 +116,21 @@ function buildContent(){
   if(!mediaUrl){ showError('No hay contenido AR.'); return; }
 
   if(type === 'image'){
-    const img = document.createElement('img');
-    img.src = mediaUrl;
-    img.alt = title;
+    const stage = document.createElement('div');
+    stage.className = 'ar-stage-3d';
+    stage.innerHTML = `
+      <div class="ar-depth-shadow"></div>
+      <div class="ar-glow-ring"></div>
+      <div class="ar-frame-3d">
+        <div class="ar-frame-inner">
+          <span class="ar-tech-badge">3D Future View</span>
+          <img class="ar-image-3d" src="${mediaUrl}" alt="${title.replace(/"/g, '&quot;')}">
+        </div>
+      </div>
+    `;
+    const img = stage.querySelector('img');
     img.onerror = () => showError('La imagen no pudo cargar. Verifica permisos Read o URL directo.');
-    mediaBody.appendChild(img);
+    mediaBody.appendChild(stage);
     return;
   }
 

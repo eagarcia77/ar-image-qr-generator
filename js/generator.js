@@ -41,9 +41,9 @@ function currentBaseUrl(){
 
 function getMarkerConfig(){
   const mode = markerTypeInput ? markerTypeInput.value : 'intersg';
-  if(mode === 'hiro') return { mode:'hiro', label:'HIRO', image:'assets/hiro-marker-generic.png' };
-  if(mode === 'inter') return { mode:'inter', label:'INTER', image:'assets/inter-marker-generic.png' };
-  return { mode:'intersg', label:'INTER SG', image:'assets/inter-sg-marker.png' };
+  if(mode === 'hiro') return { mode:'hiro', label:'HIRO', image:'./assets/hiro-marker-generic.png' };
+  if(mode === 'inter') return { mode:'inter', label:'INTER', image:'./assets/inter-marker-generic.png' };
+  return { mode:'intersg', label:'INTER SG', image:'./assets/inter-sg-marker.png' };
 }
 
 function refreshMarkerSelectionUI(){

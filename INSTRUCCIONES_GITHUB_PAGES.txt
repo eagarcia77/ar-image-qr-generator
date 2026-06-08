@@ -1,0 +1,36 @@
+INSTRUCCIONES PARA SUBIR A GITHUB PAGES
+
+Si la página se ve sin diseño, con letras gigantes o las imágenes aparecen rotas, significa que GitHub no está encontrando las carpetas css, js o assets.
+
+SUBA TODO ESTO JUNTO AL REPOSITORIO:
+- index.html
+- viewer-ar.html
+- v.html
+- markers.html
+- test-marker.html
+- diagnostico-contenido.html
+- carpeta css
+- carpeta js
+- carpeta assets
+- carpeta snippets
+- carpeta docs
+- archivo .nojekyll
+
+NO suba solamente index.html.
+
+FORMA RECOMENDADA:
+1. Abra el ZIP.
+2. Entre a la carpeta del programa.
+3. Seleccione TODOS los archivos y carpetas.
+4. Súbalos al root del repositorio de GitHub Pages.
+5. Verifique que en GitHub se vean estas rutas:
+   /css/app.css
+   /js/generator.js
+   /assets/inter-marker-generic.png
+6. Espere 1 a 3 minutos y abra nuevamente la página con Ctrl + F5.
+
+PRUEBA RÁPIDA:
+Abra directamente:
+https://TU-USUARIO.github.io/TU-REPOSITORIO/css/app.css
+
+Si sale 404, el CSS no está subido o no está en la carpeta correcta.

@@ -34,3 +34,6 @@ Versión premium: ahora incluye tarjetas premium con iconos y animación suave a
 
 
 Encabezado institucional actualizado: Universidad Interamericana de Puerto Rico Recinto de San Germán.
+
+
+Actualización 3D: las imágenes ahora se muestran con un efecto visual más futurista, flotante y con apariencia 3D dentro de la experiencia de Realidad Aumentada.
