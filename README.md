@@ -86,10 +86,8 @@ Ajuste final de escaneo:
 - La versión separada sigue disponible como respaldo para máxima velocidad de escaneo.
 
 
-
-Actualización sin comentarios inferiores:
-- Se eliminaron los comentarios de la parte inferior en la versión integrada.
-- Se eliminaron los comentarios de la parte inferior en la versión separada.
-- El QR Code y el Marker ahora tienen más espacio visual.
-- La versión integrada mantiene el Marker en el centro del QR Code.
-- La versión separada muestra el QR y el Marker más grandes.
+Optimización final solicitada:
+- Se eliminaron los comentarios de la parte inferior en la versión integrada y en la versión separada.
+- En la versión integrada, el Marker se mantiene en el centro del QR Code, pero con tamaño más controlado para mejorar el escaneo.
+- El QR integrado ahora usa margen amplio y estilo Fast Scan de alto contraste.
+- En la versión separada, el QR y el Marker se agrandaron para facilitar lectura y detección.

@@ -206,11 +206,15 @@ async function createQrDataUrl(data, style='classic', simple=false){
         height: 1200,
         type: 'canvas',
         data,
-        margin: style === 'fastscan' ? 32 : (style === 'inter' ? 16 : (simple ? 14 : 0)),
+        margin: style === 'fastscan' ? 36 : (style === 'inter' ? 16 : (simple ? 14 : 0)),
         qrOptions: { errorCorrectionLevel: ecc },
         backgroundOptions: { color: '#ffffff' }
       };
-      if(style === 'modern'){
+      if(style === 'fastscan'){
+        options.dotsOptions = { color:'#000000', type:'square' };
+        options.cornersSquareOptions = { color:'#000000', type:'square' };
+        options.cornersDotOptions = { color:'#000000', type:'square' };
+      } else if(style === 'modern'){
         options.dotsOptions = simple ? { color:'#111111', type:'square' } : { color:'#14211d', type:'rounded' };
         options.cornersSquareOptions = simple ? { color:'#007B5F', type:'square' } : { color:'#007B5F', type:'extra-rounded' };
         options.cornersDotOptions = simple ? { color:'#007B5F', type:'square' } : { color:'#FED141', type:'dot' };
@@ -231,7 +235,7 @@ async function createQrDataUrl(data, style='classic', simple=false){
       if(typeof qr.getRawData === 'function') return await dataUrlFromBlob(await qr.getRawData('png'));
     }catch(e){ console.warn('Styled QR fallback', e); }
   }
-  return `https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&ecc=${ecc}&margin=${style === 'fastscan' ? 28 : 12}&color=000000&bgcolor=FFFFFF&format=png&data=${encodeURIComponent(data)}`;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&ecc=${ecc}&margin=${style === 'fastscan' ? 36 : 12}&color=000000&bgcolor=FFFFFF&format=png&data=${encodeURIComponent(data)}`;
 }
 
 function drawRoundRect(ctx,x,y,w,h,r,fill,stroke){
@@ -337,53 +341,31 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   const theme = getTheme(style);
   const canvas = document.createElement('canvas');
   canvas.width=1600;
-  canvas.height=1880;
+  canvas.height=1560;
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1480,1760,44,'#ffffff',theme.accent);
-  if(style==='inter') drawInterHeaderBars(ctx, 110, 94, 1380, theme);
+  drawRoundRect(ctx,48,48,1504,1464,42,'#ffffff',theme.accent);
 
+  // Encabezado mínimo para dejar el máximo espacio al QR.
   ctx.fillStyle = theme.accent;
-  ctx.font='bold 58px Arial';
+  ctx.font='bold 50px Arial';
   ctx.textAlign='center';
-  ctx.fillText('AR',800,165);
-
-  if(style==='inter') {
-    drawInterRibbon(ctx, 520, 185, 560, 64, theme, markerCfg.mode === 'inter' ? 'INTER' : markerCfg.mode === 'hiro' ? 'HIRO' : 'INTER SAN GERMÁN');
-  }
+  ctx.fillText('AR',800,122);
 
   ctx.fillStyle = theme.text;
-  ctx.font='bold 40px Arial';
-  ctx.fillText(titleText || 'Experiencia AR',800,282);
+  ctx.font='bold 30px Arial';
+  ctx.fillText(titleText || 'Experiencia AR',800,168);
 
-  ctx.fillStyle = theme.sub;
-  ctx.font='28px Arial';
-  ctx.fillText('Scan rápido · QR con Marker centrado',800,330);
+  // QR muy grande y limpio.
+  drawRoundRect(ctx,125,210,1350,1265,34,'#ffffff','#d7e5e0');
+  ctx.drawImage(qr,185,270,1230,1230);
 
-  // QR grande, limpio y con ECC alto para soportar el Marker del centro.
-  drawRoundRect(ctx,230,375,1140,1140,30,'#ffffff','#d7e5e0');
-  ctx.drawImage(qr,290,435,1020,1020);
-
-  // Marker centrado con tamaño balanceado y marco blanco amplio.
-  // El tamaño se controla para no tapar demasiado el QR y mantener buena detección del Marker.
-  drawRoundRect(ctx,630,775,340,340,26,'#ffffff','#d7e5e0');
-  ctx.drawImage(marker,680,825,240,240);
-
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 25px Arial';
-  ctx.fillText('Versión integrada: QR Code + Marker centrado',800,1540);
-
-  ctx.fillStyle = theme.sub;
-  ctx.font='22px Arial';
-  ctx.fillText('Optimizado para escaneo correcto del QR y detección del Marker en el centro.',800,1580);
-  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1616);
-
-  drawRoundRect(ctx,210,1670,1180,100,28,'#FFF4CC',theme.accent2);
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 24px Arial';
-  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1708,1040,28,2);
+  // Marker centrado con tamaño optimizado y amplio borde blanco.
+  // Se reduce el área ocupada para no romper la lectura del QR.
+  drawRoundRect(ctx,655,740,290,290,28,'#ffffff','#d7e5e0');
+  ctx.drawImage(marker,695,780,210,210);
 
   drawWatermark(ctx, canvas);
   return canvas.toDataURL('image/png');
@@ -395,56 +377,25 @@ async function buildSeparatedImage(qrDataUrl,titleText,descriptionText,contentTy
   const theme = getTheme(style);
   const canvas = document.createElement('canvas');
   canvas.width=1800;
-  canvas.height=1500;
+  canvas.height=1180;
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1680,1380,40,'#ffffff',theme.accent);
-  if(style==='inter') drawInterHeaderBars(ctx, 95, 92, 1610, theme);
+  drawRoundRect(ctx,48,48,1704,1084,40,'#ffffff',theme.accent);
 
+  // Encabezado mínimo.
   ctx.fillStyle = theme.accent;
-  ctx.font='bold 54px Arial';
-  ctx.textAlign='left';
-  ctx.fillText('AR',110,170);
-
-  if(style==='inter') {
-    drawInterRibbon(ctx, 1180, 120, 460, 58, theme, markerCfg.mode === 'inter' ? 'INTER' : markerCfg.mode === 'hiro' ? 'HIRO' : 'INTER SAN GERMÁN');
-  }
-
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 34px Arial';
-  ctx.fillText(titleText || 'Experiencia AR',110,228);
-
-  drawRoundRect(ctx,108,268,360,46,20,theme.chip,null);
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 22px Arial';
-  ctx.fillText(`Tipo: ${contentType}`,128,300);
-
-  // QR grande, limpio y separado.
-  drawRoundRect(ctx,92,340,730,730,30,'#ffffff','#d7e5e0');
+  ctx.font='bold 48px Arial';
   ctx.textAlign='center';
-  ctx.drawImage(qr,122,370,670,670);
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 28px Arial';
-  ctx.fillText('Paso 1: Escanea el QR Code',457,1125);
+  ctx.fillText('AR',900,120);
 
-  // Marker más grande y con área limpia alrededor.
-  drawRoundRect(ctx,900,250,820,820,30,'#ffffff','#d7e5e0');
-  ctx.drawImage(marker,975,325,670,670);
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 28px Arial';
-  ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,1310,1125);
+  // QR y Marker grandes, sin comentarios inferiores.
+  drawRoundRect(ctx,92,170,760,920,30,'#ffffff','#d7e5e0');
+  ctx.drawImage(qr,122,265,700,700);
 
-  drawRoundRect(ctx,105,1190,1590,120,22,'#eef7f3',null);
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 23px Arial';
-  wrapText(ctx,'Versión optimizada para lectura rápida: QR de alto contraste, margen amplio y Marker separado para mejor detección.',900,1235,1450,30,3);
-
-  drawRoundRect(ctx,110,1345,1490,78,18,'#FFF4CC',theme.accent2);
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 22px Arial';
-  wrapText(ctx,'Recomendación: use esta versión cuando el enlace sea largo o cuando el QR tarde en escanear.',900,1393,1320,28,2);
+  drawRoundRect(ctx,948,170,760,920,30,'#ffffff','#d7e5e0');
+  ctx.drawImage(marker,1008,245,640,640);
 
   drawWatermark(ctx, canvas);
   return canvas.toDataURL('image/png');
