@@ -33,3 +33,6 @@ Actualización 3D: las imágenes ahora se muestran con un efecto visual más fut
 
 
 Verificación adicional: se agrandó el Marker visual y se corrigió la versión integrada para que la parte inferior del QR Code no quede tapada por texto ni elementos superpuestos.
+
+
+Ajuste adicional en versión integrada: el Marker integrado ahora es más grande para mejorar la detección, y el diseño del QR se reorganizó para que solo tenga una superposición mínima y siga funcionando mejor.

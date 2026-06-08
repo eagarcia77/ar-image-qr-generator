@@ -324,12 +324,12 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   const theme = getTheme(style);
   const canvas = document.createElement('canvas');
   canvas.width=1600;
-  canvas.height=1820;
+  canvas.height=1860;
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1480,1700,44,'#ffffff',theme.accent);
+  drawRoundRect(ctx,60,60,1480,1740,44,'#ffffff',theme.accent);
   if(style==='inter') drawInterHeaderBars(ctx, 110, 94, 1380, theme);
 
   ctx.fillStyle = theme.accent;
@@ -346,30 +346,32 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   ctx.font='28px Arial';
   ctx.fillText('Image · Video · YouTube · PDF · Link',800,335);
 
-  drawRoundRect(ctx,220,390,1160,1080,28, style==='inter' ? '#f8fbfa' : '#ffffff', style==='inter' ? '#d9ebe5' : null);
-  ctx.drawImage(qr,290,430,1020,1020);
+  // Larger QR area with more protected bottom space for a bigger marker.
+  drawRoundRect(ctx,210,385,1180,1120,28, style==='inter' ? '#f8fbfa' : '#ffffff', style==='inter' ? '#d9ebe5' : null);
+  ctx.drawImage(qr,280,425,1040,1040);
 
-  drawRoundRect(ctx,620,785,360,360,26,'#ffffff','#d7e5e0');
-  ctx.drawImage(marker,660,825,280,280);
+  // Bigger marker in the integrated version, positioned lower so the QR stays readable.
+  drawRoundRect(ctx,585,900,430,430,28,'#ffffff','#d7e5e0');
+  ctx.drawImage(marker,630,945,340,340);
 
   ctx.fillStyle = theme.text;
   ctx.font='bold 25px Arial';
-  ctx.fillText(`QR Code + Marker ${markerCfg.label} integrado`,800,1515);
+  ctx.fillText(`QR Code + Marker ${markerCfg.label} integrado`,800,1555);
 
   ctx.fillStyle = '#85714D';
   ctx.font='bold 24px Arial';
-  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1562);
+  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1600);
 
   if(descriptionText){
     ctx.fillStyle = theme.text;
     ctx.font='24px Arial';
-    wrapText(ctx,descriptionText,800,1605,1040,30,3);
+    wrapText(ctx,descriptionText,800,1642,1040,30,3);
   }
 
-  drawRoundRect(ctx,210,1642,1180,90,28,'#FFF4CC',theme.accent2);
+  drawRoundRect(ctx,210,1692,1180,96,28,'#FFF4CC',theme.accent2);
   ctx.fillStyle = theme.text;
   ctx.font='bold 24px Arial';
-  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1676,1040,28,2);
+  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1728,1040,28,2);
   return canvas.toDataURL('image/png');
 }
 
