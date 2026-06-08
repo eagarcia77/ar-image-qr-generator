@@ -77,3 +77,12 @@ Ajuste final de escaneo:
 - El QR integrado usa corrección de error alta (ECC H) para tolerar mejor el Marker centrado.
 - El Marker central se ajustó a un tamaño balanceado con borde blanco amplio para mejorar lectura del QR y detección del Marker.
 - La versión separada sigue disponible como respaldo para máxima velocidad de escaneo.
+
+
+
+Actualización sin comentarios inferiores:
+- Se eliminaron los comentarios de la parte inferior en la versión integrada.
+- Se eliminaron los comentarios de la parte inferior en la versión separada.
+- El QR Code y el Marker ahora tienen más espacio visual.
+- La versión integrada mantiene el Marker en el centro del QR Code.
+- La versión separada muestra el QR y el Marker más grandes.
