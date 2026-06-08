@@ -67,3 +67,13 @@ Actualización Scan Rápido:
 - El Marker se aumentó de tamaño en la versión separada para mejorar la detección.
 - La versión separada es la recomendada cuando el enlace es largo o cuando el QR tarda en escanear.
 - Se ajustó la configuración del visor AR para mejorar la detección del Marker.
+
+
+Ajuste solicitado: en la versión integrada, el Marker vuelve a estar en el centro del QR Code, pero con tamaño controlado y borde blanco para no afectar tanto el escaneo.
+
+
+Ajuste final de escaneo:
+- La versión integrada mantiene el Marker en el centro del QR Code.
+- El QR integrado usa corrección de error alta (ECC H) para tolerar mejor el Marker centrado.
+- El Marker central se ajustó a un tamaño balanceado con borde blanco amplio para mejorar lectura del QR y detección del Marker.
+- La versión separada sigue disponible como respaldo para máxima velocidad de escaneo.

@@ -132,7 +132,7 @@
     <button id="youtubeAudioBtn" type="button" style="display:none;">▶ Reproducir YouTube</button>
   </div>
 
-  <a-scene vr-mode-ui="enabled:false" embedded renderer="logarithmicDepthBuffer:true;colorManagement:true;alpha:true;" arjs="trackingMethod:best;sourceType:webcam;debugUIEnabled:false;patternRatio:0.5;detectionMode:mono_and_matrix;matrixCodeType:3x3;">
+  <a-scene vr-mode-ui="enabled:false" embedded renderer="logarithmicDepthBuffer:true;colorManagement:true;alpha:true;" arjs="trackingMethod:best;sourceType:webcam;debugUIEnabled:false;patternRatio:0.5;detectionMode:mono_and_matrix;matrixCodeType:3x3;maxDetectionRate:60;">
     <a-marker id="interSgMarker" type="pattern" url="assets/inter-sg-marker.patt"></a-marker>
     <a-marker id="interMarker" type="pattern" url="assets/inter-marker-generic.patt"></a-marker>
     <a-marker id="hiroMarker" type="pattern" url="assets/hiro-marker-generic.patt"></a-marker>

@@ -195,7 +195,7 @@ function dataUrlFromBlob(blob){
 
 async function createQrDataUrl(data, style='classic', simple=false){
   // Fast Scan: QR de alto contraste, más margen y menos decoración para lectura rápida.
-  if(style === 'fastscan') simple = true;
+  // Si simple=true, usa ECC M. Si simple=false, conserva ECC H para permitir un Marker centrado.
   let ecc = simple ? 'M' : 'H';
   if(style === 'inter') ecc = 'M';
   if(window.QRCodeStyling && (style === 'modern' || style === 'tiger' || style === 'inter' || style === 'fastscan')){
@@ -206,7 +206,7 @@ async function createQrDataUrl(data, style='classic', simple=false){
         height: 1200,
         type: 'canvas',
         data,
-        margin: style === 'fastscan' ? 28 : (style === 'inter' ? 16 : (simple ? 14 : 0)),
+        margin: style === 'fastscan' ? 32 : (style === 'inter' ? 16 : (simple ? 14 : 0)),
         qrOptions: { errorCorrectionLevel: ecc },
         backgroundOptions: { color: '#ffffff' }
       };
@@ -337,12 +337,12 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
   const theme = getTheme(style);
   const canvas = document.createElement('canvas');
   canvas.width=1600;
-  canvas.height=1900;
+  canvas.height=1880;
   const ctx = canvas.getContext('2d');
 
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawRoundRect(ctx,60,60,1480,1780,44,'#ffffff',theme.accent);
+  drawRoundRect(ctx,60,60,1480,1760,44,'#ffffff',theme.accent);
   if(style==='inter') drawInterHeaderBars(ctx, 110, 94, 1380, theme);
 
   ctx.fillStyle = theme.accent;
@@ -360,30 +360,31 @@ async function buildIntegratedImage(qrDataUrl,titleText,descriptionText,contentT
 
   ctx.fillStyle = theme.sub;
   ctx.font='28px Arial';
-  ctx.fillText('Scan rápido · QR limpio · Marker ampliado',800,330);
+  ctx.fillText('Scan rápido · QR con Marker centrado',800,330);
 
-  // Zona superior: QR limpio, sin objetos encima. Esto mejora mucho el escaneo.
+  // QR grande, limpio y con ECC alto para soportar el Marker del centro.
   drawRoundRect(ctx,230,375,1140,1140,30,'#ffffff','#d7e5e0');
   ctx.drawImage(qr,290,435,1020,1020);
 
+  // Marker centrado con tamaño balanceado y marco blanco amplio.
+  // El tamaño se controla para no tapar demasiado el QR y mantener buena detección del Marker.
+  drawRoundRect(ctx,630,775,340,340,26,'#ffffff','#d7e5e0');
+  ctx.drawImage(marker,680,825,240,240);
+
   ctx.fillStyle = theme.text;
   ctx.font='bold 25px Arial';
-  ctx.fillText('Paso 1: Escanea el QR Code',800,1540);
+  ctx.fillText('Versión integrada: QR Code + Marker centrado',800,1540);
 
-  // Zona inferior: Marker grande, separado del QR para que AR.js lo detecte mejor.
-  drawRoundRect(ctx,480,1582,640,230,28,'#f9fbfa','#d7e5e0');
-  ctx.drawImage(marker,515,1605,190,190);
-
-  ctx.textAlign='left';
-  ctx.fillStyle = theme.text;
-  ctx.font='bold 28px Arial';
-  ctx.fillText(`Paso 2: Apunta al Marker ${markerCfg.label}`,730,1665);
-  ctx.font='21px Arial';
   ctx.fillStyle = theme.sub;
-  ctx.fillText('El Marker está separado del QR para mejorar la detección.',730,1702);
-  ctx.fillText(`Tipo de contenido: ${contentType}`,730,1736);
+  ctx.font='22px Arial';
+  ctx.fillText('Optimizado para escaneo correcto del QR y detección del Marker en el centro.',800,1580);
+  ctx.fillText(`Tipo de contenido: ${contentType}`,800,1616);
 
-  ctx.textAlign='center';
+  drawRoundRect(ctx,210,1670,1180,100,28,'#FFF4CC',theme.accent2);
+  ctx.fillStyle = theme.text;
+  ctx.font='bold 24px Arial';
+  wrapText(ctx,`Escanea el QR y luego apunta al Marker ${markerCfg.label} del centro.`,800,1708,1040,28,2);
+
   drawWatermark(ctx, canvas);
   return canvas.toDataURL('image/png');
 }
@@ -462,7 +463,7 @@ async function generate(){
   setStatus(`Creando imágenes optimizadas para escaneo rápido con Marker ${markerCfg.label}...`, 'warn');
 
   try{
-    const integratedQr = await createQrDataUrl(arUrl, 'fastscan', true);
+    const integratedQr = await createQrDataUrl(arUrl, 'fastscan', false);
     const separatedQr = await createQrDataUrl(arUrl, 'fastscan', true);
 
     const integrated = await buildIntegratedImage(integratedQr,titleInput.value.trim(),descriptionInput.value.trim(),type,style,markerCfg);
