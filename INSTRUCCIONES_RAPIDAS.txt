@@ -94,3 +94,11 @@ Corrección de estilos QR:
 - Se corrigió el generador para que use realmente el estilo de QR seleccionado.
 - Ahora las opciones Modern, Tiger Style, Inter Premium y Fast Scan se reflejan en las imágenes generadas.
 - Fast Scan sigue disponible como la opción recomendada cuando se busca mayor rapidez de lectura.
+
+
+
+Corrección de audio:
+- El video MP4/WebM ya no queda forzado en silencio.
+- Se añadieron botones claros para Reproducir video y Activar sonido.
+- En celulares, el audio automático puede ser bloqueado por el navegador; por eso el usuario debe tocar el botón de sonido.
+- YouTube se presenta flotante; si no se escucha dentro del visor, toque Reproducir YouTube o Abrir video en YouTube.

@@ -20,6 +20,7 @@ const manualShowBtn = document.getElementById('manualShowBtn');
 const overlayMarkerLabel = document.getElementById('overlayMarkerLabel');
 const playVideoBtn = document.getElementById('playVideoBtn');
 const audioBtn = document.getElementById('audioBtn');
+const videoAudioBtn = document.getElementById('videoAudioBtn');
 const youtubeBtn = document.getElementById('youtubeBtn');
 const youtubeAudioBtn = document.getElementById('youtubeAudioBtn');
 const interSgMarker = document.getElementById('interSgMarker');
@@ -63,12 +64,12 @@ function activateYoutubePlayback(){
   if(panel) panel.classList.add('hidden-panel');
 
   if(youtubeIframe && youtubeEmbedUrl){
-    // Re-load with autoplay requested after user interaction. This is the most reliable way on phones.
-    youtubeIframe.src = youtubeEmbedUrl + '&start=0';
+    // Reload after a user tap. This is the most reliable browser-allowed path.
+    youtubeIframe.src = youtubeEmbedUrl + '&autoplay=1&mute=0';
   }
 
   if(youtubeAudioBtn) youtubeAudioBtn.style.display = 'none';
-  showAction('YouTube reproduciéndose. Si no escuchas audio, toca dentro del video o usa Abrir video en YouTube.');
+  showAction('YouTube activado. Si no escuchas audio, toca dentro del video o usa Abrir video en YouTube.');
 }
 
 function configurePresentationMode(){
@@ -87,6 +88,52 @@ function showError(message){
 }
 
 function showAction(message){ actionText.textContent = message; }
+
+function showVideoAudioButtons(){
+  if(playVideoBtn) playVideoBtn.style.display = 'inline-block';
+  if(audioBtn) audioBtn.style.display = 'inline-block';
+  if(videoAudioBtn) videoAudioBtn.style.display = 'inline-block';
+}
+
+async function startVideoMuted(){
+  if(!videoElement) return false;
+  try{
+    videoElement.muted = true;
+    videoElement.volume = 1;
+    await videoElement.play();
+    showVideoAudioButtons();
+    showAction('El video comenzó. Para escuchar sonido, toca Activar sonido.');
+    return true;
+  }catch(e){
+    showVideoAudioButtons();
+    showAction('Toca Reproducir video y luego Activar sonido.');
+    return false;
+  }
+}
+
+async function startVideoWithSound(){
+  if(!videoElement) return;
+  try{
+    videoElement.muted = false;
+    videoElement.removeAttribute('muted');
+    videoElement.volume = 1;
+    await videoElement.play();
+    if(playVideoBtn) playVideoBtn.style.display = 'none';
+    if(audioBtn) audioBtn.style.display = 'none';
+    if(videoAudioBtn) videoAudioBtn.style.display = 'none';
+    showAction('Video reproduciéndose con sonido.');
+  }catch(e){
+    try{
+      // Some mobile browsers require the user to tap the actual video too.
+      videoElement.controls = true;
+      videoElement.muted = false;
+      videoElement.volume = 1;
+    }catch{}
+    showVideoAudioButtons();
+    showAction('El navegador bloqueó el sonido automático. Toca una vez dentro del video y luego Activar sonido.');
+  }
+}
+
 
 let commentHideTimer = null;
 
@@ -119,17 +166,7 @@ function showInterfaceTemporarily(){
 
 
 function activateVideoAudio(){
-  if(!videoElement) return;
-  videoElement.muted = false;
-  videoElement.volume = 1;
-  videoAudioEnabled = true;
-  videoElement.play().then(() => {
-    audioBtn.style.display = 'none';
-    playVideoBtn.style.display = 'none';
-    showAction('Audio activado. El video ya se puede escuchar.');
-  }).catch(() => {
-    showAction('Toca el video una vez para permitir el audio en este dispositivo.');
-  });
+  startVideoWithSound();
 }
 
 function applyScale(){
@@ -154,7 +191,7 @@ function showContent(){
     showAction('Contenido visible. Usa + y − o pellizca con dos dedos.');
   }
 
-  if(type === 'video') playVideoIfNeeded(false);
+  if(type === 'video') { showVideoAudioButtons(); playVideoIfNeeded(false); }
 }
 
 function hideContent(){ mediaLayer.style.display = 'none'; }
@@ -215,18 +252,20 @@ function buildContent(){
           <span class="audio-badge">Audio Ready</span>
         </div>
         <video class="video-player-future" src="${mediaUrl}" controls playsinline webkit-playsinline preload="auto"></video>
-        <p class="video-help">El sistema intentará reproducir el video automáticamente. Si el dispositivo bloquea el audio, usa los botones <strong>Reproducir video</strong> y <strong>Activar audio</strong>.</p>
+        <p class="audio-instruction"><strong>Para escuchar:</strong> toca Reproducir video y luego Activar sonido. En celulares, el navegador puede pedir un toque para permitir el audio.</p>
       </div>
     `;
     const video = stage.querySelector('video');
     video.muted = false;
     video.volume = 1;
+    video.controls = true;
     video.loop = true;
     video.setAttribute('playsinline', 'true');
     video.setAttribute('webkit-playsinline','true');
     video.onerror = () => showError('El video no pudo cargar. Verifica MP4/WebM y permisos Read.');
     mediaBody.appendChild(stage);
     videoElement = video;
+    showVideoAudioButtons();
     return;
   }
 
@@ -238,7 +277,7 @@ function buildContent(){
     }
 
     youtubeWatchUrl = `https://www.youtube.com/watch?v=${id}`;
-    youtubeEmbedUrl = `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&playsinline=1&controls=1&rel=0&modestbranding=1&enablejsapi=1`;
+    youtubeEmbedUrl = `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&playsinline=1&controls=1&rel=0&modestbranding=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}`;
 
     mediaBody.innerHTML = `
       <div class="youtube-float-stage">
@@ -256,7 +295,7 @@ function buildContent(){
               <span>Si el navegador bloquea el audio automático, toca este botón para iniciar el video y activar el sonido.</span>
             </div>
           </div>
-          <p class="youtube-help">El video flota dentro de la experiencia AR. Algunos celulares bloquean el sonido automático; por eso se incluye el botón de reproducción.</p>
+          <p class="youtube-help">El video flota dentro de la experiencia AR. <strong>Para escuchar:</strong> toca Reproducir YouTube o toca dentro del video. Algunos celulares bloquean el sonido automático por seguridad.</p>
         </div>
       </div>
     `;
@@ -303,33 +342,11 @@ function buildContent(){
 
 async function playVideoIfNeeded(forceAudio = false){
   if(!videoElement) return;
-  try{
-    if(forceAudio){
-      videoElement.muted = false;
-      videoElement.volume = 1;
-      videoAudioEnabled = true;
-    }
-    await videoElement.play();
-    playVideoBtn.style.display = 'none';
-    if(videoElement.muted){
-      audioBtn.style.display = 'inline-block';
-      showAction('Video reproduciéndose. Si no escuchas audio, toca Activar audio.');
-    } else {
-      audioBtn.style.display = 'none';
-      showAction('Video reproduciéndose con audio.');
-    }
-  }catch{
-    try{
-      videoElement.muted = true;
-      await videoElement.play();
-      playVideoBtn.style.display = 'inline-block';
-      audioBtn.style.display = 'inline-block';
-      showAction('El video comenzó en silencio. Toca Activar audio para escucharlo.');
-    }catch{
-      playVideoBtn.style.display = 'inline-block';
-      audioBtn.style.display = 'inline-block';
-      showAction('Si el video no comienza, toca Reproducir video. Luego toca Activar audio.');
-    }
+  if(forceAudio){
+    await startVideoWithSound();
+  } else {
+    // Autoplay with sound is usually blocked. Start muted, then show button for sound.
+    await startVideoMuted();
   }
 }
 
@@ -352,8 +369,9 @@ activeMarker.addEventListener('markerLost', () => {
 
 manualShowBtn.addEventListener('click', () => { showContent(); if(type === 'video') playVideoIfNeeded(true); });
 hideBtn.addEventListener('click', hideContent);
-playVideoBtn.addEventListener('click', () => playVideoIfNeeded(true));
+playVideoBtn.addEventListener('click', () => startVideoWithSound());
 audioBtn.addEventListener('click', activateVideoAudio);
+if(videoAudioBtn) videoAudioBtn.addEventListener('click', activateVideoAudio);
 youtubeAudioBtn.addEventListener('click', activateYoutubePlayback);
 
 
